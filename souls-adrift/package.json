@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "murmurhash": "^2.0.0",
+    "solid-app-router": "^0.1.5",
     "solid-js": "^1.0.7"
   }
 }

@@ -1,25 +1,21 @@
-import logo from "./logo.svg";
-import styles from "./App.module.css";
+import { lazy } from "solid-js";
+import { Routes, Route } from "solid-app-router";
 
-import { createStore } from 'solid-js/store';
-
-import { GameEngine } from './game-engine/GameEngine.js'
-import { GossipGraph } from './gossip-graph/GossipGraph.js'
-
-let gossipGraph = new GossipGraph(42, 10, 100)
-let gameEngine = new GameEngine(gossipGraph)
-let state = gameEngine.getState()
-let interactionState = gameEngine.getInteractionState()
+const CharacterScreen = lazy(() => import("./game-client/pages/CharacterScreen.jsx"))
+const LocationScreen = lazy(() => import("./game-client/pages/LocationScreen.jsx"))
+const LoginScreen = lazy(() => import("./game-client/pages/LoginScreen.jsx"))
+const RegisterScreen = lazy(() => import("./game-client/pages/RegisterScreen.jsx"))
 
 function App() {
   return (
-    <div class={styles.App}>
-      <header class={styles.header}>
-        {state.messages.map(m => { return (<p>{m}</p>)})}
-        <p>Sending: {interactionState.sending ? 'Yes' : 'No'}</p>
-        <p><a class={styles.link} href="#" onClick={() => interactionState.sending || gameEngine.send(Math.random().toString())}>Send Message</a></p>
-      </header>
-    </div>
+    <>
+      <Routes>
+        <Route path="/" element={<LoginScreen />} />
+        <Route path="/loc" element={<LocationScreen />} />
+        <Route path="/chr" element={<CharacterScreen />} />
+        <Route path="/reg" element={<RegisterScreen />} />
+      </Routes>
+    </>
   );
 }
 
