@@ -45,7 +45,7 @@ function LocationScreen() {
         </div>
         <div>
           <div class={styles['item']}>[1] <Link href="/inspect/:sailor">Leet Hax0r</Link> 90% — <Link href="/attack/:sailor">attack</Link> — fighting Rat</div>
-          <div class={styles['item']}><Link href="/inspect/:sailor">Sailor Jerry</Link> — <Link href="/attack/:sailor">attack</Link></div>
+          <div class={styles['item']}><Link href="/npc">Sailor Jerry</Link> — <Link href="/attack/:sailor">attack</Link></div>
           <div class={styles['item']}><Link href="/inspect/:sailor">Rat</Link> 73% — <Link href="/attack/:sailor">attack</Link> — fighting Leet Hax0r</div>
           <div class={styles['item']}><Link href="/inspect/:sailor">Rotten fishing net</Link></div>
         </div>
@@ -55,6 +55,7 @@ function LocationScreen() {
         <div>
           <div class={styles['item']}><Link href="/go/:north">Main street</Link> !</div>
           <div class={styles['item']}><Link href="/go/:south">Towards a sunken boat</Link></div>
+          <div class={styles['item']}>Old house (locked)</div>
         </div>
         <div class={styles['divider']}>
           Speak

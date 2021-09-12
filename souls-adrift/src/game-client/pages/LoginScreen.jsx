@@ -17,6 +17,8 @@ function LoginScreen() {
       <section class={styles['large-form']}>
         <label for="username">Username</label>
         <input type="text" id="username" name="username" />
+        <label for="username">Password</label>
+        <input type="password" id="password" name="password" />
         <button id="login-button" onClick={signIn}>Log In</button>
       </section>
       <Link href="/register">Register</Link>

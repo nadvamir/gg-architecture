@@ -28,6 +28,7 @@
 
 a {
   color: #2600ff;
+  /* text-decoration: none; */
 }
 
 .large-form {
@@ -62,7 +63,6 @@ a {
 
 #message-box textarea {
   width: 100%;
-  /* height: 5em; */
   font-size: 0.7em;
 }
 
