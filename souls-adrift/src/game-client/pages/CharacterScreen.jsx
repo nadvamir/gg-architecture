@@ -50,6 +50,7 @@ function CharacterScreen() {
         </div>
         <div>
           <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 10)}>Shank</a> — <Link href="/attack/:sailor">equip</Link> — <Link href="/attack/:sailor">drop</Link></div>
+          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 10)}>Officer's sabre</a> — equip — <Link href="/attack/:sailor">drop</Link></div>
           <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 11)}>Coin</a> (25) — <Link href="/attack/:sailor">drop</Link></div>
         </div>
       </div>

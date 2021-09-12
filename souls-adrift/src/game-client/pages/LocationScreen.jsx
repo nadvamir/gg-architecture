@@ -54,8 +54,9 @@ function LocationScreen() {
           Direction
         </div>
         <section>
-          <div class={styles['item']}><Link href="/go/:north">Main street</Link> !</div>
+          <div class={styles['item']}><Link href="/go/:north">Main street</Link>&nbsp;!</div>
           <div class={styles['item']}><Link href="/go/:south">Towards a sunken boat</Link></div>
+          <div class={styles['item']}><Link href="/go/:south">Fourth wall library</Link>&nbsp;!</div>
           <div class={styles['item']}>Old house (locked)</div>
         </section>
         <div class={styles['divider']}>
