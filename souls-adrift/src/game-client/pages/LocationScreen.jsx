@@ -17,7 +17,7 @@ function LocationScreen() {
         <header>
           <div class={styles['status-bar']}>
             ❤ 20/20
-            — <Link href="/chr">Character</Link>
+            — <Link href="/character">Character</Link>
             &nbsp;— <Link href="/">Sign Out</Link>
           </div>
           <h1>Forlorn Quay</h1>
@@ -55,6 +55,13 @@ function LocationScreen() {
         <div>
           <div class={styles['item']}><Link href="/go/:north">Main street</Link> !</div>
           <div class={styles['item']}><Link href="/go/:south">Towards a sunken boat</Link></div>
+        </div>
+        <div class={styles['divider']}>
+          Speak
+        </div>
+        <div id={styles['message-box']}>
+          <textarea rows='3'></textarea>
+          <button>➳</button>
         </div>
         <div class={styles['divider']}>
           Temp

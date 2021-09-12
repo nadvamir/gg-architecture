@@ -5,7 +5,7 @@ import styles from "../../App.module.css";
 function LoginScreen() {
   const navigate = useNavigate()
   function signIn() {
-    navigate("/loc")
+    navigate("/location")
   }
 
   return (
@@ -19,7 +19,7 @@ function LoginScreen() {
         <input type="text" id="username" name="username" />
         <button id="login-button" onClick={signIn}>Log In</button>
       </section>
-      <Link href="/reg">Register</Link>
+      <Link href="/register">Register</Link>
     </div>
   );
 }

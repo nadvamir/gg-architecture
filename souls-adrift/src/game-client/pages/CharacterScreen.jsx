@@ -9,10 +9,10 @@ function CharacterScreen() {
         <header>
           <div class={styles['status-bar']}>
             ❤ 20/20
-            — <Link href="/loc">Location</Link>
+            — <Link href="/location">Location</Link>
             &nbsp;— <Link href="/">Sign Out</Link>
           </div>
-          <h1>__Blind_Augur__</h1>
+          <h1>[1] __Blind_Augur__</h1>
           <div>
             Chapter 1: Soul Stranded
           </div>
@@ -27,7 +27,7 @@ function CharacterScreen() {
           <div class={styles['item']}>Experiece: 100/240</div>
           <div class={styles['item']}>Skill points: 1</div>
           <div class={styles['item']}>Damage: 2–8</div>
-          <div class={styles['item']}>Armor: 1</div>
+          <div class={styles['item']}>Armour: 1</div>
         </div>
         <div class={styles['divider']}>
           Skills

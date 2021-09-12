@@ -11,9 +11,9 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<LoginScreen />} />
-        <Route path="/loc" element={<LocationScreen />} />
-        <Route path="/chr" element={<CharacterScreen />} />
-        <Route path="/reg" element={<RegisterScreen />} />
+        <Route path="/location" element={<LocationScreen />} />
+        <Route path="/character" element={<CharacterScreen />} />
+        <Route path="/register" element={<RegisterScreen />} />
       </Routes>
     </>
   );
