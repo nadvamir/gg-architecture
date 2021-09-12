@@ -1,4 +1,4 @@
-.App {
+.App, #login-screen {
   text-align: center;
 }
 
@@ -10,16 +10,24 @@
 
 .main-screen, .App {
   color: #282c34;
-  min-height: 100vh;
-  display: flex;
+  min-height: 98vh;
   flex-direction: column;
   align-items: center;
   font-size: calc(10px + 2vmin);
   background-color: white;
+  max-width: 1000px;
+  border: 1px solid #282c34;
+  margin: 1vh auto;
+  box-shadow: 5px 5px 10px 10px #c0c0c0;
 }
 
-.link {
-  color: #b318f0;
+.content {
+  margin: 1.2em 2em;
+  text-align: left;
+}
+
+a {
+  color: #2600ff;
 }
 
 .large-form {
@@ -33,10 +41,17 @@
 
 .large-form input, .large-form button {
   margin: 0.5em;
-  width: 100%;
-  display: block;
+  padding: 10px;
+  width: 90%;
   font-size: inherit;
   text-align: center;
+}
+
+.large-form input {
+  max-width: 676px;
+}
+.large-form button {
+  max-width: 700px;
 }
 
 @keyframes logo-spin {
@@ -46,4 +61,29 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.location-info {
+  font-size: 0.7em;
+  margin-bottom: .5em;
+}
+
+.main-screen h1 {
+  margin-top: 0.2em;
+  margin-bottom: 0.3em;
+}
+
+.status-bar {
+}
+
+.divider {
+  font-size: 0.5em;
+  border-top: 1px solid black;
+  color: black;
+  text-align: left;
+  margin-top: 1.5em;
+}
+
+.item {
+  line-height: 1.5em;
 }
