@@ -14,10 +14,13 @@
   flex-direction: column;
   align-items: center;
   font-size: calc(10px + 2vmin);
-  background-color: white;
   max-width: 1000px;
-  border: 1px solid #282c34;
   margin: 1vh auto;
+}
+
+.page {
+  background-color: white;
+  border: 1px solid #282c34;
   box-shadow: 5px 5px 10px 10px #c0c0c0;
 }
 
@@ -31,6 +34,12 @@ a {
   /* text-decoration: none; */
 }
 
+section {
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+/* ---------- Login page --------- */
 .large-form {
   margin: 2em 0;
 }
@@ -54,6 +63,35 @@ a {
 .large-form button {
   max-width: 700px;
 }
+
+/* --------- General in-game UI ------------- */
+
+.location-info {
+  font-size: 0.7em;
+  margin-bottom: .5em;
+}
+
+.main-screen h1 {
+  margin-top: 0.2em;
+  margin-bottom: 0.3em;
+}
+
+.status-bar {
+}
+
+.divider {
+  font-size: 0.5em;
+  border-top: 1px solid black;
+  color: black;
+  text-align: left;
+  margin-top: 1.5em;
+}
+
+.item {
+  line-height: 1.5em;
+}
+
+/* --------- Location screen ------------- */
 
 #message-box {
   display: flex;
@@ -79,27 +117,46 @@ a {
   }
 }
 
-.location-info {
-  font-size: 0.7em;
-  margin-bottom: .5em;
+/* --------- Info Modal ------------- */
+#info-modal {
+  position: fixed;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  min-height: 25vh;
+  max-height: 50vh;
+  overflow-y: auto;
+  opacity: 1;
+  font-size: 1.3em;
 }
 
-.main-screen h1 {
-  margin-top: 0.2em;
-  margin-bottom: 0.3em;
+.grey-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #c0c0c0;
+  opacity: 0.3;
+  cursor: pointer;
 }
 
-.status-bar {
+.hidden {
+  display: none;
 }
 
-.divider {
-  font-size: 0.5em;
-  border-top: 1px solid black;
-  color: black;
-  text-align: left;
-  margin-top: 1.5em;
+#modal-close {
+  cursor: pointer;
+  font-size: 2em;
+  position: absolute;
+  top: 0;
+  right: 0.4em;
+  display: inline-block;
 }
 
-.item {
-  line-height: 1.5em;
+#info-modal h2 {
+  margin: 0;
+  font-size: 1em;
 }

@@ -2,9 +2,11 @@ import { Link } from "solid-app-router";
 
 import styles from "../../App.module.css";
 
+import { infoModalController } from "../modals/InfoModalController.js"
+
 function CharacterScreen() {
   return (
-    <div id={styles['character-screen']} class={styles['main-screen']}>
+    <div id={styles['character-screen']} class={[styles['main-screen'], styles['page']].join(' ')}>
       <div class={styles['content']}>
         <header>
           <div class={styles['status-bar']}>
@@ -38,17 +40,17 @@ function CharacterScreen() {
           <div class={styles['item']}>Sabre: 0</div>
         </div>
         <div class={styles['divider']}>
-          Equiped 
+          Equipped 
         </div>
-          <div class={styles['item']}><Link href="/inspect/:sailor">Leather gloves</Link> — <Link href="/attack/:sailor">unequip</Link> — <Link href="/attack/:sailor">drop</Link></div>
+          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 12)}>Leather gloves</a> — <Link href="/attack/:sailor">unequip</Link> — <Link href="/attack/:sailor">drop</Link></div>
         <div>
         </div>
         <div class={styles['divider']}>
           Items
         </div>
         <div>
-          <div class={styles['item']}><Link href="/inspect/:sailor">Shank</Link> — <Link href="/attack/:sailor">equip</Link> — <Link href="/attack/:sailor">drop</Link></div>
-          <div class={styles['item']}><Link href="/inspect/:sailor">Coin</Link> (25) — <Link href="/attack/:sailor">drop</Link></div>
+          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 10)}>Shank</a> — <Link href="/attack/:sailor">equip</Link> — <Link href="/attack/:sailor">drop</Link></div>
+          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 11)}>Coin</a> (25) — <Link href="/attack/:sailor">drop</Link></div>
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import styles from "../../App.module.css";
 
 import { GameEngine } from '../../game-engine/GameEngine.js'
 import { GossipGraph } from '../../gossip-graph/GossipGraph.js'
+import { infoModalController } from "../modals/InfoModalController";
 
 let gossipGraph = new GossipGraph(42, 10, 100)
 let gameEngine = new GameEngine(gossipGraph)
@@ -12,7 +13,7 @@ let interactionState = gameEngine.getInteractionState()
 
 function LocationScreen() {
   return (
-    <div id={styles['location-screen']} class={styles['main-screen']}>
+    <div id={styles['location-screen']} class={[styles['main-screen'], styles['page']].join(' ')}>
       <div class={styles['content']}>
         <header>
           <div class={styles['status-bar']}>
@@ -28,35 +29,35 @@ function LocationScreen() {
         <div class={styles['divider']}>
           Events
         </div>
-        <div class={styles['location-info']}>
+        <section class={styles['location-info']}>
           <div>Rat dealt Leet Hax0r <b>2</b> damage.</div>
           <div>Leet Hax0r missed.</div>
           <div>Sailor Jerry entered.</div>
           <div>Sailor John left.</div>
-        </div>
+        </section>
         <div class={styles['divider']}>
           Fight
         </div>
-        <div>
+        <section>
           <div class={styles['item']}>Mouse 50% — <Link href="/attack/:sailor">attack</Link> (20%)</div>
-        </div>
+        </section>
         <div class={styles['divider']}>
           Location
         </div>
-        <div>
-          <div class={styles['item']}>[1] <Link href="/inspect/:sailor">Leet Hax0r</Link> 90% — <Link href="/attack/:sailor">attack</Link> — fighting Rat</div>
-          <div class={styles['item']}><Link href="/npc">Sailor Jerry</Link> — <Link href="/attack/:sailor">attack</Link></div>
-          <div class={styles['item']}><Link href="/inspect/:sailor">Rat</Link> 73% — <Link href="/attack/:sailor">attack</Link> — fighting Leet Hax0r</div>
-          <div class={styles['item']}><Link href="/inspect/:sailor">Rotten fishing net</Link></div>
-        </div>
+        <section>
+          <div class={styles['item']}>[1] <a href="#" onclick={() => infoModalController.showInfo('player', 15)}>Leet Hax0r</a> 90% — <Link href="/attack/:sailor">attack</Link> — fighting Rat</div>
+          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('npc', 15)}>Sailor Jerry</a> — <Link href="/npc">talk</Link> — <Link href="/attack/:sailor">attack</Link></div>
+          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('npc', 15)}>Rat</a> 73% — <Link href="/attack/:sailor">attack</Link> — fighting Leet Hax0r</div>
+          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 15)}>Rotten fishing net</a> — <Link href="/attack/:sailor">pick up</Link></div>
+        </section>
         <div class={styles['divider']}>
           Direction
         </div>
-        <div>
+        <section>
           <div class={styles['item']}><Link href="/go/:north">Main street</Link> !</div>
           <div class={styles['item']}><Link href="/go/:south">Towards a sunken boat</Link></div>
           <div class={styles['item']}>Old house (locked)</div>
-        </div>
+        </section>
         <div class={styles['divider']}>
           Speak
         </div>
@@ -67,11 +68,11 @@ function LocationScreen() {
         <div class={styles['divider']}>
           Temp
         </div>
-        <div class={styles.header}>
+        <section class={styles.header}>
           {state.messages.map(m => { return (<p>{m}</p>) })}
           <p>Sending: {interactionState.sending ? 'Yes' : 'No'}</p>
           <p><a class={styles.link} href="#" onClick={() => interactionState.sending || gameEngine.send(Math.random().toString())}>Send Message</a></p>
-        </div>
+        </section>
       </div>
     </div>
   );

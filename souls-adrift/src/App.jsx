@@ -1,6 +1,8 @@
 import { lazy } from "solid-js";
 import { Routes, Route } from "solid-app-router";
 
+import InfoModal from "./game-client/modals/InfoModal.jsx"
+
 const CharacterScreen = lazy(() => import("./game-client/pages/CharacterScreen.jsx"))
 const LocationScreen = lazy(() => import("./game-client/pages/LocationScreen.jsx"))
 const LoginScreen = lazy(() => import("./game-client/pages/LoginScreen.jsx"))
@@ -17,6 +19,7 @@ function App() {
         <Route path="/npc" element={<NpcScreen />} />
         <Route path="/register" element={<RegisterScreen />} />
       </Routes>
+      <InfoModal/>
     </>
   );
 }
