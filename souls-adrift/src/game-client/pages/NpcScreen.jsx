@@ -4,6 +4,8 @@ import styles from "../../App.module.css";
 
 import { infoModalController } from "../modals/InfoModalController.js"
 
+import { buy, sell } from "../../game-engine/GameActions";
+
 function NpcScreen() {
   return (
     <div id={styles['npc-screen']} class={[styles['main-screen'], styles['page']].join(' ')}>
@@ -31,12 +33,12 @@ function NpcScreen() {
           Buy
         </div>
         <div>
-          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 15)}>Leather gloves</a> (2) — <Link href="/buy">buy</Link> — £27</div>
+          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 15)}>Leather gloves</a> (2) — <a href="#" onclick={() => buy(4)}>buy</a> — £27</div>
         </div>
         <div class={styles['divider']}>
-          Sell 
+          Sell
         </div>
-          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 15)}>Leather gloves</a> — <Link href="/sell">sell</Link> — £20</div>
+        <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 15)}>Leather gloves</a> — <a href="#" onclick={() => sell(4)}>sell</a> — £20</div>
         <div>
         </div>
       </div>

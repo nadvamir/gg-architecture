@@ -2,12 +2,10 @@ import { Link } from "solid-app-router";
 
 import styles from "../../App.module.css";
 
-import { GameEngine } from '../../game-engine/GameEngine.js'
-import { GossipGraph } from '../../gossip-graph/GossipGraph.js'
 import { infoModalController } from "../modals/InfoModalController";
+import { gameEngine } from "../../game-engine/GameAssembly";
+import { attack, pickUp, goTo } from "../../game-engine/GameActions";
 
-let gossipGraph = new GossipGraph(42, 10, 100)
-let gameEngine = new GameEngine(gossipGraph)
 let state = gameEngine.getState()
 let interactionState = gameEngine.getInteractionState()
 
@@ -39,24 +37,24 @@ function LocationScreen() {
           Fight
         </div>
         <section>
-          <div class={styles['item']}>Mouse 50% — <Link href="/attack/:sailor">attack</Link> (20%)</div>
+          <div class={styles['item']}>Mouse 50% — <a href="#" onclick={() => attack(4)}>attack</a> (20%)</div>
         </section>
         <div class={styles['divider']}>
           Location
         </div>
         <section>
-          <div class={styles['item']}>[1] <a href="#" onclick={() => infoModalController.showInfo('player', 15)}>Leet Hax0r</a> 90% — <Link href="/attack/:sailor">attack</Link> — fighting Rat</div>
-          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('npc', 15)}>Sailor Jerry</a> — <Link href="/npc">talk</Link> — <Link href="/attack/:sailor">attack</Link></div>
-          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('npc', 15)}>Rat</a> 73% — <Link href="/attack/:sailor">attack</Link> — fighting Leet Hax0r</div>
-          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 15)}>Rotten fishing net</a> — <Link href="/attack/:sailor">pick up</Link></div>
+          <div class={styles['item']}>[1] <a href="#" onclick={() => infoModalController.showInfo('player', 15)}>Leet Hax0r</a> 90% — <a href="#" onclick={() => attack(1)}>attack</a> — fighting Rat</div>
+          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('npc', 15)}>Sailor Jerry</a> — <Link href="/npc">talk</Link> — <a href="#" onclick={() => attack(2)}>attack</a></div>
+          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('npc', 15)}>Rat</a> 73% — <a href="#" onclick={() => attack(3)}>attack</a> — fighting Leet Hax0r</div>
+          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 15)}>Rotten fishing net</a> — <a href="#" onclick={() => pickUp(5)}>pick up</a></div>
         </section>
         <div class={styles['divider']}>
           Direction
         </div>
         <section>
-          <div class={styles['item']}><Link href="/go/:north">Main street</Link>&nbsp;!</div>
-          <div class={styles['item']}><Link href="/go/:south">Towards a sunken boat</Link></div>
-          <div class={styles['item']}><Link href="/go/:south">Fourth wall library</Link>&nbsp;!</div>
+          <div class={styles['item']}><a href="#" onclick={() => goTo(10)}>Main street</a>&nbsp;!</div>
+          <div class={styles['item']}><a href="#" onclick={() => goTo(11)}>Towards a sunken boat</a></div>
+          <div class={styles['item']}><a href="#" onclick={() => goTo(12)}>Fourth wall library</a>&nbsp;!</div>
           <div class={styles['item']}>Old house (locked)</div>
         </section>
         <div class={styles['divider']}>

@@ -4,6 +4,8 @@ import styles from "../../App.module.css";
 
 import { infoModalController } from "../modals/InfoModalController.js"
 
+import { equip, unequip, use, drop } from "../../game-engine/GameActions";
+
 function CharacterScreen() {
   return (
     <div id={styles['character-screen']} class={[styles['main-screen'], styles['page']].join(' ')}>
@@ -40,18 +42,19 @@ function CharacterScreen() {
           <div class={styles['item']}>Sabre: 0</div>
         </div>
         <div class={styles['divider']}>
-          Equipped 
+          Equipped
         </div>
-          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 12)}>Leather gloves</a> — <Link href="/attack/:sailor">unequip</Link> — <Link href="/attack/:sailor">drop</Link></div>
+        <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 12)}>Leather gloves</a> — <a href="#" onclick={() => unequip(4)}>unequip</a> — <a href="#" onclick={() => drop(4)}>drop</a></div>
         <div>
         </div>
         <div class={styles['divider']}>
           Items
         </div>
         <div>
-          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 10)}>Shank</a> — <Link href="/attack/:sailor">equip</Link> — <Link href="/attack/:sailor">drop</Link></div>
-          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 10)}>Officer's sabre</a> — equip — <Link href="/attack/:sailor">drop</Link></div>
-          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 11)}>Coin</a> (25) — <Link href="/attack/:sailor">drop</Link></div>
+          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 10)}>Shank</a> — <a href="#" onclick={() => equip(4)}>equip</a> — <a href="#" onclick={() => drop(4)}>drop</a></div>
+          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 10)}>Officer's sabre</a> — equip — <a href="#" onclick={() => drop(4)}>drop</a></div>
+          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 10)}>Health potion</a> — <a href="#" onclick={() => use(4)}>consume</a></div>
+          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 11)}>Coin</a> (25) — <a href="#" onclick={() => drop(4)}>drop</a></div>
         </div>
       </div>
     </div>

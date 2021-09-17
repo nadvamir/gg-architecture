@@ -1,3 +1,7 @@
+body {
+  background-color: #ececec;
+}
+
 .App, #login-screen {
   text-align: center;
 }
@@ -9,6 +13,7 @@
 }
 
 .main-screen, .App {
+  background-color: white;
   color: #282c34;
   min-height: 98vh;
   flex-direction: column;
@@ -32,6 +37,10 @@
 a {
   color: #2600ff;
   /* text-decoration: none; */
+}
+
+.sending a {
+  color: #282c34;
 }
 
 section {
