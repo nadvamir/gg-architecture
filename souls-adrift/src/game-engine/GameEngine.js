@@ -1,6 +1,7 @@
-import { MessageType } from '../gossip-graph/MessageType.js'
-
 import { createStore } from 'solid-js/store';
+
+import { MessageType } from '../gossip-graph/MessageType.js'
+import { Player } from './Player.js'
 
 class GameEngine {
     constructor(gossipGraph) {
@@ -24,7 +25,7 @@ class GameEngine {
         // Used to serialise UI commands
         this.nextHash = null
 
-        setTimeout(_ => this.loadGameState(), 1000)
+        setTimeout(_ => this.loadGameState(), 300)
     }
 
     send(message) {
@@ -227,7 +228,7 @@ class GameEngine {
                     'mid_dmg': 4,
                     'max_dmg': 7,
                     'skills': {
-                        'dex': 1,
+                        'dexterity': 1,
                         'sabre': 1
                     }
                 },
@@ -293,6 +294,13 @@ class GameEngine {
             this.setState(newState)
             setTimeout(_ => this.recoverHealth(), 1000)
         }
+    }
+
+    // ----------------- Accessors -----------------
+    get(id) {
+        if (id < 1000000) return {} // npc
+        else if (id < 2000000) return {} // item
+        else return new Player(this.state.players[id])
     }
 }
 
