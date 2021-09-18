@@ -3,6 +3,7 @@ import { Link } from "solid-app-router";
 import styles from "../../App.module.css";
 
 import { infoModalController } from "../modals/InfoModalController.js"
+import StatusBar from "../items/StatusBar.jsx"
 
 import { buy, sell } from "../../game-engine/GameActions";
 
@@ -11,11 +12,7 @@ function NpcScreen() {
     <div id={styles['npc-screen']} class={[styles['main-screen'], styles['page']].join(' ')}>
       <div class={styles['content']}>
         <header>
-          <div class={styles['status-bar']}>
-            ❤ 20/20
-            — <Link href="/location">Location</Link>
-            &nbsp;— <Link href="/">Sign Out</Link>
-          </div>
+          <StatusBar/>
           <h1>Sailor Jerry</h1>
           <div class={styles['location-info']}>
             Hey, what brings you here?

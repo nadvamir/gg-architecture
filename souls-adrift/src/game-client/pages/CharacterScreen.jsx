@@ -3,19 +3,19 @@ import { Link } from "solid-app-router";
 import styles from "../../App.module.css";
 
 import { infoModalController } from "../modals/InfoModalController.js"
+import StatusBar from "../items/StatusBar.jsx"
 
+import { gameEngine } from "../../game-engine/GameAssembly";
 import { equip, unequip, use, drop } from "../../game-engine/GameActions";
+
+let state = gameEngine.getState()
 
 function CharacterScreen() {
   return (
     <div id={styles['character-screen']} class={[styles['main-screen'], styles['page']].join(' ')}>
       <div class={styles['content']}>
         <header>
-          <div class={styles['status-bar']}>
-            ❤ 20/20
-            — <Link href="/location">Location</Link>
-            &nbsp;— <Link href="/">Sign Out</Link>
-          </div>
+          <StatusBar/>
           <h1>[1] __Blind_Augur__</h1>
           <div>
             Chapter 1: Soul Stranded

@@ -1,6 +1,7 @@
 import { Link } from "solid-app-router";
 
 import styles from "../../App.module.css";
+import StatusBar from "../items/LocationStatusBar.jsx"
 
 import { infoModalController } from "../modals/InfoModalController";
 import { gameEngine } from "../../game-engine/GameAssembly";
@@ -14,11 +15,7 @@ function LocationScreen() {
     <div id={styles['location-screen']} class={[styles['main-screen'], styles['page']].join(' ')}>
       <div class={styles['content']}>
         <header>
-          <div class={styles['status-bar']}>
-            ❤ 20/20
-            — <Link href="/character">Character</Link>
-            &nbsp;— <Link href="/">Sign Out</Link>
-          </div>
+          <StatusBar/>
           <h1>Forlorn Quay</h1>
           <div class={styles['location-info']}>
             The wind blows freely over the empty quay. Rotten fishing nets lie here and there.
@@ -72,6 +69,9 @@ function LocationScreen() {
           <p>Sending: {interactionState.sending ? 'Yes' : 'No'}</p>
           <p><a class={styles.link} href="#" onClick={() => interactionState.sending || gameEngine.send(Math.random().toString())}>Send Message</a></p>
         </section>
+      </div>
+      <div class={state.uid ? styles['hidden'] : styles['game-loading']}>
+        <h1>Loading...</h1>
       </div>
     </div>
   );
