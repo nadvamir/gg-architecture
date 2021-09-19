@@ -3,7 +3,7 @@ import { Link } from "solid-app-router";
 import styles from "../../App.module.css";
 
 import { infoModalController } from "../modals/InfoModalController.js"
-import StatusBar from "../items/StatusBar.jsx"
+import { StatusBar } from "../items/StatusBar.jsx"
 
 import { gameEngine } from "../../game-engine/GameAssembly";
 import { equip, unequip, use, drop } from "../../game-engine/GameActions";

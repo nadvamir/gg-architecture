@@ -1,7 +1,7 @@
 import { Link } from "solid-app-router";
 
 import styles from "../../App.module.css";
-import StatusBar from "../items/LocationStatusBar.jsx"
+import { LocationStatusBar } from "../items/StatusBar.jsx"
 
 import { infoModalController } from "../modals/InfoModalController";
 import { gameEngine } from "../../game-engine/GameAssembly";
@@ -17,7 +17,7 @@ function LocationScreen() {
         <Match when={!!state.uid}>
           <div class={styles['content']}>
             <header>
-              <StatusBar />
+              <LocationStatusBar />
               <h1>Forlorn Quay</h1>
               <div class={styles['location-info']}>
                 The wind blows freely over the empty quay. Rotten fishing nets lie here and there.
