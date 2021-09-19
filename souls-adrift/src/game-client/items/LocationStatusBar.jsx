@@ -9,10 +9,13 @@ function StatusBar() {
     function hp() {
         return gameEngine.get(state.uid).hp()
     }
+    function maxHp() {
+        return gameEngine.get(state.uid).maxHp()
+    }
 
     return (
         <div class={styles['status-bar']}>
-            ❤ {hp()}/20
+            ❤ {hp()}/{maxHp()}
         — <Link href="/character">Character</Link>
         &nbsp;— <Link href="/">Sign Out</Link>
         </div>
