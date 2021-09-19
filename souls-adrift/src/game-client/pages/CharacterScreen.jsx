@@ -8,9 +8,10 @@ import { StatusBar } from "../items/StatusBar.jsx"
 import { gameEngine } from "../../game-engine/GameAssembly";
 import { equip, unequip, use, drop } from "../../game-engine/GameActions";
 
-let state = gameEngine.getState()
-
 function CharacterScreen() {
+  const state = gameEngine.getState()
+  const player = gameEngine.get(state.uid)
+
   return (
     <div id={styles['character-screen']} class={[styles['main-screen'], styles['page']].join(' ')}>
       <div class={styles['content']}>
@@ -28,18 +29,18 @@ function CharacterScreen() {
           Character
         </div>
         <div>
-          <div class={styles['item']}>Experiece: 100/240</div>
-          <div class={styles['item']}>Skill points: 1</div>
-          <div class={styles['item']}>Damage: 2–8</div>
-          <div class={styles['item']}>Armour: 1</div>
+          <div class={styles['item']}>Experiece: {player.exp()}/{player.maxExp()}</div>
+          <div class={styles['item']}>Skill points: {player.skillPoints()}</div>
+          <div class={styles['item']}>Damage: {player.minDmg()}–{player.maxDmg()}</div>
+          <div class={styles['item']}>Armour: {player.armour()}</div>
         </div>
         <div class={styles['divider']}>
           Skills
         </div>
         <div>
-          <div class={styles['item']}>Strength: 3</div>
-          <div class={styles['item']}>Dexterity: 2</div>
-          <div class={styles['item']}>Sabre: 0</div>
+          {Object.entries(player.skills()).map(([k, v]) => {
+            return <div class={styles['item']}>{k[0].toUpperCase() + k.slice(1)}: {v}</div>
+          })}
         </div>
         <div class={styles['divider']}>
           Equipped

@@ -292,7 +292,7 @@ class GameEngine {
         if (id < 1000000) return {} // location
         else if (id < 2000000) return {} // npc
         else if (id < 3000000) return {} // item
-        else return new Player(this.state[id])
+        else return new Player(this.state[id], this)
     }
 }
 

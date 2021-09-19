@@ -7,10 +7,11 @@ import { infoModalController } from "../modals/InfoModalController";
 import { gameEngine } from "../../game-engine/GameAssembly";
 import { attack, pickUp, goTo } from "../../game-engine/GameActions";
 
-let state = gameEngine.getState()
-let interactionState = gameEngine.getInteractionState()
-
 function LocationScreen() {
+  const state = gameEngine.getState()
+  const interactionState = gameEngine.getInteractionState()
+  const player = gameEngine.get(state.uid)
+
   return (
     <div id={styles['location-screen']} class={[styles['main-screen'], styles['page']].join(' ')}>
       <Switch>

@@ -13,12 +13,13 @@ function LinkCharacter() {
 }
 
 function StatusBarBase(link) {
-    let state = gameEngine.getState()
+    const state = gameEngine.getState()
+    const player = gameEngine.get(state.uid)
     function hp() {
-        return gameEngine.get(state.uid).hp()
+        return player.hp()
     }
     function maxHp() {
-        return gameEngine.get(state.uid).maxHp()
+        return player.maxHp()
     }
 
     return (
