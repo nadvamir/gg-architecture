@@ -8,6 +8,24 @@ import { StatusBar } from "../items/StatusBar.jsx"
 import { gameEngine } from "../../game-engine/GameAssembly";
 import { equip, unequip, use, drop } from "../../game-engine/GameActions";
 
+function EquipItemLink(props) {
+  const item = props.item
+  if (!item.isEquippable()) return (<></>)
+  if (!item.canEquip(props.skills)) return (<> — equip</>)
+  return (<> —  <a href="#" onclick={() => equip(item.id)}>equip</a></>)
+}
+
+function ConsumeItemLink(props) {
+  const item = props.item
+  if (!item.isConsumable()) return (<></>)
+  return (<> —  <a href="#" onclick={() => use(item.id)}>consume</a></>)
+}
+
+function ItemCountIndicator(props) {
+  if (props.count == 1) return (<></>)
+  return (<> ({props.count})</>)
+}
+
 function CharacterScreen() {
   const state = gameEngine.getState()
   const player = gameEngine.get(state.uid)
@@ -45,17 +63,24 @@ function CharacterScreen() {
         <div class={styles['divider']}>
           Equipped
         </div>
-        <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 12)}>Leather gloves</a> — <a href="#" onclick={() => unequip(4)}>unequip</a> — <a href="#" onclick={() => drop(4)}>drop</a></div>
         <div>
+          {player.equipment().map(item => {
+            return <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', item.id)}>{item.name()}</a> — <a href="#" onclick={() => unequip(item.id)}>unequip</a> — <a href="#" onclick={() => drop(item.id)}>drop</a></div>
+          })}
         </div>
         <div class={styles['divider']}>
           Items
         </div>
         <div>
-          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 10)}>Shank</a> — <a href="#" onclick={() => equip(4)}>equip</a> — <a href="#" onclick={() => drop(4)}>drop</a></div>
-          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 10)}>Officer's sabre</a> — equip — <a href="#" onclick={() => drop(4)}>drop</a></div>
-          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 10)}>Health potion</a> — <a href="#" onclick={() => use(4)}>consume</a></div>
-          <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', 11)}>Coin</a> (25) — <a href="#" onclick={() => drop(4)}>drop</a></div>
+          {player.inventory().map(([item, count]) => {
+            return <div class={styles['item']}>
+              <a href="#" onclick={() => infoModalController.showInfo('item', item.id)}>{item.name()}</a>
+              <EquipItemLink item={item} skills={player.skills()} />
+              <ConsumeItemLink item={item} />
+              &nbsp;— <a href="#" onclick={() => drop(item.id)}>drop</a>
+              <ItemCountIndicator count={count} />
+            </div>
+          })}
         </div>
       </div>
     </div>

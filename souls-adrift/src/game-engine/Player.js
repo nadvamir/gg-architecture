@@ -1,5 +1,8 @@
+import { Item } from "./Item"
+
 class Player {
-    constructor(state, gameEngine) {
+    constructor(id, state, gameEngine) {
+        this.id = id
         this.state = state
         this.gameEngine = gameEngine
     }
@@ -44,6 +47,20 @@ class Player {
 
     skills() {
         return this.state.skills
+    }
+
+    equipment() {
+        return this.state.equipment.map(id => this.gameEngine.get(id))
+    }
+
+    inventory(excludeEquipped = true) {
+        const inv = []
+        for (const id of Object.keys(this.state.inventory)) {
+            if (!excludeEquipped || this.state.equipment.find(e => e == id) === undefined) {
+                inv.push([this.gameEngine.get(id), this.state.inventory[id]])
+            }
+        }
+        return inv
     }
 }
 

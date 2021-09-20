@@ -2,6 +2,7 @@ import { createStore, produce } from 'solid-js/store';
 
 import { MessageType } from '../gossip-graph/MessageType.js'
 import { Player } from './Player.js'
+import { Item } from './Item.js'
 
 class GameEngine {
     constructor(gossipGraph) {
@@ -68,7 +69,7 @@ class GameEngine {
                     'strength': 3,
                     'constitution': 3,
                     'dexterity': 2,
-                    'sabre': 1
+                    'sabre': 0
                 },
                 // list of equipped ids
                 'equipment': [2000001, 2000002],
@@ -231,7 +232,7 @@ class GameEngine {
                 'name': 'Leather gloves',
                 'value': 10,
                 'type': 'gloves',
-                'armor': 1
+                'armour': 1
             },
             2000003: {
                 'name': 'Rusty shank',
@@ -255,7 +256,7 @@ class GameEngine {
                 'name': 'Leather boots',
                 'value': 15,
                 'type': 'boots',
-                'armor': 2
+                'armour': 2
             },
             2000007: {
                 'name': 'Rusty key',
@@ -278,7 +279,7 @@ class GameEngine {
     }
 
     recoverHealth() {
-        const player = new Player(this.state[this.state.uid])
+        const player = this.get(this.state.uid)
         if (player.hp() < player.maxHp()) {
             this.setState(this.state.uid, produce(player => {
                 player.stats.hp += 1
@@ -291,8 +292,8 @@ class GameEngine {
     get(id) {
         if (id < 1000000) return {} // location
         else if (id < 2000000) return {} // npc
-        else if (id < 3000000) return {} // item
-        else return new Player(this.state[id], this)
+        else if (id < 3000000) return new Item(id, this.state[id], this)
+        else return new Player(id, this.state[id], this)
     }
 }
 
