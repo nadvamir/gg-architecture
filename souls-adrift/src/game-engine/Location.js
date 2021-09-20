@@ -17,16 +17,17 @@ class Location {
         let baseMoves = this.state.moves.map(m => [this.gameEngine.get(m), true])
         let gated = this.state.gated_moves || {}
         for (const id of Object.keys(gated)) {
-            baseMoves.push([this.gameEngine.get(id), player.hasItem(gated[s])])
+            baseMoves.push([this.gameEngine.get(id), player.hasItem(gated[id])])
         }
+        return baseMoves
     }
 
     noisy() {
-        return !!this.state.actors && this.state.actors.length > 0
+        return this.actors().filter(a => a.constructor.name != 'Item').length > 0
     }
 
     actors() {
-        return this.state.actors.map(a => this.gameEngine.get(a)).sort((l, r) => { return l.id - r.id})
+        return this.state.actors.map(a => this.gameEngine.get(a)).sort((l, r) => { return l.id - r.id })
     }
 }
 

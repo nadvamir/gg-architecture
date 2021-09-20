@@ -101,30 +101,47 @@ function LocationSection(props) {
     <>
       <div class={styles['divider']}>Location</div>
       <section>
-        {actors.map(actor => { return (<div class={styles['item']}>
-          <LevelIndicator actor={actor} />
-          <InfoModalLink actor={actor} />
-          <HpPercentStatus actor={actor} />
-          <TalkLink actor={actor} />
-          <AttackLink actor={actor} />
-          <PickUpLink actor={actor} />
-          <FightingStatus actor={actor} />
-        </div>)})}
+        {actors.map(actor => {
+          return (<div class={styles['item']}>
+            <LevelIndicator actor={actor} />
+            <InfoModalLink actor={actor} />
+            <HpPercentStatus actor={actor} />
+            <TalkLink actor={actor} />
+            <AttackLink actor={actor} />
+            <PickUpLink actor={actor} />
+            <FightingStatus actor={actor} />
+          </div>)
+        })}
       </section>
     </>
   )
 }
 
-function DirectionSection(props) {
+function LocationItem(props) {
+  const loc = props.location
+  if (props.accessible) {
+    return (<div class={styles['item']}>
+      <a onclick={() => goTo(loc.id)}>{loc.name()}</a>
+      {loc.noisy() ? ' !' : ''}
+    </div>)
+  }
+  else {
+    return (<div class={styles['item']}>
+      {loc.name()} (locked)
+      {loc.noisy() ? ' !' : ''}
+    </div>)
+  }
+}
 
+function DirectionSection(props) {
+  const moves = props.location.moves(props.player)
   return (
     <>
       <div class={styles['divider']}>Direction</div>
       <section>
-        <div class={styles['item']}><a href="#" onclick={() => goTo(10)}>Main street</a>&nbsp;!</div>
-        <div class={styles['item']}><a href="#" onclick={() => goTo(11)}>Towards a sunken boat</a></div>
-        <div class={styles['item']}><a href="#" onclick={() => goTo(12)}>Fourth wall library</a>&nbsp;!</div>
-        <div class={styles['item']}>Old house (locked)</div>
+        {moves.map(([loc, accessible]) => {
+          return (<LocationItem location={loc} accessible={accessible} />)
+        })}
       </section>
     </>
   )
@@ -146,7 +163,7 @@ function LocationScreenImpl() {
       <EventsSection location={location} />
       <BattleSection player={player} />
       <LocationSection player={player} location={location} />
-      <DirectionSection location={location} />
+      <DirectionSection player={player} location={location} />
       <div class={styles['divider']}>Speak</div>
       <div id={styles['message-box']}>
         <textarea rows='3'></textarea>
