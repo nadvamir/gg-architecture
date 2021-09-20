@@ -24,8 +24,7 @@ function StatusBarBase(link) {
 
     return (
         <div class={styles['status-bar']}>
-            ❤ {hp()}/{maxHp()}
-            — {link()}
+            ❤ {hp()}/{maxHp()} — {link()}
             &nbsp;— <Link href="/">Sign Out</Link>
         </div>
     )

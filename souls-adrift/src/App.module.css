@@ -36,7 +36,8 @@ body {
 
 a {
   color: #2600ff;
-  /* text-decoration: none; */
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .sending a {

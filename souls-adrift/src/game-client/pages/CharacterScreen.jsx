@@ -2,29 +2,17 @@ import { Link } from "solid-app-router";
 
 import styles from "../../App.module.css";
 
-import { infoModalController } from "../modals/InfoModalController.js"
 import { StatusBar } from "../items/StatusBar.jsx"
+import {
+  ItemInfoLink,
+  EquipItemLink,
+  UnequipItemLink,
+  ConsumeItemLink,
+  DropItemLink,
+  ItemCountIndicator
+} from "../items/ItemWidgets.jsx"
 
 import { gameEngine } from "../../game-engine/GameAssembly";
-import { equip, unequip, use, drop } from "../../game-engine/GameActions";
-
-function EquipItemLink(props) {
-  const item = props.item
-  if (!item.isEquippable()) return (<></>)
-  if (!item.canEquip(props.skills)) return (<> — equip</>)
-  return (<> —  <a href="#" onclick={() => equip(item.id)}>equip</a></>)
-}
-
-function ConsumeItemLink(props) {
-  const item = props.item
-  if (!item.isConsumable()) return (<></>)
-  return (<> —  <a href="#" onclick={() => use(item.id)}>consume</a></>)
-}
-
-function ItemCountIndicator(props) {
-  if (props.count == 1) return (<></>)
-  return (<> ({props.count})</>)
-}
 
 function CharacterScreen() {
   const state = gameEngine.getState()
@@ -34,7 +22,7 @@ function CharacterScreen() {
     <div id={styles['character-screen']} class={[styles['main-screen'], styles['page']].join(' ')}>
       <div class={styles['content']}>
         <header>
-          <StatusBar/>
+          <StatusBar />
           <h1>[1] __Blind_Augur__</h1>
           <div>
             Chapter 1: Soul Stranded
@@ -65,7 +53,11 @@ function CharacterScreen() {
         </div>
         <div>
           {player.equipment().map(item => {
-            return <div class={styles['item']}><a href="#" onclick={() => infoModalController.showInfo('item', item.id)}>{item.name()}</a> — <a href="#" onclick={() => unequip(item.id)}>unequip</a> — <a href="#" onclick={() => drop(item.id)}>drop</a></div>
+            return <div class={styles['item']}>
+              <ItemInfoLink item={item} />
+              <UnequipItemLink item={item} />
+              <DropItemLink item={item} />
+            </div>
           })}
         </div>
         <div class={styles['divider']}>
@@ -74,10 +66,10 @@ function CharacterScreen() {
         <div>
           {player.inventory().map(([item, count]) => {
             return <div class={styles['item']}>
-              <a href="#" onclick={() => infoModalController.showInfo('item', item.id)}>{item.name()}</a>
+              <ItemInfoLink item={item} />
               <EquipItemLink item={item} skills={player.skills()} />
               <ConsumeItemLink item={item} />
-              &nbsp;— <a href="#" onclick={() => drop(item.id)}>drop</a>
+              <DropItemLink item={item} />
               <ItemCountIndicator count={count} />
             </div>
           })}
