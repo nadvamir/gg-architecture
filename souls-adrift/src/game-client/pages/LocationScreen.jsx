@@ -59,16 +59,14 @@ function LevelIndicator(props) {
 }
 
 function EventsSection(props) {
+  const messages = props.messages
   return (
-    <>
+    <div class={messages.length == 0 ? styles['hidden'] : ''}>
       <div class={styles['divider']}>Events</div>
       <section class={styles['location-info']}>
-        <div>Rat dealt Leet Hax0r <b>2</b> damage.</div>
-        <div>Leet Hax0r missed.</div>
-        <div>Sailor Jerry entered.</div>
-        <div>Sailor John left.</div>
+        {messages.map(([d, m]) => { return (<div>{d.toLocaleTimeString()} — {m}</div>) })}
       </section>
-    </>
+    </div>
   )
 }
 
@@ -149,7 +147,6 @@ function DirectionSection(props) {
 
 function LocationScreenImpl() {
   const state = gameEngine.getState()
-  const interactionState = gameEngine.getInteractionState()
   const player = gameEngine.get(state.uid)
   const location = player.location()
 
@@ -160,7 +157,7 @@ function LocationScreenImpl() {
         <h1>{location.name()}</h1>
         <div class={styles['location-info']}>{location.description()}</div>
       </header>
-      <EventsSection location={location} />
+      <EventsSection messages={state.messages} location={location} />
       <BattleSection player={player} />
       <LocationSection player={player} location={location} />
       <DirectionSection player={player} location={location} />
@@ -169,12 +166,6 @@ function LocationScreenImpl() {
         <textarea rows='3'></textarea>
         <button>➳</button>
       </div>
-      <div class={styles['divider']}>Temp</div>
-      <section class={styles.header}>
-        {state.messages.map(m => { return (<p>{m}</p>) })}
-        <p>Sending: {interactionState.sending ? 'Yes' : 'No'}</p>
-        <p><a class={styles.link} href="#" onClick={() => interactionState.sending || gameEngine.send(Math.random().toString())}>Send Message</a></p>
-      </section>
     </div>
   );
 }

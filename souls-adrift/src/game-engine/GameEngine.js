@@ -39,9 +39,9 @@ class GameEngine {
 
     onMessageReceived(sender, type, message, hash) {
         const res = sender + ': ' + message + ' (' + hash + ')'
-        const messages = this.state.messages.slice()
-        messages.push(res)
-        this.setState({ messages: messages })
+        this.setState('messages', produce(messages => {
+            messages.push([new Date(), res])
+        }))
         if (hash == this.nextHash) {
             console.log('Received')
             this.setInteractionState({ sending: false })
