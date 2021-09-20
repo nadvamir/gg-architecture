@@ -2,7 +2,9 @@ import { createStore, produce } from 'solid-js/store';
 
 import { MessageType } from '../gossip-graph/MessageType.js'
 import { Player } from './Player.js'
+import { Npc } from './Npc.js'
 import { Item } from './Item.js'
+import { Location } from './Location.js'
 
 class GameEngine {
     constructor(gossipGraph) {
@@ -59,6 +61,7 @@ class GameEngine {
             uid: 3000001,
             3000001: {
                 'name': '__Blind_Augur__',
+                'type': 'player',
                 'stats': {
                     'hp': 10,
                     'lvl': 1,
@@ -91,6 +94,7 @@ class GameEngine {
             },
             3000002: {
                 'name': 'L33t Hax0r',
+                'type': 'player',
                 'stats': {
                     'hp': 18,
                     'lvl': 1,
@@ -119,6 +123,7 @@ class GameEngine {
             },
             1000001: {
                 'name': 'Sailor Jerry',
+                'type': 'npc.talk',
                 'stats': {
                     'hp': 40,
                     'lvl': 5,
@@ -153,6 +158,7 @@ class GameEngine {
             },
             1000002: {
                 'name': 'Rat',
+                'type': 'npc.aggro',
                 'stats': {
                     'hp': 10,
                     'lvl': 1,
@@ -175,6 +181,7 @@ class GameEngine {
             },
             1000003: {
                 'name': 'Mouse',
+                'type': 'npc.chill',
                 'stats': {
                     'hp': 7,
                     'lvl': 1,
@@ -197,6 +204,7 @@ class GameEngine {
             },
             1000004: {
                 'name': 'Rat',
+                'type': 'npc.aggro',
                 'stats': {
                     'hp': 10,
                     'lvl': 1,
@@ -272,6 +280,30 @@ class GameEngine {
                     5: 2000007
                 },
                 'actors': [3000001, 3000002, 2000003, 1000001, 1000002, 1000003, 1000004]
+            },
+            2: {
+                'name': 'Main Street',
+                'desc': 'Nothing special.',
+                'moves': [1],
+                'actors': [3000001]
+            },
+            3: {
+                'name': 'Near Sunken Boat',
+                'desc': 'The boat is still visible on the bottom of the sea.',
+                'moves': [1],
+                'actors': [2000007]
+            },
+            4: {
+                'name': 'Fourth Wall Libarary',
+                'desc': 'This is where to find all the game info.',
+                'moves': [1],
+                'actors': []
+            },
+            5: {
+                'name': 'Old house',
+                'desc': 'The ceiling is about to fall.',
+                'moves': [1],
+                'actors': [1000001]
             }
         })
 
@@ -290,8 +322,8 @@ class GameEngine {
 
     // ----------------- Accessors -----------------
     get(id) {
-        if (id < 1000000) return {} // location
-        else if (id < 2000000) return {} // npc
+        if (id < 1000000) return new Location(id, this.state[id], this)
+        else if (id < 2000000) return new Npc(id, this.state[id], this)
         else if (id < 3000000) return new Item(id, this.state[id], this)
         else return new Player(id, this.state[id], this)
     }

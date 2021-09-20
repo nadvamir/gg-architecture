@@ -3,8 +3,8 @@ import { Link } from "solid-app-router";
 import styles from "../../App.module.css";
 
 import { StatusBar } from "../items/StatusBar.jsx"
+import { InfoModalLink } from "../items/InfoModalLink.jsx"
 import {
-  ItemInfoLink,
   EquipItemLink,
   UnequipItemLink,
   ConsumeItemLink,
@@ -54,7 +54,7 @@ function CharacterScreen() {
         <div>
           {player.equipment().map(item => {
             return <div class={styles['item']}>
-              <ItemInfoLink item={item} />
+              <InfoModalLink actor={item} />
               <UnequipItemLink item={item} />
               <DropItemLink item={item} />
             </div>
@@ -66,11 +66,11 @@ function CharacterScreen() {
         <div>
           {player.inventory().map(([item, count]) => {
             return <div class={styles['item']}>
-              <ItemInfoLink item={item} />
+              <InfoModalLink actor={item} />
+              <ItemCountIndicator count={count} />
               <EquipItemLink item={item} skills={player.skills()} />
               <ConsumeItemLink item={item} />
               <DropItemLink item={item} />
-              <ItemCountIndicator count={count} />
             </div>
           })}
         </div>
