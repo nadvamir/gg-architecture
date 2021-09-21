@@ -1,4 +1,4 @@
-import { equip, unequip, use, drop } from "../../game-engine/GameActions";
+import { equip, unequip, use, drop, buy, sell } from "../../game-engine/GameActions";
 
 function EquipItemLink(props) {
     const item = props.item
@@ -28,10 +28,27 @@ function ItemCountIndicator(props) {
     return (<> ({props.count})</>)
 }
 
+function ItemCostIndicator(props) {
+    return (<> — £{props.cost}</>)
+}
+
+function BuyItemLink(props) {
+    if (!props.player.canAfford(props.cost)) return (<> — buy</>)
+    return (<> — <a onclick={() => buy(props.item.id)}>buy</a></>)
+}
+
+function SellItemLink(props) {
+    if (!props.npc.canAfford(props.cost)) return (<> — sell</>)
+    return (<> — <a onclick={() => sell(props.item.id)}>sell</a></>)
+}
+
 export {
     EquipItemLink,
     UnequipItemLink,
     ConsumeItemLink,
     DropItemLink,
-    ItemCountIndicator
+    ItemCountIndicator,
+    ItemCostIndicator,
+    BuyItemLink,
+    SellItemLink
 }

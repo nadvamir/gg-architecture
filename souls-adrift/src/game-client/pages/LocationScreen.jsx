@@ -15,8 +15,7 @@ function Nbsp() {
 function TalkLink(props) {
   const actor = props.actor
   if (!actor.type || actor.type() != 'npc.talk') return ''
-  //TODO: make /npc link contain npc ID
-  return (<> — <Link href="/npc">talk</Link></>)
+  return (<> — <Link href={"/npc/" + actor.id}>talk</Link></>)
 }
 
 function AttackLink(props) {
@@ -41,7 +40,7 @@ function HpPercentStatus(props) {
 
 function AttackSuccessStatus(props) {
   // TODO: calculate real status
-  return (<><Nbsp />(%20)</>)
+  return (<><Nbsp />(20%)</>)
 }
 
 function FightingStatus(props) {
@@ -49,7 +48,7 @@ function FightingStatus(props) {
   if (!actor.battleTarget) return ''
   const target = actor.battleTarget()
   if (!target) return ''
-  return ' fighting ' + target.name()
+  return ' — fighting ' + target.name()
 }
 
 function LevelIndicator(props) {

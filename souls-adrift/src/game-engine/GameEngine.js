@@ -143,6 +143,7 @@ class GameEngine {
                 'inventory': {
                     2000001: 1,
                     2000002: 1,
+                    2000005: 100,
                     2000006: 3
                 },
                 'trade': {
@@ -322,10 +323,15 @@ class GameEngine {
 
     // ----------------- Accessors -----------------
     get(id) {
+        if (typeof id == 'string') id = parseInt(id, 10)
         if (id < 1000000) return new Location(id, this.state[id], this)
         else if (id < 2000000) return new Npc(id, this.state[id], this)
         else if (id < 3000000) return new Item(id, this.state[id], this)
         else return new Player(id, this.state[id], this)
+    }
+
+    moneyId() {
+        return 2000005
     }
 }
 

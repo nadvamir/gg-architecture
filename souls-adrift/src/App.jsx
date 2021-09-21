@@ -4,6 +4,8 @@ import { Routes, Route } from "solid-app-router";
 import InfoModal from "./game-client/modals/InfoModal.jsx"
 import styles from "./App.module.css";
 
+import NpcData from "./game-client/data/[npc].data.js"
+
 import { gameEngine } from "./game-engine/GameAssembly";
 
 let state = gameEngine.getState()
@@ -22,7 +24,7 @@ function App() {
         <Route path="/" element={<LoginScreen />} />
         <Route path="/location" element={<LocationScreen />} />
         <Route path="/character" element={<CharacterScreen />} />
-        <Route path="/npc" element={<NpcScreen />} />
+        <Route path="/npc/:id" element={<NpcScreen />} data={NpcData}/>
         <Route path="/register" element={<RegisterScreen />} />
       </Routes>
       <InfoModal/>

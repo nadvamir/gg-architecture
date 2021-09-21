@@ -45,7 +45,6 @@ class Item {
     canEquip(skills) {
         if (!this.isEquippable()) return false
         if (!this.state.skills) return true
-        console.log(this.state.skills)
         for (const s of Object.keys(this.state.skills)) {
             if (!skills[s] || skills[s] < this.state.skills[s]) return false
         }

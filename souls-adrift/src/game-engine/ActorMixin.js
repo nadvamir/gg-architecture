@@ -40,16 +40,29 @@ const ActorMixin = {
 
     inventory(excludeEquipped = true) {
         const inv = []
-        for (const id of Object.keys(this.state.inventory)) {
-            if (!excludeEquipped || this.state.equipment.find(e => e == id) === undefined) {
+        for (const sid of Object.keys(this.state.inventory)) {
+            const id = parseInt(sid, 10)
+            if (!excludeEquipped || this.state.equipment.indexOf(id) == -1) {
                 inv.push([this.gameEngine.get(id), this.state.inventory[id]])
             }
         }
         return inv
     },
 
-    hasItem(item) {
-        return item in this.state.inventory
+    itemCount(item) {
+        return this.state.inventory[item] || 0
+    },
+
+    moneyCount() {
+        return this.itemCount(this.gameEngine.moneyId())
+    },
+
+    hasItem(item, count=1) {
+        return this.itemCount(item) >= count
+    },
+
+    canAfford(cost) {
+        return this.hasItem(this.gameEngine.moneyId(), cost)
     },
 
     battleTarget() {
