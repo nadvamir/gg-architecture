@@ -1,6 +1,7 @@
 const NpcDefinitions = {
     'n.t.sailor.jerry': {
         'name': 'Sailor Jerry',
+        'desc': 'A man of unspecified age.',
         'type': 'npc.talk',
         'stats': {
             'hp': 40,

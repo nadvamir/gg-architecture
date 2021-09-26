@@ -19,8 +19,7 @@ class Npc {
     }
 
     description() {
-        //TODO: return a real description
-        return 'A man of unspecified age.'
+        return this.get('desc') || ''
     }
 
     forSale() {
