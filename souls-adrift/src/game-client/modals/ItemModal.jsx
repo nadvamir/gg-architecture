@@ -1,17 +1,22 @@
 import styles from "../../App.module.css";
 
-import { infoModalController } from "./InfoModalController.js"
+import { SkillList } from "../items/SkillList.jsx"
+import { capitalise, empty } from "../util/Util.js";
 
 function ItemModal(props) {
-  const item = props.item
+  const item = () => props.item
 
   return (
     <>
-      <h1>Shank {item.name()}</h1>
-      <p>{item.description()}</p>
+      <h1>{item().name()}</h1>
+      <p>{item().description()}</p>
       <div>
-        <div class={styles['item']}>Damage: 2–4</div>
-        <div class={styles['item']}>Skill: 1</div>
+        <div class={styles['item']}>{capitalise(item().type())}</div>
+        <div class={styles['item']}>Value: {item().value()}</div>
+        {item().maxDmg() > 0 ? <div class={styles['item']}>Damage: {item().minDmg()}–{item().maxDmg()}</div> : ''}
+        {item().armour() > 0 ? <div class={styles['item']}>Armour: {item().armour()}</div> : ''}
+        {item().health() > 0 ? <div class={styles['item']}>Health: {item().health()}</div> : ''}
+        {!empty(item().skills()) ? <><p>Requires:</p><SkillList skills={item().skills()} /></> : ''}
       </div>
     </>
   );

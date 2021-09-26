@@ -1,9 +1,8 @@
-import { Link } from "solid-app-router";
-
 import styles from "../../App.module.css";
 
 import { StatusBar } from "../items/StatusBar.jsx"
 import { InfoModalLink } from "../items/InfoModalLink.jsx"
+import { SkillList } from "../items/SkillList.jsx"
 import {
   EquipItemLink,
   UnequipItemLink,
@@ -43,11 +42,7 @@ function CharacterScreen() {
         <div class={styles['divider']}>
           Skills
         </div>
-        <div>
-          {Object.entries(player.skills()).map(([k, v]) => {
-            return <div class={styles['item']}>{k[0].toUpperCase() + k.slice(1)}: {v}</div>
-          })}
-        </div>
+        <SkillList skills={player.skills()} />
         <div class={styles['divider']}>
           Equipped
         </div>
