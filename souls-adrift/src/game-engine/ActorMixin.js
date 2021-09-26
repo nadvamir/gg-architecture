@@ -114,7 +114,6 @@ const ActorMixin = {
     attackSuccessChance(opponent) {
         const points = this.attackPoints()
         const opponentPoints = opponent.attackPoints()
-        console.log(points, opponentPoints)
         return Math.round(100 * points / (points + opponentPoints))
     }
 }
