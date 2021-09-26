@@ -11,6 +11,11 @@ class Npc {
         return this.state.type
     }
 
+    description() {
+        //TODO: return a real description
+        return 'A man of unspecified age.'
+    }
+
     forSale() {
         return this.inventory().filter(([item, _]) => this.state.trade.for_sale.indexOf(item.id) != -1)
     }
