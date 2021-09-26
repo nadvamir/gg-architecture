@@ -8,7 +8,7 @@ import PlayerModal from "./PlayerModal.jsx"
 import NpcModal from "./NpcModal.jsx"
 
 function InfoModal() {
-  const matches = (type) => infoModalController.state.item.type === type
+  const matches = (type) => infoModalController.state.actor.constructor.name === type
   return (
     <div class={infoModalController.state.open ? '' : styles.hidden}>
       <div class={styles['grey-overlay']} onClick={() => infoModalController.hide()}>
@@ -17,14 +17,14 @@ function InfoModal() {
         <div class={styles['content']}>
           <div id={styles['modal-close']} onClick={() => infoModalController.hide()}>×</div>
           <Switch>
-            <Match when={matches("player")}>
-              <PlayerModal/>
+            <Match when={matches("Player")}>
+              <PlayerModal player={infoModalController.state.actor}/>
             </Match>
-            <Match when={matches("item")}>
-              <ItemModal />
+            <Match when={matches("Item")}>
+              <ItemModal item={infoModalController.state.actor}/>
             </Match>
-            <Match when={matches("npc")}>
-              <NpcModal />
+            <Match when={matches("Npc")}>
+              <NpcModal npc={infoModalController.state.actor}/>
             </Match>
           </Switch>
         </div>

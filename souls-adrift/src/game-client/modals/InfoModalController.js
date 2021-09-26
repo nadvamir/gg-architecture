@@ -4,16 +4,16 @@ class InfoModalController {
     constructor() {
         const [state, setState] = createStore({
             open: false,
-            item: {}
+            actor: {}
         })
         this.state = state
         this.setState = setState
     }
 
-    showInfo(type, id) {
+    showInfo(actor) {
         this.setState({
             open: true,
-            item: {type: type, id: id}
+            actor: actor
         })
     }
 

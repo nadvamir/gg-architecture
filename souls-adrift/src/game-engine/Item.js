@@ -9,6 +9,11 @@ class Item {
         return this.state.name
     }
 
+    description() {
+        //TODO: use a real description
+        return 'A sharp rusty piece of metal tied to a wooden handle.'
+    }
+
     value() {
         return this.state.value || 0
     }
