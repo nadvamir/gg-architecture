@@ -16,7 +16,7 @@ function ItemModal(props) {
         {item().maxDmg() > 0 ? <div class={styles['item']}>Damage: {item().minDmg()}–{item().maxDmg()}</div> : ''}
         {item().armour() > 0 ? <div class={styles['item']}>Armour: {item().armour()}</div> : ''}
         {item().health() > 0 ? <div class={styles['item']}>Health: {item().health()}</div> : ''}
-        {!empty(item().skills()) ? <><p>Requires:</p><SkillList skills={item().skills()} /></> : ''}
+        {!empty(item().skills()) ? <><p></p><h2>Requires:</h2><SkillList skills={item().skills()} /></> : ''}
       </div>
     </>
   );
