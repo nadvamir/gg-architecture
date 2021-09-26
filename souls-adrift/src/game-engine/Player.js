@@ -7,6 +7,10 @@ class Player {
         this.gameEngine = gameEngine
     }
 
+    description() {
+        return 'A fellow stranded soul.'
+    }
+
     exp() {
         return this.state.stats.exp
     }
