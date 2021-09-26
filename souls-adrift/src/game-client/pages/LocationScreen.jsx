@@ -39,8 +39,7 @@ function HpPercentStatus(props) {
 }
 
 function AttackSuccessStatus(props) {
-  // TODO: calculate real status
-  return (<><Nbsp />(20%)</>)
+  return (<><Nbsp />({props.player.attackSuccessChance(props.target)}%)</>)
 }
 
 function FightingStatus(props) {

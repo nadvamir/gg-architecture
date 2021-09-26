@@ -38,6 +38,7 @@ function CharacterScreen() {
           <div class={styles['item']}>Skill points: {player.skillPoints()}</div>
           <div class={styles['item']}>Damage: {player.minDmg()}–{player.maxDmg()}</div>
           <div class={styles['item']}>Armour: {player.armour()}</div>
+          <div class={styles['item']}>Attack points: {player.attackPoints()}</div>
         </div>
         <div class={styles['divider']}>
           Skills

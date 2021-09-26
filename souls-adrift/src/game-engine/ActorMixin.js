@@ -86,6 +86,36 @@ const ActorMixin = {
 
     location() {
         return this.gameEngine.get(this.get('location'))
+    },
+
+    attackPoints() {
+        const skills = this.skills()
+        let basePoints = skills.dexterity + 1
+
+        const weapon = this.equippedWeapon()
+        if (!!weapon) {
+            const required = weapon.skills()
+            for (let s of Object.keys(required)) {
+                if (s == 'dexterity') basePoints -= required[s]
+                else basePoints += skills[s] - required[s]
+            }
+        }
+
+        // adjust by how bled out you are
+        basePoints *= 100 * this.hp() / this.maxHp()
+
+        return Math.round(basePoints)
+    },
+
+    criticalChance() {
+        return Math.round(100 * (this.maxHp() - this.hp()) / this.maxHp())
+    },
+
+    attackSuccessChance(opponent) {
+        const points = this.attackPoints()
+        const opponentPoints = opponent.attackPoints()
+        console.log(points, opponentPoints)
+        return Math.round(100 * points / (points + opponentPoints))
     }
 }
 
