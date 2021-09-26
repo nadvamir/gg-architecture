@@ -18,6 +18,7 @@ const ItemDefinitions = {
     },
     'i.w.shank.rusty': {
         'name': 'Rusty shank',
+        'desc': 'A sharp rusty piece of metal tied to a wooden handle.',
         'value': 5,
         'type': 'weapon',
         'mid_dmg': 0,

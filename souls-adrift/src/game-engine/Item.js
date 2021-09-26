@@ -18,8 +18,7 @@ class Item {
     }
 
     description() {
-        //TODO: use a real description
-        return 'A sharp rusty piece of metal tied to a wooden handle.'
+        return this.get('desc') || ''
     }
 
     value() {
