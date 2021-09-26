@@ -51,7 +51,7 @@ const ActorMixin = {
 
     inventory(excludeEquipped = true) {
         const invDef = this.get('inventory')
-        const equipment = this.equipment()
+        const equipment = this.get('equipment')
         const inv = []
         for (const sid of Object.keys(invDef)) {
             const id = parseInt(sid, 10)
