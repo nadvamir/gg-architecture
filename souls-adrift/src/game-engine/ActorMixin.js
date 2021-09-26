@@ -16,16 +16,14 @@ const ActorMixin = {
     minDmg() {
         const stats = this.get('stats')
         const baseDmg = stats.base_dmg || 0
-        const weapon = this.equippedWeapon()
-        const weaponDmg = weapon && weapon.minDmg() || 0
-        return baseDmg + weaponDmg + this.skills().strength
+        const weaponDmg = this.equipment().reduce((acc, i) => acc + i.minDmg(), 0) || baseDmg
+        return weaponDmg + this.skills().strength
     },
 
     maxDmg() {
         const stats = this.get('stats')
         const baseDmgSpread = stats.dmg_spread || 2
-        const weapon = this.equippedWeapon()
-        const weaponDmgSpread = weapon && (weapon.maxDmg() - weapon.minDmg()) || baseDmgSpread
+        const weaponDmgSpread = this.equipment().reduce((acc, i) => acc + i.maxDmg() - i.minDmg(), 0) || baseDmgSpread
         return this.minDmg() + weaponDmgSpread
     },
 
