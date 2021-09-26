@@ -21,9 +21,9 @@ const ActorMixin = {
     },
 
     maxDmg() {
-        //TODO: define player damage spred somewhere
         //TODO: add item damage
-        const dmgSpread = 2
+        const stats = this.get('stats')
+        const dmgSpread = stats.dmg_spread || 2
         return this.minDmg() + dmgSpread
     },
 

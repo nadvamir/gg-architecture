@@ -43,6 +43,7 @@ const NpcDefinitions = {
             'lvl': 1,
             'exp_worth': 10,
             'base_dmg': 2,
+            'dmg_spread': 3,
             'base_armor': 0
         },
         'skills': {

@@ -151,6 +151,7 @@ class GameEngine {
                     'lvl': 1,
                     'exp_worth': 10,
                     'base_dmg': 2,
+                    'dmg_spread': 3,
                     'base_armor': 0
                 },
                 'location': 1,
@@ -177,6 +178,7 @@ class GameEngine {
                     'lvl': 1,
                     'exp_worth': 10,
                     'base_dmg': 2,
+                    'dmg_spread': 3,
                     'base_armor': 0
                 },
                 'location': 1
