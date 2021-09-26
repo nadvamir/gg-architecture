@@ -1,21 +1,23 @@
 // A set of methods common to all players and NPC
 const ActorMixin = {
     name() {
-        return this.state.name
+        return this.get('name')
     },
 
     hp() {
-        return this.state.stats.hp
+        const stats = this.get('stats')
+        return stats.hp
     },
 
     maxHp() {
-        return this.state.skills.constitution * 10
+        return this.skills().constitution * 10
     },
 
     minDmg() {
-        const baseDmg = this.state.stats.base_dmg || 0
+        const stats = this.get('stats')
+        const baseDmg = stats.base_dmg || 0
         //TODO: add item damage
-        return baseDmg + this.state.skills.strength
+        return baseDmg + this.skills().strength
     },
 
     maxDmg() {
@@ -31,26 +33,28 @@ const ActorMixin = {
     },
 
     skills() {
-        return this.state.skills
+        return this.get('skills')
     },
 
     equipment() {
-        return this.state.equipment.map(id => this.gameEngine.get(id))
+        return this.get('equipment').map(id => this.gameEngine.get(id))
     },
 
     inventory(excludeEquipped = true) {
+        const invDef = this.get('inventory')
+        const equipment = this.equipment()
         const inv = []
-        for (const sid of Object.keys(this.state.inventory)) {
+        for (const sid of Object.keys(invDef)) {
             const id = parseInt(sid, 10)
-            if (!excludeEquipped || this.state.equipment.indexOf(id) == -1) {
-                inv.push([this.gameEngine.get(id), this.state.inventory[id]])
+            if (!excludeEquipped || equipment.indexOf(id) == -1) {
+                inv.push([this.gameEngine.get(id), invDef[id]])
             }
         }
         return inv
     },
 
     itemCount(item) {
-        return this.state.inventory[item] || 0
+        return this.get('inventory')[item] || 0
     },
 
     moneyCount() {
@@ -66,12 +70,13 @@ const ActorMixin = {
     },
 
     battleTarget() {
-        if (!this.state.battle) return
-        return this.gameEngine.get(this.state.battle)
+        const battle = this.get('battle')
+        if (!battle) return
+        return this.gameEngine.get(battle)
     },
 
     location() {
-        return this.gameEngine.get(this.state.location)
+        return this.gameEngine.get(this.get('location'))
     }
 }
 

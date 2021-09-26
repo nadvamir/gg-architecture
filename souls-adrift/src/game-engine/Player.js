@@ -1,10 +1,17 @@
 import { ActorMixin } from "./ActorMixin"
+import { PlayerDefinitions } from "./data/PlayerDefinitions"
 
 class Player {
     constructor(id, state, gameEngine) {
         this.id = id
         this.state = state
         this.gameEngine = gameEngine
+        this.src = PlayerDefinitions[this.state.src]
+    }
+
+    get(field) {
+        if (field in this.state) return this.state[field]
+        return this.src[field]
     }
 
     description() {
@@ -12,19 +19,23 @@ class Player {
     }
 
     exp() {
-        return this.state.stats.exp
+        const stats = this.get('stats')
+        return stats.exp
     }
 
     maxExp() {
-        return Math.round(100 * Math.pow(2, this.state.stats.lvl - 1))
+        const stats = this.get('stats')
+        return Math.round(100 * Math.pow(2, stats.lvl - 1))
     }
 
     skillPoints() {
-        return this.state.stats.skill_points
+        const stats = this.get('stats')
+        return stats.skill_points
     }
 
     level() {
-        return this.state.stats.lvl
+        const stats = this.get('stats')
+        return stats.lvl
     }
 }
 

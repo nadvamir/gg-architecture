@@ -1,14 +1,21 @@
 import { ActorMixin } from "./ActorMixin"
+import { NpcDefinitions } from './data/NpcDefinitions.js'
 
 class Npc {
     constructor(id, state, gameEngine) {
         this.id = id
         this.state = state
         this.gameEngine = gameEngine
+        this.src = NpcDefinitions[this.state.src]
+    }
+
+    get(field) {
+        if (field in this.state) return this.state[field]
+        return this.src[field]
     }
 
     type() {
-        return this.state.type
+        return this.get('type')
     }
 
     description() {
@@ -17,21 +24,25 @@ class Npc {
     }
 
     forSale() {
-        return this.inventory().filter(([item, _]) => this.state.trade.for_sale.indexOf(item.id) != -1)
+        const trade = this.get('trade')
+        return this.inventory().filter(([item, _]) => trade.for_sale.indexOf(item.id) != -1)
     }
 
     willBuy(inventory) {
-        return inventory.filter(([item, _]) => this.state.trade.to_buy.indexOf(item.type()) != -1)
+        const trade = this.get('trade')
+        return inventory.filter(([item, _]) => trade.to_buy.indexOf(item.type()) != -1)
     }
 
     bidPrice(item, player) {
+        const trade = this.get('trade')
         // player here for the future, some NPC could for example cheapen the items after passing a quest
-        return Math.round(item.value() * this.state.trade.buy)
+        return Math.round(item.value() * trade.buy)
     }
 
     askPrice(item, player) {
+        const trade = this.get('trade')
         // player here for the future, some NPC could for example cheapen the items after passing a quest
-        return Math.round(item.value() * this.state.trade.sell)
+        return Math.round(item.value() * trade.sell)
     }
 }
 

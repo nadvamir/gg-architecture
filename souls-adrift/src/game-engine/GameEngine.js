@@ -61,7 +61,7 @@ class GameEngine {
             uid: 3000001,
             3000001: {
                 'name': '__Blind_Augur__',
-                'type': 'player',
+                'src': 'p.player',
                 'stats': {
                     'hp': 10,
                     'lvl': 1,
@@ -94,7 +94,7 @@ class GameEngine {
             },
             3000002: {
                 'name': 'L33t Hax0r',
-                'type': 'player',
+                'src': 'p.player',
                 'stats': {
                     'hp': 18,
                     'lvl': 1,
@@ -123,20 +123,7 @@ class GameEngine {
             },
             1000001: {
                 'name': 'Sailor Jerry',
-                'type': 'npc.talk',
-                'stats': {
-                    'hp': 40,
-                    'lvl': 5,
-                    'exp_worth': 30,
-                    'base_dmg': 2,
-                    'base_armor': 0
-                },
-                'skills': {
-                    'strength': 5,
-                    'constitution': 4,
-                    'dexterity': 2,
-                    'sabre': 0
-                },
+                'src': 'n.t.sailor.jerry',
                 // list of equipped ids
                 'equipment': [2000001, 2000002],
                 // id -> count
@@ -154,12 +141,11 @@ class GameEngine {
                     // classes of items he's interested in
                     'to_buy': ['weapon', 'helmet', 'gloves', 'boots']
                 },
-                'location': 1,
-                'battle': 0
+                'location': 1
             },
             1000002: {
                 'name': 'Rat',
-                'type': 'npc.aggro',
+                'src': 'n.x.rat',
                 'stats': {
                     'hp': 10,
                     'lvl': 1,
@@ -167,22 +153,12 @@ class GameEngine {
                     'base_dmg': 2,
                     'base_armor': 0
                 },
-                'skills': {
-                    'strength': 1,
-                    'constitution': 2,
-                    'dexterity': 1,
-                    'sabre': 0
-                },
-                // list of equipped ids
-                'equipment': [],
-                // id -> count
-                'inventory': {},
                 'location': 1,
                 'battle': 3000002
             },
             1000003: {
                 'name': 'Mouse',
-                'type': 'npc.chill',
+                'src': 'n.c.mouse',
                 'stats': {
                     'hp': 7,
                     'lvl': 1,
@@ -190,41 +166,20 @@ class GameEngine {
                     'base_dmg': 2,
                     'base_armor': 0
                 },
-                'skills': {
-                    'strength': 1,
-                    'constitution': 1,
-                    'dexterity': 1,
-                    'sabre': 0
-                },
-                // list of equipped ids
-                'equipment': [],
-                // id -> count
-                'inventory': {},
                 'location': 1,
                 'battle': 3000001
             },
             1000004: {
                 'name': 'Rat',
-                'type': 'npc.aggro',
+                'src': 'n.x.rat',
                 'stats': {
-                    'hp': 10,
+                    'hp': 20,
                     'lvl': 1,
                     'exp_worth': 10,
                     'base_dmg': 2,
                     'base_armor': 0
                 },
-                'skills': {
-                    'strength': 1,
-                    'constitution': 1,
-                    'dexterity': 1,
-                    'sabre': 0
-                },
-                // list of equipped ids
-                'equipment': [],
-                // id -> count
-                'inventory': {},
-                'location': 1,
-                'battle': 0
+                'location': 1
             },
             2000001: {
                 'src': 'i.w.sabre.officer',
