@@ -204,37 +204,23 @@ class GameEngine {
                 'src': 'i.m.key.rusty'
             },
             1: {
-                'name': 'Forlorn Quay',
-                'desc': 'The wind blows freely over the empty quay. Rotten fishing nets lie here and there.',
-                'moves': [2, 3, 4],
-                'gated_moves': {
-                    // id -> required item
-                    5: 2000007
-                },
+                'src': 'l.town.forlorn.quay',
                 'actors': [3000001, 3000002, 2000003, 1000001, 1000002, 1000003, 1000004]
             },
             2: {
-                'name': 'Main Street',
-                'desc': 'Nothing special.',
-                'moves': [1],
+                'src': 'l.town.main.street',
                 'actors': [3000001]
             },
             3: {
-                'name': 'Near Sunken Boat',
-                'desc': 'The boat is still visible on the bottom of the sea.',
-                'moves': [1],
+                'src': 'l.town.near.sunken.boat',
                 'actors': [2000007]
             },
             4: {
-                'name': 'Fourth Wall Libarary',
-                'desc': 'This is where to find all the game info.',
-                'moves': [1],
+                'src': 'l.town.fourth.wall.library',
                 'actors': []
             },
             5: {
-                'name': 'Old house',
-                'desc': 'The ceiling is about to fall.',
-                'moves': [1],
+                'src': 'l.town.old.house',
                 'actors': [1000001]
             }
         })
