@@ -227,50 +227,26 @@ class GameEngine {
                 'battle': 0
             },
             2000001: {
-                'name': 'Officer Sabre',
-                'value': 20,
-                'type': 'weapon',
-                'mid_dmg': 4,
-                'max_dmg': 7,
-                'skills': {
-                    'dexterity': 1,
-                    'sabre': 1
-                }
+                'src': 'i.w.sabre.officer',
+                'value': 25
             },
             2000002: {
-                'name': 'Leather gloves',
-                'value': 10,
-                'type': 'gloves',
-                'armour': 1
+                'src': 'i.a.gloves.leather'
             },
             2000003: {
-                'name': 'Rusty shank',
-                'value': 5,
-                'type': 'weapon',
-                'mid_dmg': 0,
-                'max_dmg': 3
+                'src': 'i.w.shank.rusty'
             },
             2000004: {
-                'name': 'Health potion',
-                'value': 10,
-                'type': 'consumable',
-                'health': 10
+                'src': 'i.c.potion.health.10'
             },
             2000005: {
-                'name': 'Coin',
-                'value': 1,
-                'type': 'misc'
+                'src': 'i.m.coin'
             },
             2000006: {
-                'name': 'Leather boots',
-                'value': 15,
-                'type': 'boots',
-                'armour': 2
+                'src': 'i.a.boots.leather'
             },
             2000007: {
-                'name': 'Rusty key',
-                'value': 0,
-                'type': 'misc'
+                'src': 'i.m.key.rusty'
             },
             1: {
                 'name': 'Forlorn Quay',

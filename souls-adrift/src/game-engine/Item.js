@@ -1,12 +1,20 @@
+import { ItemDefinitions } from './data/ItemDefinitions.js'
+
 class Item {
     constructor(id, state, gameEngine) {
         this.id = id
         this.state = state
         this.gameEngine = gameEngine
+        this.src = ItemDefinitions[this.state.src]
+    }
+
+    get(field) {
+        if (field in this.state) return this.state[field]
+        return this.src[field]
     }
 
     name() {
-        return this.state.name
+        return this.get('name')
     }
 
     description() {
@@ -15,49 +23,50 @@ class Item {
     }
 
     value() {
-        return this.state.value || 0
+        return this.get('value') || 0
     }
 
     type() {
-        return this.state.type
+        return this.get('type')
     }
 
     minDmg() {
-        return this.state.min_dmg || 0
+        return this.get('min_dmg') || 0
     }
 
     maxDmg() {
-        return this.state.max_dmg || 0
+        return this.get('max_dmg') || 0
     }
 
     armour() {
-        return this.state.armour || 0
+        return this.get('armour') || 0
     }
 
     health() {
-        return this.state.health || 0
+        return this.get('health') || 0
     }
 
     skills() {
-        return this.state.skills || {}
+        return this.get('skills') || {}
     }
 
     isEquippable() {
         const equippable = ["weapon", "helmet", "armour", "gloves", "boots", "ring", "amulet"]
-        return equippable.indexOf(this.state.type) !== -1
+        return equippable.indexOf(this.type()) !== -1
     }
 
     canEquip(skills) {
         if (!this.isEquippable()) return false
-        if (!this.state.skills) return true
-        for (const s of Object.keys(this.state.skills)) {
-            if (!skills[s] || skills[s] < this.state.skills[s]) return false
+        const required = this.get('skills')
+        if (!required) return true
+        for (const s of Object.keys(required)) {
+            if (!skills[s] || skills[s] < required[s]) return false
         }
         return true
     }
-    
+
     isConsumable() {
-        return this.state.type == "consumable"
+        return this.type() == "consumable"
     }
 }
 

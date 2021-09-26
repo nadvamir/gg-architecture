@@ -2,7 +2,6 @@ import { Link, useData } from "solid-app-router";
 
 import styles from "../../App.module.css";
 
-import { infoModalController } from "../modals/InfoModalController.js"
 import { StatusBar } from "../items/StatusBar.jsx"
 import { InfoModalLink } from "../items/InfoModalLink.jsx"
 import {
@@ -11,8 +10,6 @@ import {
   BuyItemLink,
   SellItemLink
 } from "../items/ItemWidgets.jsx"
-
-import { buy, sell } from "../../game-engine/GameActions";
 
 function ItemsForSale(props) {
   const npc = props.npc
