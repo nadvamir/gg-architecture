@@ -16,7 +16,7 @@ const ActorMixin = {
     minDmg() {
         const stats = this.get('stats')
         const baseDmg = stats.base_dmg || 0
-        const weapon = this.weapon()
+        const weapon = this.equippedWeapon()
         const weaponDmg = weapon && weapon.minDmg() || 0
         return baseDmg + weaponDmg + this.skills().strength
     },
@@ -24,14 +24,13 @@ const ActorMixin = {
     maxDmg() {
         const stats = this.get('stats')
         const baseDmgSpread = stats.dmg_spread || 2
-        const weapon = this.weapon()
+        const weapon = this.equippedWeapon()
         const weaponDmgSpread = weapon && (weapon.maxDmg() - weapon.minDmg()) || baseDmgSpread
         return this.minDmg() + weaponDmgSpread
     },
 
     armour() {
-        //TODO: add item armour
-        return 0
+        return this.equipment().reduce((acc, i) => acc + i.armour(), 0)
     },
 
     skills() {
@@ -42,10 +41,14 @@ const ActorMixin = {
         return this.get('equipment').map(id => this.gameEngine.get(id))
     },
 
-    weapon() {
+    equippedWeapon() {
         const weapons = this.equipment().filter(i => i.type() == 'weapon')
         if (weapons.length == 0) return
         return weapons[0]
+    },
+
+    equippedArmour() {
+        return this.equipment().filter(i => i.category() == 'a')
     },
 
     inventory(excludeEquipped = true) {

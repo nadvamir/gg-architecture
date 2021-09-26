@@ -30,6 +30,11 @@ class Item {
         return this.get('type')
     }
 
+    // i.X.name -> X is a category that's broader than type
+    category() {
+        return this.state.src[2]
+    }
+
     minDmg() {
         return this.get('min_dmg') || 0
     }
