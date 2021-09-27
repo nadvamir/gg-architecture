@@ -6,6 +6,7 @@ import { infoModalController } from "./InfoModalController.js"
 import ItemModal from "./ItemModal.jsx"
 import PlayerModal from "./PlayerModal.jsx"
 import NpcModal from "./NpcModal.jsx"
+import CountSelectorModal from "./CountSelectorModal.jsx"
 
 function InfoModal() {
   const matches = (type) => infoModalController.state.actor.constructor.name === type
@@ -25,6 +26,9 @@ function InfoModal() {
             </Match>
             <Match when={matches("Npc")}>
               <NpcModal npc={infoModalController.state.actor}/>
+            </Match>
+            <Match when={matches("CountSelector")}>
+              <CountSelectorModal callback={infoModalController.state.actor}/>
             </Match>
           </Switch>
         </div>

@@ -1,3 +1,5 @@
+import { CountSelectorLink } from "../items/CountSelectorLink.jsx"
+
 import { equip, unequip, use, drop, buy, sell } from "../../game-engine/GameActions";
 
 function EquipItemLink(props) {
@@ -20,7 +22,7 @@ function ConsumeItemLink(props) {
 
 function DropItemLink(props) {
     const item = props.item
-    return (<> — <a onclick={() => drop(item.id)}>drop</a></>)
+    return (<> — <CountSelectorLink callback={(count) => drop(item.id, count)} text='drop' max={props.count} item={item} /></>)
 }
 
 function ItemCountIndicator(props) {
@@ -34,12 +36,12 @@ function ItemCostIndicator(props) {
 
 function BuyItemLink(props) {
     if (!props.player.canAfford(props.cost)) return (<> — buy</>)
-    return (<> — <a onclick={() => buy(props.item.id)}>buy</a></>)
+    return (<> — <CountSelectorLink callback={(count) => buy(props.item.id, count)} text='buy' max={props.count} item={props.item} /></>)
 }
 
 function SellItemLink(props) {
     if (!props.npc.canAfford(props.cost)) return (<> — sell</>)
-    return (<> — <a onclick={() => sell(props.item.id)}>sell</a></>)
+    return (<> — <CountSelectorLink callback={(count) => sell(props.item.id, count)} text='sell' max={props.count} item={props.item} /></>)
 }
 
 export {

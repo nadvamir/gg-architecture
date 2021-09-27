@@ -8,14 +8,14 @@ function attack(id) {
     gameEngine.send('attack ' + id)
 }
 
-function pickUp(id) {
+function pickUp(id, count) {
     if (interactionState.sending) return
-    gameEngine.send('pickUp ' + id)
+    gameEngine.send('pickUp ' + count + ' of ' + id)
 }
 
-function drop(id) {
+function drop(id, count) {
     if (interactionState.sending) return
-    gameEngine.send('drop ' + id)
+    gameEngine.send('drop ' + count + ' of ' + id)
 }
 
 function equip(id) {
@@ -38,14 +38,14 @@ function goTo(id) {
     gameEngine.send('goTo ' + id)
 }
 
-function buy(id) {
+function buy(id, count) {
     if (interactionState.sending) return
-    gameEngine.send('buy ' + id)
+    gameEngine.send('buy ' + count + ' of ' + id)
 }
 
-function sell(id) {
+function sell(id, count) {
     if (interactionState.sending) return
-    gameEngine.send('sell ' + id)
+    gameEngine.send('sell ' + count + ' of ' + id)
 }
 
 export { attack, pickUp, drop, equip, unequip, use, goTo, buy, sell }

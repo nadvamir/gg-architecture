@@ -27,7 +27,7 @@ function AttackLink(props) {
 function PickUpLink(props) {
   const actor = props.actor
   if (actor.constructor.name != 'Item') return ''
-  return (<> — <a onclick={() => pickUp(actor.id)}>pick up</a></>)
+  return (<> — <a onclick={() => pickUp(actor.id, 1)}>pick up</a></>)
 }
 
 function HpPercentStatus(props) {

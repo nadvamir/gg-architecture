@@ -181,3 +181,17 @@ section {
   margin: 0;
   font-size: 1em;
 }
+
+.modal-input {
+  display: flex;
+  margin-top: 0.4em;
+}
+
+.modal-input input {
+  width: 100%;
+  font-size: 2em;
+}
+
+.modal-input button {
+  font-size: 2em;
+}

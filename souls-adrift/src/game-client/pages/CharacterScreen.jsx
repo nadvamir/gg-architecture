@@ -52,7 +52,7 @@ function CharacterScreen() {
             return <div class={styles['item']}>
               <InfoModalLink actor={item} />
               <UnequipItemLink item={item} />
-              <DropItemLink item={item} />
+              <DropItemLink item={item} count={1} />
             </div>
           })}
         </div>
@@ -66,7 +66,7 @@ function CharacterScreen() {
               <ItemCountIndicator count={count} />
               <EquipItemLink item={item} skills={player.skills()} />
               <ConsumeItemLink item={item} />
-              <DropItemLink item={item} />
+              <DropItemLink item={item} count={count} />
             </div>
           })}
         </div>
