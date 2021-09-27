@@ -2,11 +2,12 @@ import { Link } from "solid-app-router";
 
 import styles from "../../App.module.css";
 import { LocationStatusBar } from "../items/StatusBar.jsx"
+import { ItemCountIndicator } from "../items/ItemWidgets.jsx"
+import { InfoModalLink } from "../items/InfoModalLink.jsx"
+import { CountSelectorLink } from "../items/CountSelectorLink.jsx"
 
 import { gameEngine } from "../../game-engine/GameAssembly";
 import { attack, pickUp, goTo } from "../../game-engine/GameActions";
-
-import { InfoModalLink } from "../items/InfoModalLink.jsx"
 
 function Nbsp() {
   return '\u00A0'
@@ -27,7 +28,7 @@ function AttackLink(props) {
 function PickUpLink(props) {
   const actor = props.actor
   if (actor.constructor.name != 'Item') return ''
-  return (<> — <a onclick={() => pickUp(actor.id, 1)}>pick up</a></>)
+  return (<> — <CountSelectorLink callback={(count) => pickUp(props.actor.id, count)} text='pick up' max={props.count} item={props.actor} /></>)
 }
 
 function HpPercentStatus(props) {
@@ -90,21 +91,22 @@ function LocationSection(props) {
   const player = props.player
   const target = player.battleTarget()
   const targetId = target && target.id || 0
-  const actors = props.location.actors().filter(a => a.id != player.id && a.id != targetId)
+  const actors = props.location.actors().filter(a => a[0].id != player.id && a[0].id != targetId)
 
   if (!actors) return (<></>)
   return (
     <>
       <div class={styles['divider']}>Location</div>
       <section>
-        {actors.map(actor => {
+        {actors.map(([actor, count]) => {
           return (<div class={styles['item']}>
             <LevelIndicator actor={actor} />
             <InfoModalLink actor={actor} />
+            <ItemCountIndicator count={count} />
             <HpPercentStatus actor={actor} />
             <TalkLink actor={actor} />
             <AttackLink actor={actor} />
-            <PickUpLink actor={actor} />
+            <PickUpLink actor={actor} count={count} />
             <FightingStatus actor={actor} />
           </div>)
         })}

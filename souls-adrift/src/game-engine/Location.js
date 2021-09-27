@@ -31,11 +31,17 @@ class Location {
     }
 
     noisy() {
-        return this.actors().filter(a => a.constructor.name != 'Item').length > 0
+        return this.actors().filter(a => a[0].constructor.name != 'Item').length > 0
     }
 
     actors() {
-        return this.get('actors').map(a => this.gameEngine.get(a)).sort((l, r) => { return l.id - r.id })
+        const actors = this.get('actors')
+        const actorList = []
+        for (const sid of Object.keys(actors)) {
+            const id = parseInt(sid, 10)
+            actorList.push([this.gameEngine.get(id), actors[id]])
+        }
+        return actorList.sort((l, r) => { return l[0].id - r[0].id })
     }
 }
 

@@ -207,23 +207,23 @@ class GameEngine {
             },
             1: {
                 'src': 'l.town.forlorn.quay',
-                'actors': [3000001, 3000002, 2000003, 1000001, 1000002, 1000003, 1000004]
+                'actors': {3000001: 1, 3000002: 1, 2000003: 1, 1000001: 1, 1000002: 1, 1000003: 1, 1000004: 1, 2000005: 5}
             },
             2: {
                 'src': 'l.town.main.street',
-                'actors': [3000001]
+                'actors': {3000001: 1}
             },
             3: {
                 'src': 'l.town.near.sunken.boat',
-                'actors': [2000007]
+                'actors': {2000007: 1}
             },
             4: {
                 'src': 'l.town.fourth.wall.library',
-                'actors': []
+                'actors': {}
             },
             5: {
                 'src': 'l.town.old.house',
-                'actors': [1000001]
+                'actors': {1000001: 1}
             }
         })
 
