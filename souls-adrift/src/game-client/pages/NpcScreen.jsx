@@ -25,7 +25,7 @@ function ItemsForSale(props) {
             return (<div class={styles['item']}>
               <InfoModalLink actor={item} />
               <ItemCountIndicator count={count} />
-              <BuyItemLink item={item} player={player} cost={npc.bidPrice(item, player)} count={count} />
+              <BuyItemLink item={item} player={player} cost={npc.bidPrice(item, player)} count={count} npc={npc} />
               <ItemCostIndicator cost={npc.bidPrice(item, player)} />
               </div>)
           })}
@@ -48,7 +48,7 @@ function ItemsToSell(props) {
             return (<div class={styles['item']}>
               <InfoModalLink actor={item} />
               <ItemCountIndicator count={count} />
-              <SellItemLink item={item} npc={npc} cost={npc.askPrice(item, player)} count={count} />
+              <SellItemLink item={item} npc={npc} cost={npc.askPrice(item, player)} count={count} npc={npc} />
               <ItemCostIndicator cost={npc.askPrice(item, player)} />
               </div>)
           })}

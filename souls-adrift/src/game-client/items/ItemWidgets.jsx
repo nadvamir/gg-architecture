@@ -36,12 +36,12 @@ function ItemCostIndicator(props) {
 
 function BuyItemLink(props) {
     if (!props.player.canAfford(props.cost)) return (<> — buy</>)
-    return (<> — <CountSelectorLink callback={(count) => buy(props.item.id, count)} text='buy' max={props.count} item={props.item} /></>)
+    return (<> — <CountSelectorLink callback={(count) => buy(props.item.id, count, props.npc.id)} text='buy' max={props.count} item={props.item} /></>)
 }
 
 function SellItemLink(props) {
     if (!props.npc.canAfford(props.cost)) return (<> — sell</>)
-    return (<> — <CountSelectorLink callback={(count) => sell(props.item.id, count)} text='sell' max={props.count} item={props.item} /></>)
+    return (<> — <CountSelectorLink callback={(count) => sell(props.item.id, count, props.npc.id)} text='sell' max={props.count} item={props.item} /></>)
 }
 
 export {

@@ -31,7 +31,8 @@ class GameEngine {
         setTimeout(_ => this.loadGameState(), 300)
     }
 
-    send(message) {
+    send(action, args) {
+        const message = action + '|' + args.join('|')
         this.setInteractionState({ sending: true })
         console.log('Sending!')
         this.nextHash = this.gossipGraph.send(MessageType.DIRECT_MESSAGE, message)
