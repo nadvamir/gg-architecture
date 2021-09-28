@@ -1,10 +1,12 @@
 import { createStore, produce } from 'solid-js/store';
 
 import { MessageType } from '../gossip-graph/MessageType.js'
+import { serialise, deserialise } from './MessageSerialiser.js'
 import { Player } from './Player.js'
 import { Npc } from './Npc.js'
 import { Item } from './Item.js'
 import { Location } from './Location.js'
+import { Action } from "./actions/ActionFactory";
 
 class GameEngine {
     constructor(gossipGraph) {
@@ -32,21 +34,35 @@ class GameEngine {
     }
 
     send(action, args) {
-        const message = action + '|' + args.join('|')
+        const message = serialise(action, args)
         this.setInteractionState({ sending: true })
         console.log('Sending!')
         this.nextHash = this.gossipGraph.send(MessageType.DIRECT_MESSAGE, message)
     }
 
     onMessageReceived(sender, type, message, hash) {
-        const res = sender + ': ' + message + ' (' + hash + ')'
-        this.setState('messages', produce(messages => {
-            messages.push([new Date(), res])
-        }))
+        const [action, args] = deserialise(message)
+        if (!this.authorised(sender, type, action, args)) {
+            console.log('Received an unauthorised message')
+            return
+        }
+        this.handleEvent(action, args)
         if (hash == this.nextHash) {
             console.log('Received')
             this.setInteractionState({ sending: false })
         }
+    }
+
+    recordEvent(message) {
+        this.setState('messages', produce(messages => {
+            messages.push([new Date(), message])
+        }))
+    }
+
+    clearEventList() {
+        this.setState('messages', produce(messages => {
+            messages.length = 0
+        }))
     }
 
     getState() {
@@ -208,15 +224,15 @@ class GameEngine {
             },
             1: {
                 'src': 'l.town.forlorn.quay',
-                'actors': {3000001: 1, 3000002: 1, 2000003: 1, 1000001: 1, 1000002: 1, 1000003: 1, 1000004: 1, 2000005: 5}
+                'actors': { 3000001: 1, 3000002: 1, 2000003: 1, 1000001: 1, 1000002: 1, 1000003: 1, 1000004: 1, 2000005: 5 }
             },
             2: {
                 'src': 'l.town.main.street',
-                'actors': {3000001: 1}
+                'actors': { 3000001: 1 }
             },
             3: {
                 'src': 'l.town.near.sunken.boat',
-                'actors': {2000007: 1}
+                'actors': { 2000007: 1 }
             },
             4: {
                 'src': 'l.town.fourth.wall.library',
@@ -224,7 +240,7 @@ class GameEngine {
             },
             5: {
                 'src': 'l.town.old.house',
-                'actors': {1000001: 1}
+                'actors': { 1000001: 1 }
             }
         })
 
@@ -252,6 +268,23 @@ class GameEngine {
 
     moneyId() {
         return 2000005
+    }
+
+    serverId() {
+        return 0
+    }
+
+    // ------------ Event Handling -----------------
+    // check the author had a right to submit this event
+    authorised(sender, type, action, args) {
+        if (sender == this.serverId()) return true
+        if (action == Action.OverwriteState) return false
+        return sender == args[0]
+    }
+
+    handleEvent(action, args) {
+        const processor = Action.getProcessor(action)
+        processor(args, this)
     }
 }
 

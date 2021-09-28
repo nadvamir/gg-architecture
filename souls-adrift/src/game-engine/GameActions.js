@@ -1,19 +1,8 @@
 import { gameEngine } from "./GameAssembly";
+import { Action } from "./actions/ActionFactory";
 
 let state = gameEngine.getState()
 let interactionState = gameEngine.getInteractionState()
-
-class Action {
-    static Attack = 0
-    static PickUp = 1
-    static Drop = 2
-    static Equip = 3
-    static Unequip = 4
-    static Use = 5
-    static GoTo = 6
-    static Buy = 7
-    static Sell = 8
-}
 
 function attack(id) {
     if (interactionState.sending) return
