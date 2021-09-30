@@ -1,3 +1,5 @@
+import { produce } from 'solid-js/store';
+
 // A set of methods common to all players and NPC
 const ActorMixin = {
     name() {
@@ -115,6 +117,19 @@ const ActorMixin = {
         const points = this.attackPoints()
         const opponentPoints = opponent.attackPoints()
         return Math.round(100 * points / (points + opponentPoints))
+    },
+
+    // ------------ Modifiers -------------
+    setLocation(location) {
+        this.gameEngine.setState(this.id, produce(actor => {
+            actor.location = location.id
+        }))
+    },
+
+    setBattle(opponent) {
+        this.gameEngine.setState(this.id, produce(actor => {
+            actor.battle = !!opponent ? opponent.id : 0
+        }))
     }
 }
 

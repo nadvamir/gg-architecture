@@ -228,7 +228,7 @@ class GameEngine {
             },
             2: {
                 'src': 'l.town.main.street',
-                'actors': { 3000001: 1 }
+                'actors': { 1000001: 1 }
             },
             3: {
                 'src': 'l.town.near.sunken.boat',
@@ -272,6 +272,14 @@ class GameEngine {
 
     serverId() {
         return 0
+    }
+
+    playerId() {
+        return this.state.uid
+    }
+
+    player() {
+        return this.get(this.playerId())
     }
 
     // ------------ Event Handling -----------------

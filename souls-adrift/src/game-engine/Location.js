@@ -1,3 +1,5 @@
+import { produce } from 'solid-js/store';
+
 import { LocationDefinitions } from './data/LocationDefinitions.js'
 
 class Location {
@@ -42,6 +44,32 @@ class Location {
             actorList.push([this.gameEngine.get(id), actors[id]])
         }
         return actorList.sort((l, r) => { return l[0].id - r[0].id })
+    }
+
+    // ------------- Checks ---------------
+    isReachableFrom(source, actor) {
+        return !!source.moves(actor).find(([l, reachable]) => {
+            return reachable && l.id == this.id
+        })
+    }
+
+    // ------------ Modifiers -------------
+    // Do no checks, must be valid operations
+    add(actor, count) {
+        this.gameEngine.setState(this.id, produce(loc => {
+            loc.actors[actor.id] = count + (loc.actors[actor.id] || 0)
+        }))
+    }
+
+    remove(actor, count) {
+        this.gameEngine.setState(this.id, produce(loc => {
+            if (loc.actors[actor.id] <= count) {
+                delete loc.actors[actor.id]
+            }
+            else {
+                loc.actors[actor.id] -= count
+            }
+        }))
     }
 }
 

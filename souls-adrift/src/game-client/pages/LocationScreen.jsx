@@ -44,17 +44,16 @@ function AttackSuccessStatus(props) {
 }
 
 function FightingStatus(props) {
-  const actor = props.actor
-  if (!actor.battleTarget) return ''
-  const target = actor.battleTarget()
-  if (!target) return ''
-  return ' — fighting ' + target.name()
+  const targetName = () => !!props.actor.battleTarget && props.actor.battleTarget()?.name()
+  return (<Show when={!!targetName()} fallback={<></>}>
+    — fighting {targetName()}
+  </Show>)
 }
 
 function LevelIndicator(props) {
-  const actor = props.actor
-  if (!actor.level) return ''
-  return (<>[{actor.level()}] </>)
+  return (<Show when={!!props.actor.level} fallback={<></>}>
+    <>[{props.actor.level()}] </>
+  </Show>)
 }
 
 function EventsSection(props) {
@@ -70,35 +69,30 @@ function EventsSection(props) {
 }
 
 function BattleSection(props) {
-  const target = props.player.battleTarget()
-  if (!target) return (<></>)
   return (
-    <>
+    <Show when={!!props.target} fallback={<></>}>
       <div class={styles['divider']}>Fight</div>
       <section>
         <div class={styles['item']}>
-          <InfoModalLink actor={target} />
-          <HpPercentStatus actor={target} />
-          <AttackLink actor={target} />
-          <AttackSuccessStatus player={props.player} target={target} />
+          <InfoModalLink actor={props.target} />
+          <HpPercentStatus actor={props.target} />
+          <AttackLink actor={props.target} />
+          <AttackSuccessStatus player={props.player} target={props.target} />
         </div>
       </section>
-    </>
+    </Show>
   )
 }
 
 function LocationSection(props) {
   const player = props.player
-  const target = player.battleTarget()
-  const targetId = target && target.id || 0
-  const actors = props.location.actors().filter(a => a[0].id != player.id && a[0].id != targetId)
+  const actors = () => props.location.actors().filter(a => a[0].id != player.id && a[0].id != player.battleTarget())
 
-  if (!actors) return (<></>)
   return (
-    <>
+    <Show when={actors().length > 0} fallback={<></>}>
       <div class={styles['divider']}>Location</div>
       <section>
-        {actors.map(([actor, count]) => {
+        {actors().map(([actor, count]) => {
           return (<div class={styles['item']}>
             <LevelIndicator actor={actor} />
             <InfoModalLink actor={actor} />
@@ -111,7 +105,7 @@ function LocationSection(props) {
           </div>)
         })}
       </section>
-    </>
+    </Show>
   )
 }
 
@@ -132,12 +126,12 @@ function LocationItem(props) {
 }
 
 function DirectionSection(props) {
-  const moves = props.location.moves(props.player)
+  const moves = () => props.location.moves(props.player)
   return (
     <>
       <div class={styles['divider']}>Direction</div>
       <section>
-        {moves.map(([loc, accessible]) => {
+        {moves().map(([loc, accessible]) => {
           return (<LocationItem location={loc} accessible={accessible} />)
         })}
       </section>
@@ -148,19 +142,19 @@ function DirectionSection(props) {
 function LocationScreenImpl() {
   const state = gameEngine.getState()
   const player = gameEngine.get(state.uid)
-  const location = player.location()
+  const location = () => player.location()
 
   return (
     <div class={styles['content']}>
       <header>
         <LocationStatusBar />
-        <h1>{location.name()}</h1>
-        <div class={styles['location-info']}>{location.description()}</div>
+        <h1>{location().name()}</h1>
+        <div class={styles['location-info']}>{location().description()}</div>
       </header>
-      <EventsSection messages={state.messages} location={location} />
-      <BattleSection player={player} />
-      <LocationSection player={player} location={location} />
-      <DirectionSection player={player} location={location} />
+      <EventsSection messages={state.messages} location={location()} />
+      <BattleSection player={player} target={player.battleTarget()} />
+      <LocationSection player={player} location={location()} />
+      <DirectionSection player={player} location={location()} />
       <div class={styles['divider']}>Speak</div>
       <div id={styles['message-box']}>
         <textarea rows='3'></textarea>
@@ -175,16 +169,11 @@ function LocationScreen() {
 
   return (
     <div id={styles['location-screen']} class={[styles['main-screen'], styles['page']].join(' ')}>
-      <Switch>
-        <Match when={!!state.uid}>
-          <LocationScreenImpl />
-        </Match>
-        <Match when={!state.uid}>
-          <div class={state.uid ? styles['hidden'] : styles['game-loading']}>
-            <h1>Loading...</h1>
-          </div>
-        </Match>
-      </Switch>
+      <Show when={!state.uid} fallback={<LocationScreenImpl />}>
+        <div class={state.uid ? styles['hidden'] : styles['game-loading']}>
+          <h1>Loading...</h1>
+        </div>
+      </Show>
     </div>
   );
 }
