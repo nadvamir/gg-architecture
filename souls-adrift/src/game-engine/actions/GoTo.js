@@ -10,13 +10,27 @@ function processGoTo(args, gameEngine) {
     actor.setLocation(location)
     currentLocation.remove(actor, 1)
     location.add(actor, 1)
-    // exit a fight
+
+    // exit a fight if target is not in the location
+    // (i.e. always apart from when chasing)
     const battleTarget = actor.battleTarget()
     if (!!battleTarget) {
-        //TODO: chase
-        actor.setBattle(0)
-        battleTarget.setBattle(0)
+        if (!location.hasActor(battleTarget)) {
+            actor.setBattle(0)
+        }
     }
+    // but actors that are fighting can chose to chase
+    currentLocation.actorsFighting(actor).map(hostile => {
+        const r = gameEngine.rand()
+        if (r <= hostile.chaseChance()) {
+            // chase
+            processGoTo([hostile.id, location.id], gameEngine)
+        }
+        else {
+            // stop fighting
+            battleTarget.setBattle(0)
+        }
+    })
 
     // notify if we're around
     if (actor.id != gameEngine.playerId()) {

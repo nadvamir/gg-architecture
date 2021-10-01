@@ -46,6 +46,17 @@ class Location {
         return actorList.sort((l, r) => { return l[0].id - r[0].id })
     }
 
+    hasActor(actor, count = 1) {
+        const numInLoc = this.get('actors')[actor.id] || 0
+        return count <= numInLoc
+    }
+
+    actorsFighting(actor) {
+        return this.actors()
+            .filter(([a, _]) => !!a.isBattling && a.isBattling(actor.id))
+            .map(([a, _]) => a)
+    }
+
     // ------------- Checks ---------------
     isReachableFrom(source, actor) {
         return !!source.moves(actor).find(([l, reachable]) => {
@@ -55,13 +66,13 @@ class Location {
 
     // ------------ Modifiers -------------
     // Do no checks, must be valid operations
-    add(actor, count) {
+    add(actor, count = 1) {
         this.gameEngine.setState(this.id, produce(loc => {
             loc.actors[actor.id] = count + (loc.actors[actor.id] || 0)
         }))
     }
 
-    remove(actor, count) {
+    remove(actor, count = 1) {
         this.gameEngine.setState(this.id, produce(loc => {
             if (loc.actors[actor.id] <= count) {
                 delete loc.actors[actor.id]

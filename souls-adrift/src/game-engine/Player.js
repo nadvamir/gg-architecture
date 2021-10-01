@@ -37,6 +37,11 @@ class Player {
         const stats = this.get('stats')
         return stats.lvl
     }
+
+    // --------- Probabilities ------
+    chaseChance() {
+        return 0
+    }
 }
 
 Object.assign(Player.prototype, ActorMixin)

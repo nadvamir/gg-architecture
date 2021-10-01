@@ -176,7 +176,7 @@ class GameEngine {
             },
             1000003: {
                 'name': 'Mouse',
-                'src': 'n.c.mouse',
+                'src': 'n.a.mouse',
                 'stats': {
                     'hp': 7,
                     'lvl': 1,
@@ -255,6 +255,12 @@ class GameEngine {
             }))
             setTimeout(_ => this.recoverHealth(), 1000)
         }
+    }
+
+    // ------------ Synchronised random ------------
+    rand() {
+        //TODO: create a custom calculator seeded by event hash
+        return Math.round(Math.random() * 100)
     }
 
     // ----------------- Accessors -----------------

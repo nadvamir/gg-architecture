@@ -60,7 +60,7 @@ const NpcDefinitions = {
         'location': 1,
         'battle': 0
     },
-    'n.c.mouse': {
+    'n.a.mouse': {
         'name': 'Mouse',
         'type': 'npc.chill',
         'stats': {
