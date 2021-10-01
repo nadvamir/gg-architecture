@@ -67,12 +67,14 @@ class Location {
     // ------------ Modifiers -------------
     // Do no checks, must be valid operations
     add(actor, count = 1) {
+        if (count < 1) return
         this.gameEngine.setState(this.id, produce(loc => {
             loc.actors[actor.id] = count + (loc.actors[actor.id] || 0)
         }))
     }
 
     remove(actor, count = 1) {
+        if (count < 1) return
         this.gameEngine.setState(this.id, produce(loc => {
             if (loc.actors[actor.id] <= count) {
                 delete loc.actors[actor.id]

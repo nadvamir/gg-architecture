@@ -136,7 +136,15 @@ const ActorMixin = {
         }))
     },
 
+    add(item, count = 1) {
+        if (count < 1) return
+        this.gameEngine.setState(this.id, produce(actor => {
+            actor.inventory[item.id] = count + (actor.inventory[item.id] || 0)
+        }))
+    },
+
     remove(item, count = 1) {
+        if (count < 1) return
         this.gameEngine.setState(this.id, produce(actor => {
             if (!(item.id in actor.inventory)) return
             if (actor.inventory[item.id] <= count) {
