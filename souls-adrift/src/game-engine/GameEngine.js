@@ -266,13 +266,13 @@ class GameEngine {
     // ----------------- Accessors -----------------
     get(id) {
         const entity = this.state[id]
-        if (typeof id == 'string') id = parseInt(id, 10)
         switch (entity.src[0]) {
             case 'l': return new Location(id, entity, this)
             case 'n': return new Npc(id, entity, this)
             case 'i': return new Item(id, entity, this)
             case 'p': return new Player(id, entity, this)
         }
+        console.log('Couldnt find game entity', id)
     }
 
     moneyId() {

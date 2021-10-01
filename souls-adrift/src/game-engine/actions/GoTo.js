@@ -28,7 +28,7 @@ function processGoTo(args, gameEngine) {
         }
         else {
             // stop fighting
-            battleTarget.setBattle(0)
+            hostile.setBattle(0)
         }
     })
 
