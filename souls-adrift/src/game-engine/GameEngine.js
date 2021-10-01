@@ -265,11 +265,14 @@ class GameEngine {
 
     // ----------------- Accessors -----------------
     get(id) {
+        const entity = this.state[id]
         if (typeof id == 'string') id = parseInt(id, 10)
-        if (id < 1000000) return new Location(id, this.state[id], this)
-        else if (id < 2000000) return new Npc(id, this.state[id], this)
-        else if (id < 3000000) return new Item(id, this.state[id], this)
-        else return new Player(id, this.state[id], this)
+        switch (entity.src[0]) {
+            case 'l': return new Location(id, entity, this)
+            case 'n': return new Npc(id, entity, this)
+            case 'i': return new Item(id, entity, this)
+            case 'p': return new Player(id, entity, this)
+        }
     }
 
     moneyId() {
