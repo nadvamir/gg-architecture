@@ -31,7 +31,7 @@ class Action {
             case Action.Drop: return processDrop
             case Action.Equip: return processEquip
             case Action.Unequip: return processUnequip
-            case Action.Unequip: return processUse
+            case Action.Use: return processUse
             case Action.GoTo: return processGoTo
             case Action.Buy: return processBuy
             case Action.Sell: return processSell
