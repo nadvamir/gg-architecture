@@ -64,16 +64,16 @@ const ActorMixin = {
         return inv
     },
 
-    itemCount(item) {
-        return this.get('inventory')[item] || 0
+    itemCount(itemId) {
+        return this.get('inventory')[itemId] || 0
     },
 
     moneyCount() {
         return this.itemCount(this.gameEngine.moneyId())
     },
 
-    hasItem(item, count=1) {
-        return this.itemCount(item) >= count
+    hasItem(itemId, count=1) {
+        return this.itemCount(itemId) >= count
     },
 
     canAfford(cost) {
@@ -133,6 +133,24 @@ const ActorMixin = {
     setBattle(opponent) {
         this.gameEngine.setState(this.id, produce(actor => {
             actor.battle = !!opponent ? opponent.id : 0
+        }))
+    },
+
+    remove(item, count = 1) {
+        this.gameEngine.setState(this.id, produce(actor => {
+            if (!(item.id in actor.inventory)) return
+            if (actor.inventory[item.id] <= count) {
+                delete actor.inventory[item.id]
+            }
+            else {
+                actor.inventory[item.id] -= count
+            }
+        }))
+    },
+
+    unequip(item) {
+        this.gameEngine.setState(this.id, produce(actor => {
+            actor.equipment = actor.equipment.filter(id => id != item.id)
         }))
     }
 }
