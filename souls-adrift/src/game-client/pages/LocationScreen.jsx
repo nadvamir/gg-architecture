@@ -45,13 +45,13 @@ function AttackSuccessStatus(props) {
 
 function FightingStatus(props) {
   const targetName = () => !!props.actor.battleTarget && props.actor.battleTarget()?.name()
-  return (<Show when={!!targetName()} fallback={<></>}>
+  return (<Show when={!!targetName()}>
     — fighting {targetName()}
   </Show>)
 }
 
 function LevelIndicator(props) {
-  return (<Show when={!!props.actor.level} fallback={<></>}>
+  return (<Show when={!!props.actor.level}>
     <>[{props.actor.level()}] </>
   </Show>)
 }

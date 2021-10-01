@@ -13,6 +13,26 @@ import {
 
 import { gameEngine } from "../../game-engine/GameAssembly";
 
+function EquippedSection(props) {
+  const player = props.player
+  return (
+    <Show when={player.equipment().length > 0}>
+      <div class={styles['divider']}>
+        Equipped
+        </div>
+      <div>
+        {player.equipment().map(item => {
+          return <div class={styles['item']}>
+            <InfoModalLink actor={item} />
+            <UnequipItemLink item={item} />
+            <DropItemLink item={item} count={1} />
+          </div>
+        })}
+      </div>
+    </Show>
+  )
+}
+
 function CharacterScreen() {
   const state = gameEngine.getState()
   const player = gameEngine.get(state.uid)
@@ -44,18 +64,7 @@ function CharacterScreen() {
           Skills
         </div>
         <SkillList skills={player.skills()} />
-        <div class={styles['divider']}>
-          Equipped
-        </div>
-        <div>
-          {player.equipment().map(item => {
-            return <div class={styles['item']}>
-              <InfoModalLink actor={item} />
-              <UnequipItemLink item={item} />
-              <DropItemLink item={item} count={1} />
-            </div>
-          })}
-        </div>
+        <EquippedSection player={player} />
         <div class={styles['divider']}>
           Items
         </div>
