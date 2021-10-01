@@ -57,8 +57,12 @@ const ActorMixin = {
         const inv = []
         for (const sid of Object.keys(invDef)) {
             const id = parseInt(sid, 10)
-            if (!excludeEquipped || equipment.indexOf(id) == -1) {
-                inv.push([this.gameEngine.get(id), invDef[id]])
+            let count = invDef[id]
+            if (excludeEquipped && equipment.indexOf(id) != -1) {
+                count -= 1
+            }
+            if (count > 0) {
+                inv.push([this.gameEngine.get(id), count])
             }
         }
         return inv
@@ -153,6 +157,12 @@ const ActorMixin = {
             else {
                 actor.inventory[item.id] -= count
             }
+        }))
+    },
+
+    equip(item) {
+        this.gameEngine.setState(this.id, produce(actor => {
+            actor.equipment.push(item.id)
         }))
     },
 
