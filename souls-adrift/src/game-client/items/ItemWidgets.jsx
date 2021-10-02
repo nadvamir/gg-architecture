@@ -5,8 +5,11 @@ import { equip, unequip, use, drop, buy, sell } from "../../game-engine/GameActi
 function EquipItemLink(props) {
     const item = props.item
     if (!item.isEquippable()) return ''
-    if (!item.canEquip(props.skills)) return (<> — equip</>)
-    return (<> —  <a onclick={() => equip(item.id)}>equip</a></>)
+    return (
+        <Show when={item.canEquip(props.skills)} fallback=' — equip'>
+            <> —  <a onclick={() => equip(item.id)}>equip</a></>
+        </Show>
+    )
 }
 
 function UnequipItemLink(props) {
