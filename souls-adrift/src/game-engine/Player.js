@@ -42,6 +42,11 @@ class Player {
         return stats.skill_points
     }
 
+    spawnPoint() {
+        const loc = this.get('spawn_point') && this.gameEngine.get(this.get('spawn_point'))
+        return loc || this.gameEngine.regionSpawnPoint()
+    }
+
     // --------- Probabilities ------
     chaseChance() {
         return 0
@@ -74,7 +79,22 @@ class Player {
     }
 
     die() {
-        this.gameEngine.recordEvent(this.name() + ' has died!')
+        if (this.gameEngine.playerId() == this.id) {
+            this.gameEngine.recordEvent('You have died!')
+            this.gameEngine.recordEvent('Your surroundings have changed.')
+        }
+        else {
+            this.gameEngine.recordEvent(this.name() + ' has died!')
+        }
+
+        const location = this.location()
+        location.remove(this)
+        location.actorsFighting(this).map(a => a.setBattle(0))
+
+        const spawnPoint = this.spawnPoint()
+        spawnPoint.add(this)
+        this.setLocation(spawnPoint)
+        this.alterHealth(1)
     }
 }
 

@@ -82,6 +82,7 @@ class GameEngine {
         this.setState({
             uid: 3000001,
             spawn_queue: [],
+            region_spawn_point: 1,
             3000001: {
                 'name': '__Blind_Augur__',
                 'src': 'p.player',
@@ -219,11 +220,11 @@ class GameEngine {
             },
             1: {
                 'src': 'l.town.forlorn.quay',
-                'actors': { 3000001: 1, 3000002: 1, 2000003: 1, 1000001: 1, 1000002: 1, 1000003: 1, 1000004: 1, 2000005: 5 }
+                'actors': { 3000001: 1, 3000002: 1, 2000003: 1, 1000001: 1, 1000002: 1, 1000003: 1, 2000005: 5 }
             },
             2: {
                 'src': 'l.town.main.street',
-                'actors': { 1000001: 1 }
+                'actors': {1000004: 1}
             },
             3: {
                 'src': 'l.town.near.sunken.boat',
@@ -235,7 +236,7 @@ class GameEngine {
             },
             5: {
                 'src': 'l.town.old.house',
-                'actors': { 1000001: 1 }
+                'actors': {}
             }
         })
 
@@ -286,6 +287,10 @@ class GameEngine {
 
     player() {
         return this.get(this.playerId())
+    }
+
+    regionSpawnPoint() {
+        return this.get(this.state.region_spawn_point)
     }
 
     // ------------ Event Handling -----------------
