@@ -32,7 +32,7 @@ function ItemModal(props) {
       <p>{item().description()}</p>
       <div>
         <div class={styles['item']}>{capitalise(item().type())}</div>
-        <div class={styles['item']}>Value: {item().value()}</div>
+        {item().value() > 0 ? <div class={styles['item']}>Value: {item().value()}</div> : ''}
         {item().maxDmg() > 0 ? <div class={styles['item']}>Damage: {item().minDmg()}–{item().maxDmg()}</div> : ''}
         {item().armour() > 0 ? <div class={styles['item']}>Armour: {item().armour()}</div> : ''}
         {item().health() > 0 ? <div class={styles['item']}>Health: {item().health()}</div> : ''}
