@@ -10,6 +10,11 @@ import { EventsSection } from "../items/EventsSection.jsx"
 import { gameEngine } from "../../game-engine/GameAssembly";
 import { attack, pickUp, goTo, talk } from "../../game-engine/GameActions";
 
+function battling(actor, target) {
+  if (!actor.battleTarget) return false
+  return actor.battleTarget()?.id == target.id
+}
+
 function Nbsp() {
   return '\u00A0'
 }
@@ -57,16 +62,25 @@ function LevelIndicator(props) {
 }
 
 function BattleSection(props) {
+  const attackers = (location) => {
+    return location.actors()
+      .map(([a, _]) => a)
+      .filter(a => battling(a, props.player) || battling(props.player, a))
+  }
   return (
-    <Show when={!!props.target} fallback={<></>}>
+    <Show when={attackers(props.location).length > 0}>
       <div class={styles['divider']}>Fight</div>
       <section>
-        <div class={styles['item']}>
-          <InfoModalLink actor={props.target} />
-          <HpPercentStatus actor={props.target} />
-          <AttackLink actor={props.target} />
-          <AttackSuccessStatus player={props.player} target={props.target} />
-        </div>
+        {attackers(props.location).map(a => {
+          return (
+            <div class={styles['item']}>
+              <InfoModalLink actor={a} />
+              <HpPercentStatus actor={a} />
+              <AttackLink actor={a} />
+              <AttackSuccessStatus player={props.player} target={a} />
+            </div>
+          )
+        })}
       </section>
     </Show>
   )
@@ -74,7 +88,9 @@ function BattleSection(props) {
 
 function LocationSection(props) {
   const player = props.player
-  const actors = () => props.location.actors().filter(a => a[0].id != player.id && a[0].id != player.battleTarget())
+  const actors = () => props.location.actors().filter(([a, _]) => {
+    return a.id != player.id && !battling(a, player) && !battling(player, a)
+  })
 
   return (
     <Show when={actors().length > 0} fallback={<></>}>
@@ -158,7 +174,7 @@ function LocationScreenImpl() {
         <div class={styles['location-info']}>{location().description()}</div>
       </header>
       <EventsSection messages={state.messages} location={location()} />
-      <BattleSection player={player} target={player.battleTarget()} />
+      <BattleSection player={player} location={location()} />
       <LocationSection player={player} location={location()} />
       <DirectionSection player={player} location={location()} />
       <MessageBox />
