@@ -90,6 +90,7 @@ class Player {
         const location = this.location()
         location.remove(this)
         location.actorsFighting(this).map(a => a.setBattle(0))
+        this.setBattle(0)
         this.gameEngine.createCorpse(this)
 
         const spawnPoint = this.spawnPoint()
