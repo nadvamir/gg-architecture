@@ -19,10 +19,10 @@ function processBuy(args, gameEngine) {
     }
 
     // the buyer must have the resources
-    console.log(item.value())
     const cost = seller.askPrice(item, actor) * count
     if (!actor.canAfford(cost)) {
         console.log(actor.name(), 'does not have enough money to buy ', item.name(), ', needs', cost)
+        return
     }
 
     // do the transaction

@@ -17,14 +17,14 @@ import {
 function ItemsForSale(props) {
   const npc = props.npc
   const player = props.player
-  const items = npc.forSale()
+  const items = () => npc.forSale()
   return (
-    <Show when={items.length > 0}>
+    <Show when={items().length > 0}>
       <div class={styles['divider']}>
         Buy (you have £{player.moneyCount()})
         </div>
       <div>
-        {items.map(([item, count]) => {
+        {items().map(([item, count]) => {
           return (<div class={styles['item']}>
             <InfoModalLink actor={item} />
             <ItemCountIndicator count={count} />
@@ -40,14 +40,14 @@ function ItemsForSale(props) {
 function ItemsToSell(props) {
   const npc = props.npc
   const player = props.player
-  const items = npc.willBuy(player.inventory())
+  const items = () => npc.willBuy(player.inventory())
   return (
-    <Show when={items.length > 0}>
+    <Show when={items().length > 0}>
       <div class={styles['divider']}>
         Sell (trader has £{npc.moneyCount()})
         </div>
       <div>
-        {items.map(([item, count]) => {
+        {items().map(([item, count]) => {
           return (<div class={styles['item']}>
             <InfoModalLink actor={item} />
             <ItemCountIndicator count={count} />
