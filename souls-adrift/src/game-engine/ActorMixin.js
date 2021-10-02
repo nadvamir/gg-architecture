@@ -197,7 +197,7 @@ const ActorMixin = {
             if (actor.stats.hp > this.maxHp()) {
                 actor.stats.hp = this.maxHp()
             }
-            else if (actor.stats.hp < 0) {
+            else if (actor.stats.hp <= 0) {
                 actor.stats.hp = 0
                 isDead = true
             }
