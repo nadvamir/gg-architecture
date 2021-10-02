@@ -3,6 +3,7 @@ function processEquip(args, gameEngine) {
 
     if (!item.isEquippable()) return
     if (!item.canEquip(actor.skills)) return
+    if (!actor.hasItem(item.id, 1)) return
 
     // only one item of each type is allowed, so unequip a clashing item
     const current = actor.equipment().filter(i => i.type() == item.type())

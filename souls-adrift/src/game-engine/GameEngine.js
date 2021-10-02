@@ -253,11 +253,9 @@ class GameEngine {
     }
 
     recoverHealth() {
-        const player = this.get(this.state.uid)
+        const player = this.player()
         if (player.hp() < player.maxHp()) {
-            this.setState(this.state.uid, produce(player => {
-                player.stats.hp += 1
-            }))
+            player.alterHealth(1)
             setTimeout(_ => this.recoverHealth(), 1000)
         }
     }

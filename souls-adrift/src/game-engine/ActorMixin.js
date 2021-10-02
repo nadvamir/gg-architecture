@@ -1,4 +1,5 @@
 import { produce } from 'solid-js/store';
+import { deepCopy } from '../game-client/util/Util';
 
 // A set of methods common to all players and NPC
 const ActorMixin = {
@@ -127,6 +128,13 @@ const ActorMixin = {
         return Math.round(100 * points / (points + opponentPoints))
     },
 
+    // --------- Prototype work -----------
+    ensure(obj, property) {
+        if (!(property in obj)) {
+            obj[property] = deepCopy(this.src[property])
+        }
+    },
+
     // ------------ Modifiers -------------
     setLocation(location) {
         this.gameEngine.setState(this.id, produce(actor => {
@@ -143,6 +151,7 @@ const ActorMixin = {
     add(item, count = 1) {
         if (count < 1) return
         this.gameEngine.setState(this.id, produce(actor => {
+            this.ensure(actor, 'inventory')
             actor.inventory[item.id] = count + (actor.inventory[item.id] || 0)
         }))
     },
@@ -150,6 +159,7 @@ const ActorMixin = {
     remove(item, count = 1) {
         if (count < 1) return
         this.gameEngine.setState(this.id, produce(actor => {
+            this.ensure(actor, 'inventory')
             if (!(item.id in actor.inventory)) return
             if (actor.inventory[item.id] <= count) {
                 delete actor.inventory[item.id]
@@ -162,13 +172,29 @@ const ActorMixin = {
 
     equip(item) {
         this.gameEngine.setState(this.id, produce(actor => {
+            this.ensure(actor, 'equipment')
             actor.equipment.push(item.id)
         }))
     },
 
     unequip(item) {
         this.gameEngine.setState(this.id, produce(actor => {
+            this.ensure(actor, 'equipment')
             actor.equipment = actor.equipment.filter(id => id != item.id)
+        }))
+    },
+
+    alterHealth(diff) {
+        this.gameEngine.setState(this.id, produce(actor => {
+            this.ensure(actor, 'stats')
+            actor.stats.hp += diff
+            if (actor.stats.hp > this.maxHp()) {
+                actor.stats.hp = this.maxHp()
+            }
+            else if (actor.stats.hp < 0) {
+                actor.stats.hp = 0
+                //TODO: death
+            }
         }))
     }
 }

@@ -29,9 +29,10 @@ function unequip(id) {
     gameEngine.send(Action.Unequip, [state.uid, id])
 }
 
-function use(id) {
+function use(id, target) {
     if (interactionState.sending) return
-    gameEngine.send(Action.Use, [state.uid, id])
+    target = target || state.uid
+    gameEngine.send(Action.Use, [state.uid, id, target])
 }
 
 function goTo(id) {
