@@ -1,6 +1,6 @@
 import { CountSelectorLink } from "../items/CountSelectorLink.jsx"
 
-import { equip, unequip, use, drop, buy, sell } from "../../game-engine/GameActions";
+import { equip, unequip, use, drop, buy, sell, takeFrom } from "../../game-engine/GameActions";
 
 function EquipItemLink(props) {
     const item = props.item
@@ -52,6 +52,12 @@ function SellItemLink(props) {
     )
 }
 
+function TakeItemFromLink(props) {
+    const store = props.store
+    const item = props.item
+    return (<> — <CountSelectorLink callback={(count) => takeFrom(item.id, count, store.id)} text='take' max={props.count} item={item} /></>)
+}
+
 export {
     EquipItemLink,
     UnequipItemLink,
@@ -60,5 +66,6 @@ export {
     ItemCountIndicator,
     ItemCostIndicator,
     BuyItemLink,
-    SellItemLink
+    SellItemLink,
+    TakeItemFromLink
 }

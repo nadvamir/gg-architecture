@@ -55,4 +55,9 @@ function talk(message) {
     gameEngine.sendToLoc(gameEngine.player().location(), Action.Talk, [state.uid, message])
 }
 
-export { attack, pickUp, drop, equip, unequip, use, goTo, buy, sell, talk }
+function takeFrom(id, count, store) {
+    if (interactionState.sending) return
+    gameEngine.send(Action.TakeFrom, [state.uid, id, count, store])
+}
+
+export { attack, pickUp, drop, equip, unequip, use, goTo, buy, sell, talk, takeFrom }

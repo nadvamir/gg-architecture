@@ -50,7 +50,7 @@ const ItemDefinitions = {
         'name': 'Generic corpse',
         'value': 0,
         'type': 'corpse',
-        'inventory': []
+        'inventory': {}
     }
 }
 

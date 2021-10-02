@@ -82,12 +82,13 @@ const ActorMixin = {
         return this.itemCount(this.gameEngine.moneyId())
     },
 
-    hasItem(itemId, count=1) {
-        return this.itemCount(itemId) >= count
+    hasItem(item, count=1) {
+        const id = item.id || item
+        return this.itemCount(id) >= count
     },
 
     canAfford(cost) {
-        return this.hasItem(this.gameEngine.moneyId(), cost)
+        return this.moneyCount() >= cost
     },
 
     battleTarget() {

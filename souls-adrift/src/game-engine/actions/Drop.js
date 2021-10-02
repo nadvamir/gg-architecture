@@ -4,7 +4,7 @@ function processDrop(args, gameEngine) {
     const count = args[2]
 
     // verify that the player can drop
-    if (!actor.hasItem(item.id, count)) {
+    if (!actor.hasItem(item, count)) {
         console.log(actor.name(), 'does not have ', count, ' of ', item.name())
         return
     }

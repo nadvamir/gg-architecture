@@ -11,7 +11,7 @@ function processSell(args, gameEngine) {
     }
 
     // the seller must have the item in question
-    if (!actor.hasItem(item.id, count)) {
+    if (!actor.hasItem(item, count)) {
         console.log(actor.name(), 'does not have ', count, 'of', item.name())
         return
     }

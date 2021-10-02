@@ -97,6 +97,15 @@ class Item {
         return inv
     }
 
+    itemCount(itemId) {
+        return this.get('inventory')[itemId] || 0
+    }
+
+    hasItem(item, count=1) {
+        const id = item.id || item
+        return this.itemCount(id) >= count
+    }
+
     // --------- Prototype work -----------
     ensure(obj, property) {
         if (!(property in obj)) {
