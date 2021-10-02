@@ -26,8 +26,7 @@ function DropItemLink(props) {
 }
 
 function ItemCountIndicator(props) {
-    if (props.count == 1) return ''
-    return (<> ({props.count})</>)
+    return (<Show when={props.count > 1}> ({props.count})</Show>)
 }
 
 function ItemCostIndicator(props) {
@@ -35,13 +34,19 @@ function ItemCostIndicator(props) {
 }
 
 function BuyItemLink(props) {
-    if (!props.player.canAfford(props.cost)) return (<> — buy</>)
-    return (<> — <CountSelectorLink callback={(count) => buy(props.item.id, count, props.npc.id)} text='buy' max={props.count} item={props.item} /></>)
+    return (
+        <Show when={props.player.canAfford(props.cost)} fallback=' — buy'>
+            <> — <CountSelectorLink callback={(count) => buy(props.item.id, count, props.npc.id)} text='buy' max={props.count} item={props.item} /></>
+        </Show>
+    )
 }
 
 function SellItemLink(props) {
-    if (!props.npc.canAfford(props.cost)) return (<> — sell</>)
-    return (<> — <CountSelectorLink callback={(count) => sell(props.item.id, count, props.npc.id)} text='sell' max={props.count} item={props.item} /></>)
+    return (
+        <Show when={props.npc.canAfford(props.cost)} fallback=' — sell'>
+            <> — <CountSelectorLink callback={(count) => sell(props.item.id, count, props.npc.id)} text='sell' max={props.count} item={props.item} /></>
+        </Show>
+    )
 }
 
 export {

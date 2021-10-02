@@ -279,6 +279,10 @@ class GameEngine {
         return 2000005
     }
 
+    money() {
+        return this.get(this.moneyId())
+    }
+
     serverId() {
         return 0
     }

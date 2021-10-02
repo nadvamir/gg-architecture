@@ -4,6 +4,7 @@ import styles from "../../App.module.css";
 
 import { gameEngine } from "../../game-engine/GameAssembly";
 
+import { EventsSection } from "../items/EventsSection.jsx"
 import { StatusBar } from "../items/StatusBar.jsx"
 import { InfoModalLink } from "../items/InfoModalLink.jsx"
 import {
@@ -27,8 +28,8 @@ function ItemsForSale(props) {
           return (<div class={styles['item']}>
             <InfoModalLink actor={item} />
             <ItemCountIndicator count={count} />
-            <BuyItemLink item={item} player={player} cost={npc.bidPrice(item, player)} count={count} npc={npc} />
-            <ItemCostIndicator cost={npc.bidPrice(item, player)} />
+            <BuyItemLink item={item} player={player} cost={npc.askPrice(item, player)} count={count} npc={npc} />
+            <ItemCostIndicator cost={npc.askPrice(item, player)} />
           </div>)
         })}
       </div>
@@ -50,8 +51,8 @@ function ItemsToSell(props) {
           return (<div class={styles['item']}>
             <InfoModalLink actor={item} />
             <ItemCountIndicator count={count} />
-            <SellItemLink item={item} npc={npc} cost={npc.askPrice(item, player)} count={count} npc={npc} />
-            <ItemCostIndicator cost={npc.askPrice(item, player)} />
+            <SellItemLink item={item} npc={npc} cost={npc.bidPrice(item, player)} count={count} npc={npc} />
+            <ItemCostIndicator cost={npc.bidPrice(item, player)} />
           </div>)
         })}
       </div>
@@ -61,19 +62,25 @@ function ItemsToSell(props) {
 
 function NpcScreenImpl() {
   const { npc, player } = useData()()
+  const state = npc.gameEngine.getState()
+  const location = npc.location()
 
   return (
     <div class={styles['content']}>
       <header>
         <StatusBar />
         <h1>{npc.name()}</h1>
-        <div class={styles['location-info']}>
-          Hey, what brings you here?
-          </div>
       </header>
+      <EventsSection messages={state.messages} location={location} />
+      <div class={styles['divider']}>
+        Said {npc.name()},
+      </div>
+      <div class={styles['location-info']}>
+        Hey, what brings you here?
+      </div>
       <div class={styles['divider']}>
         Dialog
-        </div>
+      </div>
       <div>
         <div class={styles['item']}><Link href="/inspect/:sailor">I'm looking for work</Link></div>
         <div class={styles['item']}><Link href="/inspect/:sailor">I believe you lost something</Link> (give Amulet)</div>

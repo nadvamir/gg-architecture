@@ -5,6 +5,7 @@ import { LocationStatusBar } from "../items/StatusBar.jsx"
 import { ItemCountIndicator } from "../items/ItemWidgets.jsx"
 import { InfoModalLink } from "../items/InfoModalLink.jsx"
 import { CountSelectorLink } from "../items/CountSelectorLink.jsx"
+import { EventsSection } from "../items/EventsSection.jsx"
 
 import { gameEngine } from "../../game-engine/GameAssembly";
 import { attack, pickUp, goTo } from "../../game-engine/GameActions";
@@ -54,18 +55,6 @@ function LevelIndicator(props) {
   return (<Show when={!!props.actor.level}>
     <>[{props.actor.level()}] </>
   </Show>)
-}
-
-function EventsSection(props) {
-  const messages = props.messages
-  return (
-    <div class={messages.length == 0 ? styles['hidden'] : ''}>
-      <div class={styles['divider']}>Events</div>
-      <section class={styles['location-info']}>
-        {messages.map(([d, m]) => { return (<div>{d.toLocaleTimeString()} — {m}</div>) })}
-      </section>
-    </div>
-  )
 }
 
 function BattleSection(props) {

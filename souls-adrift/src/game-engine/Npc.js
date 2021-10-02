@@ -49,6 +49,11 @@ class Npc {
         return Math.round(item.value() * trade.sell)
     }
 
+    hasForSale(item, count, player) {
+        // player here for the future, in case items become available only after a quest
+        return this.forSale().filter(([i, c]) => i.id == item.id && c >= count).length > 0
+    }
+
     chaseChance() {
         switch (this.category()) {
             // Tame NPCs have a 33% chance of chasing after the attacker
