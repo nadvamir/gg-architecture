@@ -1,5 +1,6 @@
 import styles from "../../App.module.css";
 
+import { EventsSection } from "../items/EventsSection.jsx"
 import { StatusBar } from "../items/StatusBar.jsx"
 import { InfoModalLink } from "../items/InfoModalLink.jsx"
 import { SkillList } from "../items/SkillList.jsx"
@@ -49,6 +50,7 @@ function CharacterScreenImpl() {
           <p>I was told that no ships will visit the harbour until spring. I can't leave, and I'm running out of money.</p>
         </div>
       </header>
+      <EventsSection messages={state.messages} location={player.location()} />
       <div class={styles['divider']}>
         Character
         </div>
