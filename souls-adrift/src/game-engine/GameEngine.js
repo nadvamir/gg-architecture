@@ -87,7 +87,7 @@ class GameEngine {
                 'stats': {
                     'hp': 10,
                     'lvl': 1,
-                    'exp': 15,
+                    'exp': 85,
                     'skill_points': 1
                 },
                 'skills': {
@@ -168,27 +168,12 @@ class GameEngine {
             1000002: {
                 'name': 'Rat',
                 'src': 'n.x.rat',
-                'stats': {
-                    'hp': 10,
-                    'lvl': 1,
-                    'exp_worth': 10,
-                    'base_dmg': 2,
-                    'dmg_spread': 3,
-                    'base_armor': 0
-                },
                 'location': 1,
                 'battle': 3000002
             },
             1000003: {
                 'name': 'Mouse',
                 'src': 'n.a.mouse',
-                'stats': {
-                    'hp': 7,
-                    'lvl': 1,
-                    'exp_worth': 10,
-                    'base_dmg': 2,
-                    'base_armor': 0
-                },
                 'location': 1,
                 'battle': 3000001
             },

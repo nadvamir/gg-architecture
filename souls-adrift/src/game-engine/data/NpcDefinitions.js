@@ -64,9 +64,9 @@ const NpcDefinitions = {
         'name': 'Mouse',
         'type': 'npc.chill',
         'stats': {
-            'hp': 7,
+            'hp': 10,
             'lvl': 1,
-            'exp_worth': 10,
+            'exp_worth': 5,
             'base_dmg': 2,
             'base_armor': 0
         },

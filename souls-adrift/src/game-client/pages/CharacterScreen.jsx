@@ -42,7 +42,7 @@ function CharacterScreenImpl() {
     <div class={styles['content']}>
       <header>
         <StatusBar />
-        <h1>[1] __Blind_Augur__</h1>
+        <h1>[{player.level()}] __Blind_Augur__</h1>
         <div>
           Chapter 1: Soul Stranded
           </div>

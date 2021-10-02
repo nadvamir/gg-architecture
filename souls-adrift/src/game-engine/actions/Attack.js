@@ -25,6 +25,11 @@ function processAttack(args, gameEngine, riposte) {
         gameEngine.recordEvent(attacker.name() + ' has missed')
     }
 
+    // if we killed the target, gain exp
+    if (target.hp() == 0) {
+        attacker.gainExperience && attacker.gainExperience(target)
+    }
+
     // automatic riposte:
     if (!riposte && target.hp() > 0) {
         processAttack([target.id, attacker.id], gameEngine, true)

@@ -38,6 +38,11 @@ const ActorMixin = {
         return this.get('skills')
     },
 
+    level() {
+        const stats = this.get('stats')
+        return stats.lvl
+    },
+
     equipment() {
         return this.get('equipment').map(id => this.gameEngine.get(id))
     },

@@ -56,7 +56,8 @@ function FightingStatus(props) {
 }
 
 function LevelIndicator(props) {
-  return (<Show when={!!props.actor.level}>
+  const isPlayer = props.actor.category()[0] == 'p'
+  return (<Show when={isPlayer}>
     <>[{props.actor.level()}] </>
   </Show>)
 }
