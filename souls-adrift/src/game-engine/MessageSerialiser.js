@@ -1,6 +1,12 @@
 import { Action } from './actions/ActionFactory.js'
 
 function serialise(action, args) {
+    if (action == Action.OverwriteState) {
+        return action + '|' + JSON.stringify(args)
+    }
+    if (action == Action.Talk) {
+        args[1].replace('|', '')
+    }
     return action + '|' + args.join('|')
 }
 
