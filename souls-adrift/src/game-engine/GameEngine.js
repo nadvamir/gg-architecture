@@ -9,6 +9,7 @@ import { Location } from './Location.js'
 import { Action } from "./actions/ActionFactory";
 import { deepCopy } from '../game-client/util/Util.js';
 import { ItemDefinitions } from './data/ItemDefinitions.js';
+import { AI } from './AI.js';
 
 const DESPAWN_PERIOD = 30 * 60 * 1000 // 30 minutes
 const RESPAWN_PERIOD = 5 * 60 * 1000 // 5 minutes
@@ -36,6 +37,9 @@ class GameEngine {
         this.nextHash = null
 
         setTimeout(_ => this.loadGameState(), 300)
+
+        // AI that will control automated actions
+        this.ai = new AI(this)
     }
 
     send(action, args) {
@@ -50,12 +54,14 @@ class GameEngine {
         this.send(action, args)
     }
 
-    onMessageReceived(sender, type, message, hash) {
+    onMessageReceived(sender, type, message, hash, time) {
         const [action, args] = deserialise(message)
         if (!this.authorised(sender, type, action, args)) {
             console.log('Received an unauthorised message')
             return
         }
+        this.updateTime(time)
+        this.ai.run(time)
         this.handleEvent(action, args)
         if (hash == this.nextHash) {
             console.log('Received')
@@ -89,6 +95,7 @@ class GameEngine {
             spawn_queue: [],
             region_spawn_point: 1,
             last_id: 3000002,
+            time: 0,
             3000001: {
                 'name': '__Blind_Augur__',
                 'src': 'p.player',
@@ -264,8 +271,13 @@ class GameEngine {
     }
 
     gameTime() {
-        //TODO: return the time of last event
-        return new Date().getTime()
+        return this.state.time
+    }
+
+    updateTime(time) {
+        this.setState(produce(state => {
+            state.time = time
+        }))
     }
 
     // ----------------- Accessors -----------------
@@ -334,13 +346,13 @@ class GameEngine {
     enqueueRespawn(actor, locationId) {
         this.setState('spawn_queue', produce(queue => {
             const respawnPeriod = actor.state.respawn_period || RESPAWN_PERIOD
-            queue.push([actor.state.src, locationId, this.getTime() + respawnPeriod])
+            queue.push([actor.state.src, locationId, this.gameTime() + respawnPeriod])
         }))
     }
 
     enqueueDespawn(actor, count=1) {
         this.setState('despawn_queue', produce(queue => {
-            queue.push([actor.id, count, actor.location(), this.getTime() + DESPAWN_PERIOD])
+            queue.push([actor.id, count, actor.location(), this.gameTime() + DESPAWN_PERIOD])
         }))
     }
 

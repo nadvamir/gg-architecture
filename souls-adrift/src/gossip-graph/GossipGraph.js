@@ -17,7 +17,7 @@ class GossipGraph {
     send(type, message) {
         this.lastHash = murmurhash.v3(message + this.lastHash)
         for (let listener of this.listeners) {
-            setTimeout(_ => listener(this.id, type, message, this.lastHash), Math.random() * 1000)
+            setTimeout(_ => listener(this.id, type, message, this.lastHash, new Date().getTime()), Math.random() * 1000)
         }
         return this.lastHash
     }
