@@ -45,6 +45,12 @@ const ItemDefinitions = {
         'name': 'Rusty key',
         'value': 0,
         'type': 'misc'
+    },
+    'i.d.corpse': {
+        'name': 'Generic corpse',
+        'value': 0,
+        'type': 'corpse',
+        'inventory': []
     }
 }
 

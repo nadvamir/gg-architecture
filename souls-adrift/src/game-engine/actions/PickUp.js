@@ -5,9 +5,13 @@ function processPickUp(args, gameEngine) {
 
     const location = actor.location()
 
-    // verify that the player can drop
+    // verify that the player can pick up
     if (!location.hasActor(item, count)) {
         console.log(location.name(), 'does not have ', count, ' of ', item.name())
+        return
+    }
+    if (!item.isMovable()) {
+        console.log(item.name(), 'cannot be picked up')
         return
     }
 

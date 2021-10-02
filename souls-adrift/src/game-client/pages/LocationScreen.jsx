@@ -34,6 +34,7 @@ function AttackLink(props) {
 function PickUpLink(props) {
   const actor = props.actor
   if (actor.constructor.name != 'Item') return ''
+  if (!actor.isMovable()) return ''
   return (<> — <CountSelectorLink callback={(count) => pickUp(props.actor.id, count)} text='pick up' max={props.count} item={props.actor} /></>)
 }
 

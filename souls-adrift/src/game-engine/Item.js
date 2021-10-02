@@ -1,3 +1,6 @@
+import { produce } from 'solid-js/store';
+
+import { deepCopy } from '../game-client/util/Util.js';
 import { ItemDefinitions } from './data/ItemDefinitions.js'
 
 class Item {
@@ -71,6 +74,58 @@ class Item {
 
     isConsumable() {
         return this.type() == "consumable"
+    }
+
+    hasStorage() {
+        return this.type() == "corpse" || this.type() == "store"
+    }
+
+    isMovable() {
+        return !this.hasStorage() && this.type() != 'landmark'
+    }
+
+    // some items (corpses, crates) have storage capacity
+    inventory() {
+        const invDef = this.get('inventory')
+        const inv = []
+        if (!invDef) return inv
+        for (const sid of Object.keys(invDef)) {
+            const id = parseInt(sid, 10)
+            let count = invDef[id]
+            inv.push([this.gameEngine.get(id), count])
+        }
+        return inv
+    }
+
+    // --------- Prototype work -----------
+    ensure(obj, property) {
+        if (!(property in obj)) {
+            obj[property] = deepCopy(this.src[property])
+        }
+    }
+
+    // ------------ Modifiers ------------
+    //TODO: extract inventory mixin
+    add(item, count = 1) {
+        if (count < 1) return
+        this.gameEngine.setState(this.id, produce(actor => {
+            this.ensure(actor, 'inventory')
+            actor.inventory[item.id] = count + (actor.inventory[item.id] || 0)
+        }))
+    }
+
+    remove(item, count = 1) {
+        if (count < 1) return
+        this.gameEngine.setState(this.id, produce(actor => {
+            this.ensure(actor, 'inventory')
+            if (!(item.id in actor.inventory)) return
+            if (actor.inventory[item.id] <= count) {
+                delete actor.inventory[item.id]
+            }
+            else {
+                actor.inventory[item.id] -= count
+            }
+        }))
     }
 }
 

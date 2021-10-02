@@ -90,11 +90,30 @@ class Player {
         const location = this.location()
         location.remove(this)
         location.actorsFighting(this).map(a => a.setBattle(0))
+        this.gameEngine.createCorpse(this)
 
         const spawnPoint = this.spawnPoint()
         spawnPoint.add(this)
         this.setLocation(spawnPoint)
         this.alterHealth(1)
+    }
+
+    moveItemsToCorpse(corpse) {
+        // For the player, all invetory items that are not equipped
+        const excludeEquipped = true
+        this.inventory(excludeEquipped).map(([i, cnt]) => {
+            this.remove(i, cnt)
+            corpse.add(i, cnt)
+        })
+
+        // + one equipped item goes to corpse
+        const equipment = this.equipment()
+        if (equipment.length > 0) {
+            const toRemove = equipment[this.gameEngine.rand() % equipment.length]
+            this.unequip(toRemove)
+            this.remove(toRemove, 1)
+            corpse.add(toRemove, 1)
+        }
     }
 }
 

@@ -72,8 +72,20 @@ class Npc {
         const location = this.location()
         location.remove(this)
         location.actorsFighting(this).map(a => a.setBattle(0))
+        this.gameEngine.createCorpse(this)
         this.gameEngine.remove(this)
         this.gameEngine.enqueueRespawn(this.category(), this.state.spawn_point)
+    }
+
+    moveItemsToCorpse(corpse) {
+        // for the NPC, the entire inventory goes to corpse
+        // including equipped items
+        const excludeEquipped = false
+        this.inventory(excludeEquipped).map(([i, cnt]) => {
+            this.unequip(i)
+            this.remove(i, cnt)
+            corpse.add(i, cnt)
+        })
     }
 }
 

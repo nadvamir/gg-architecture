@@ -7,6 +7,8 @@ import { Npc } from './Npc.js'
 import { Item } from './Item.js'
 import { Location } from './Location.js'
 import { Action } from "./actions/ActionFactory";
+import { deepCopy } from '../game-client/util/Util.js';
+import { ItemDefinitions } from './data/ItemDefinitions.js';
 
 class GameEngine {
     constructor(gossipGraph) {
@@ -83,6 +85,7 @@ class GameEngine {
             uid: 3000001,
             spawn_queue: [],
             region_spawn_point: 1,
+            last_id: 3000002,
             3000001: {
                 'name': '__Blind_Augur__',
                 'src': 'p.player',
@@ -307,6 +310,13 @@ class GameEngine {
     }
 
     // --------------- Modifiers -----------------
+    nextId() {
+        this.setState(produce(state => {
+            state.last_id += 1
+        }))
+        return this.state.last_id
+    }
+
     remove(actor) {
         this.setState(produce(state => {
             delete state[actor.id]
@@ -317,6 +327,25 @@ class GameEngine {
         this.setState('spawn_queue', produce(queue => {
             queue.push([src, locationId])
         }))
+    }
+
+    createCorpse(actor) {
+        const location = actor.location()
+        const id = this.nextId()
+        const corpseSrc = 'i.d.corpse'
+
+        this.setState(produce(state => {
+            state[id] = deepCopy(ItemDefinitions[corpseSrc])
+            state[id].src = corpseSrc
+            state[id].name = actor.name() + ' (corpse)'
+            state[id].location = location.id
+        }))
+
+        const corpse = this.get(id)
+        actor.moveItemsToCorpse(corpse)
+        location.add(corpse)
+
+        return corpse
     }
 }
 
