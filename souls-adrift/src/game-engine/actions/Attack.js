@@ -18,8 +18,10 @@ function processAttack(args, gameEngine, riposte) {
         const minDmg = attacker.minDmg() * mult
         const maxDmg = attacker.maxDmg() * mult
         const dmg = Math.round(minDmg + (maxDmg - minDmg) * gameEngine.rand() / 100)
-        target.alterHealth(-dmg)
+
         gameEngine.recordEvent(attacker.name() + ' has dealt ' + dmg + ' damage to ' + target.name())
+
+        target.alterHealth(-dmg)
     }
     else {
         gameEngine.recordEvent(attacker.name() + ' has missed')

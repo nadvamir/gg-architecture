@@ -72,6 +72,10 @@ class Player {
             this.gameEngine.recordEvent('You have gained 1 skill point!')
         }
     }
+
+    die() {
+        this.gameEngine.recordEvent(this.name() + ' has died!')
+    }
 }
 
 Object.assign(Player.prototype, ActorMixin)

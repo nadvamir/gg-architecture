@@ -81,6 +81,7 @@ class GameEngine {
     loadGameState() {
         this.setState({
             uid: 3000001,
+            spawn_queue: [],
             3000001: {
                 'name': '__Blind_Augur__',
                 'src': 'p.player',
@@ -163,18 +164,21 @@ class GameEngine {
                     // classes of items he's interested in
                     'to_buy': ['weapon', 'helmet', 'gloves', 'boots']
                 },
-                'location': 1
+                'location': 1,
+                'spawn_point': 1
             },
             1000002: {
                 'name': 'Rat',
                 'src': 'n.x.rat',
                 'location': 1,
+                'spawn_point': 2,
                 'battle': 3000002
             },
             1000003: {
                 'name': 'Mouse',
                 'src': 'n.a.mouse',
                 'location': 1,
+                'spawn_point': 1,
                 'battle': 3000001
             },
             1000004: {
@@ -188,7 +192,8 @@ class GameEngine {
                     'dmg_spread': 3,
                     'base_armor': 0
                 },
-                'location': 1
+                'location': 1,
+                'spawn_point': 3
             },
             2000001: {
                 'src': 'i.w.sabre.officer',
@@ -294,6 +299,19 @@ class GameEngine {
     handleEvent(action, args) {
         const processor = Action.getProcessor(action)
         processor(args, this)
+    }
+
+    // --------------- Modifiers -----------------
+    remove(actor) {
+        this.setState(produce(state => {
+            delete state[actor.id]
+        }))
+    }
+
+    enqueueRespawn(src, locationId) {
+        this.setState('spawn_queue', produce(queue => {
+            queue.push([src, locationId])
+        }))
     }
 }
 

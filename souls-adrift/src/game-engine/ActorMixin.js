@@ -190,6 +190,7 @@ const ActorMixin = {
     },
 
     alterHealth(diff) {
+        let isDead = false
         this.gameEngine.setState(this.id, produce(actor => {
             this.ensure(actor, 'stats')
             actor.stats.hp += diff
@@ -198,9 +199,13 @@ const ActorMixin = {
             }
             else if (actor.stats.hp < 0) {
                 actor.stats.hp = 0
-                //TODO: death
+                isDead = true
             }
         }))
+
+        if (isDead) {
+            this.die()
+        }
     }
 }
 

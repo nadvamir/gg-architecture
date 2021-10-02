@@ -65,6 +65,16 @@ class Npc {
         }
         return 0
     }
+
+    // --------- Modifiers -----------
+    die() {
+        this.gameEngine.recordEvent(this.name() + ' has died!')
+        const location = this.location()
+        location.remove(this)
+        location.actorsFighting(this).map(a => a.setBattle(0))
+        this.gameEngine.remove(this)
+        this.gameEngine.enqueueRespawn(this.category(), this.state.spawn_point)
+    }
 }
 
 Object.assign(Npc.prototype, ActorMixin)
