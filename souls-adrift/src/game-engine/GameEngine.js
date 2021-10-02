@@ -40,6 +40,11 @@ class GameEngine {
         this.nextHash = this.gossipGraph.send(MessageType.DIRECT_MESSAGE, message)
     }
 
+    sendToLoc(location, action, args) {
+        //TODO: send direct messages to everyone in the graph
+        this.send(action, args)
+    }
+
     onMessageReceived(sender, type, message, hash) {
         const [action, args] = deserialise(message)
         if (!this.authorised(sender, type, action, args)) {

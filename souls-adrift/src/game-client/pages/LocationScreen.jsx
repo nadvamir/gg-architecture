@@ -8,7 +8,7 @@ import { CountSelectorLink } from "../items/CountSelectorLink.jsx"
 import { EventsSection } from "../items/EventsSection.jsx"
 
 import { gameEngine } from "../../game-engine/GameAssembly";
-import { attack, pickUp, goTo } from "../../game-engine/GameActions";
+import { attack, pickUp, goTo, talk } from "../../game-engine/GameActions";
 
 function Nbsp() {
   return '\u00A0'
@@ -128,6 +128,24 @@ function DirectionSection(props) {
   )
 }
 
+function MessageBox(props) {
+  let inputRef;
+  const sendMessage = () => {
+    talk(inputRef.value)
+    inputRef.value = ''
+  }
+
+  return (
+    <div>
+      <div class={styles['divider']}>Speak</div>
+      <div id={styles['message-box']}>
+        <textarea rows='3' ref={inputRef}></textarea>
+        <button onclick={sendMessage}>➳</button>
+      </div>
+    </div>
+  )
+}
+
 function LocationScreenImpl() {
   const state = gameEngine.getState()
   const player = gameEngine.get(state.uid)
@@ -144,11 +162,7 @@ function LocationScreenImpl() {
       <BattleSection player={player} target={player.battleTarget()} />
       <LocationSection player={player} location={location()} />
       <DirectionSection player={player} location={location()} />
-      <div class={styles['divider']}>Speak</div>
-      <div id={styles['message-box']}>
-        <textarea rows='3'></textarea>
-        <button>➳</button>
-      </div>
+      <MessageBox />
     </div>
   );
 }

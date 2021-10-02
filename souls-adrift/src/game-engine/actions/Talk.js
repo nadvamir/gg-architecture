@@ -1,6 +1,7 @@
 function processTalk(args, gameEngine) {
-    const [actor, message] = args
-    gameEngine.recordEvent(args[0] + ': ' + message)
+    const actor = gameEngine.get(args[0])
+    const message = args[1]
+    gameEngine.recordEvent(actor.name() + ': ' + message)
 }
 
 export { processTalk }
