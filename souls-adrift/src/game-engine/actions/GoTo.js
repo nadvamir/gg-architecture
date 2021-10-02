@@ -11,6 +11,21 @@ function processGoTo(args, gameEngine) {
     currentLocation.remove(actor, 1)
     location.add(actor, 1)
 
+    // notify if we're around
+    // do this before the chasing mechanic, so that chase logs aren't cleared
+    if (actor.id != gameEngine.playerId()) {
+        const player = gameEngine.player()
+        if (player.location().id == currentLocation.id) {
+            gameEngine.recordEvent(actor.name() + ' left for ' + location.name())
+        }
+        else if (player.location().id == location.id) {
+            gameEngine.recordEvent(actor.name() + ' arrived')
+        }
+    }
+    else {
+        gameEngine.clearEventList()
+    }
+
     // exit a fight if target is not in the location
     // (i.e. always apart from when chasing)
     const battleTarget = actor.battleTarget()
@@ -31,20 +46,6 @@ function processGoTo(args, gameEngine) {
             hostile.setBattle(0)
         }
     })
-
-    // notify if we're around
-    if (actor.id != gameEngine.playerId()) {
-        const player = gameEngine.player()
-        if (player.location().id == currentLocation.id) {
-            gameEngine.recordEvent(actor.name() + ' left for ' + location.name())
-        }
-        else if (player.location().id == location.id) {
-            gameEngine.recordEvent(actor.name() + ' arrived')
-        }
-    }
-    else {
-        gameEngine.clearEventList()
-    }
 }
 
 export { processGoTo }
