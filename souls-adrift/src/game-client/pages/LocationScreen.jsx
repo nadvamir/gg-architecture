@@ -35,9 +35,8 @@ function PickUpLink(props) {
 function HpPercentStatus(props) {
   const actor = props.actor
   if (!actor.hp) return ''
-  const percent = Math.floor(actor.hp() / actor.maxHp() * 100)
-  if (percent == 100) return ''
-  return (<><Nbsp />{percent}%</>)
+  const percent = () => Math.floor(actor.hp() / actor.maxHp() * 100)
+  return (<Show when={percent() < 100}><Nbsp />{percent()}%</Show>)
 }
 
 function AttackSuccessStatus(props) {

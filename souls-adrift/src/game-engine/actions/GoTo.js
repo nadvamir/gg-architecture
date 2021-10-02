@@ -36,8 +36,7 @@ function processGoTo(args, gameEngine) {
     }
     // but actors that are fighting can chose to chase
     currentLocation.actorsFighting(actor).map(hostile => {
-        const r = gameEngine.rand()
-        if (r <= hostile.chaseChance()) {
+        if (gameEngine.rand() <= hostile.chaseChance()) {
             // chase
             processGoTo([hostile.id, location.id], gameEngine)
         }
