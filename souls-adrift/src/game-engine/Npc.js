@@ -74,7 +74,7 @@ class Npc {
         location.actorsFighting(this).map(a => a.setBattle(0))
         this.gameEngine.createCorpse(this)
         this.gameEngine.remove(this)
-        this.gameEngine.enqueueRespawn(this.category(), this.state.spawn_point)
+        this.gameEngine.enqueueRespawn(this, this.state.spawn_point)
     }
 
     moveItemsToCorpse(corpse) {

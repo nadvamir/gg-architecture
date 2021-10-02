@@ -10,6 +10,9 @@ import { Action } from "./actions/ActionFactory";
 import { deepCopy } from '../game-client/util/Util.js';
 import { ItemDefinitions } from './data/ItemDefinitions.js';
 
+const DESPAWN_PERIOD = 30 * 60 * 1000 // 30 minutes
+const RESPAWN_PERIOD = 5 * 60 * 1000 // 5 minutes
+
 class GameEngine {
     constructor(gossipGraph) {
         this.gossipGraph = gossipGraph
@@ -260,6 +263,11 @@ class GameEngine {
         return Math.round(Math.random() * 100)
     }
 
+    gameTime() {
+        //TODO: return the time of last event
+        return new Date().getTime()
+    }
+
     // ----------------- Accessors -----------------
     get(id) {
         const entity = this.state[id]
@@ -323,9 +331,16 @@ class GameEngine {
         }))
     }
 
-    enqueueRespawn(src, locationId) {
+    enqueueRespawn(actor, locationId) {
         this.setState('spawn_queue', produce(queue => {
-            queue.push([src, locationId])
+            const respawnPeriod = actor.state.respawn_period || RESPAWN_PERIOD
+            queue.push([actor.state.src, locationId, this.getTime() + respawnPeriod])
+        }))
+    }
+
+    enqueueDespawn(actor, count=1) {
+        this.setState('despawn_queue', produce(queue => {
+            queue.push([actor.id, count, actor.location(), this.getTime() + DESPAWN_PERIOD])
         }))
     }
 
@@ -344,6 +359,9 @@ class GameEngine {
         const corpse = this.get(id)
         actor.moveItemsToCorpse(corpse)
         location.add(corpse)
+
+        // Corpse should eventually disappear
+        this.enqueueDespawn(corpse)
 
         return corpse
     }
