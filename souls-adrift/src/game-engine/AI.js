@@ -1,5 +1,6 @@
 import { HealthRegen } from './ai/HealthRegen'
 import { NpcRoam } from './ai/NpcRoam';
+import { TraderRestock } from './ai/TraderRestock';
 
 function lazy(dataFunc) {
     let data;
@@ -17,7 +18,8 @@ class AI {
         // AI actions on alive objects
         this.aliveActorActions = [
             new HealthRegen(this, gameEngine),
-            new NpcRoam(this, gameEngine)
+            new NpcRoam(this, gameEngine),
+            new TraderRestock(this, gameEngine),
         ]
     }
 

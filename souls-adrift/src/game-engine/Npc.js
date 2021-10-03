@@ -1,3 +1,5 @@
+import { produce } from "solid-js/store"
+import { deepCopy } from "../game-client/util/Util"
 import { ActorMixin } from "./ActorMixin"
 import { NpcDefinitions } from './data/NpcDefinitions.js'
 
@@ -71,6 +73,10 @@ class Npc {
         return category == 'a' || category == 'x'
     }
 
+    isTrader() {
+        return this.category() == 't'
+    }
+
     // --------- Modifiers -----------
     die() {
         this.gameEngine.recordEvent(this.name() + ' has died!')
@@ -91,6 +97,12 @@ class Npc {
             this.remove(i, cnt)
             corpse.add(i, cnt)
         })
+    }
+
+    resetInventory() {
+        this.gameEngine.setState(this.id, produce((npc) => {
+            npc.inventory = deepCopy(this.src.inventory)
+        }))
     }
 }
 
