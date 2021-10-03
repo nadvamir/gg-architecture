@@ -1,5 +1,6 @@
 import { HealthRegen } from './ai/HealthRegen'
 import { NpcRoam } from './ai/NpcRoam';
+import { Respawn } from './ai/Respawn';
 import { TraderRestock } from './ai/TraderRestock';
 
 function lazy(dataFunc) {
@@ -21,12 +22,18 @@ class AI {
             new NpcRoam(this, gameEngine),
             new TraderRestock(this, gameEngine),
         ]
+
+        // AI actions run without objects
+        this.generalActions = [
+            new Respawn(this, gameEngine),
+        ]
     }
 
     run(time) {
         const aliveActors = lazy(() => this.gameEngine.aliveActors())
 
         this.aliveActorActions.forEach(a => a.run(aliveActors, time))
+        this.generalActions.forEach(a => a.run(time))
     }
 }
 

@@ -8,11 +8,12 @@ import { Item } from './Item.js'
 import { Location } from './Location.js'
 import { Action } from "./actions/ActionFactory";
 import { deepCopy } from '../game-client/util/Util.js';
-import { ItemDefinitions } from './data/ItemDefinitions.js';
 import { AI } from './AI.js';
+import { ItemDefinitions } from './data/ItemDefinitions.js';
+import { NpcDefinitions } from './data/NpcDefinitions.js';
 
 const DESPAWN_PERIOD = 30 * 60 * 1000 // 30 minutes
-const RESPAWN_PERIOD = 5 * 60 * 1000 // 5 minutes
+const RESPAWN_PERIOD = 5 * 1000 // 5 minutes
 
 class GameEngine {
     constructor(gossipGraph) {
@@ -361,6 +362,15 @@ class GameEngine {
         }))
     }
 
+    tryRespawn() {
+        const current = this.gameTime()
+        const ready = this.state.spawn_queue.filter(([_src, _locId, time]) => time <= current)
+        ready.forEach(([src, locId, _]) => {
+            if (src[0] == 'n') this.createNpc(src, locId)
+            else console.log('Respawning items not yet supported')
+        })
+    }
+
     createCorpse(actor) {
         const location = actor.location()
         const id = this.nextId()
@@ -381,6 +391,21 @@ class GameEngine {
         this.enqueueDespawn(corpse)
 
         return corpse
+    }
+
+    createNpc(src, locId) {
+        const location = this.get(locId)
+        const id = this.nextId() 
+
+        this.setState(produce(state => {
+            state[id] = deepCopy(NpcDefinitions[src])
+            state[id].src = src
+            state[id].location = location.id
+            state[id].spawn_point = location.id
+        }))
+
+        const npc = this.get(id)
+        location.add(npc)
     }
 
     updateAITime(timer, time) {

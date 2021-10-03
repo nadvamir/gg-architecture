@@ -1,4 +1,4 @@
-const REGEN_PERIOD = 1 * 1000
+const REGEN_PERIOD = 5 * 1000
 
 // Restore 1 health to everyone on a fixed timer
 class HealthRegen {
