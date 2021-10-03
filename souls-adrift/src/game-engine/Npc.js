@@ -66,6 +66,11 @@ class Npc {
         return 0
     }
 
+    canRoam() {
+        const category = this.category()
+        return category == 'a' || category == 'x'
+    }
+
     // --------- Modifiers -----------
     die() {
         this.gameEngine.recordEvent(this.name() + ' has died!')

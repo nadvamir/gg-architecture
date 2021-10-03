@@ -23,6 +23,10 @@ class Location {
         return this.get('desc')
     }
 
+    region() {
+        return this.state.src.split('.')[1]
+    }
+
     moves(player) {
         let baseMoves = this.get('moves').map(m => [this.gameEngine.get(m), true])
         let gated = this.get('gated_moves') || {}

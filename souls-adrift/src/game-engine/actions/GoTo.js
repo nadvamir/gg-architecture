@@ -16,10 +16,10 @@ function processGoTo(args, gameEngine) {
     if (actor.id != gameEngine.playerId()) {
         const player = gameEngine.player()
         if (player.location().id == currentLocation.id) {
-            gameEngine.recordEvent(actor.name() + ' left for ' + location.name())
+            gameEngine.recordEvent(actor.name() + ' has left for ' + location.name())
         }
         else if (player.location().id == location.id) {
-            gameEngine.recordEvent(actor.name() + ' arrived')
+            gameEngine.recordEvent(actor.name() + ' has arrived')
         }
     }
     else {
