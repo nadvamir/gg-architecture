@@ -252,16 +252,6 @@ class GameEngine {
                 'actors': {}
             }
         })
-
-        this.recoverHealth()
-    }
-
-    recoverHealth() {
-        const player = this.player()
-        if (player.hp() < player.maxHp()) {
-            player.alterHealth(1)
-            setTimeout(_ => this.recoverHealth(), 1000)
-        }
     }
 
     // ------------ Synchronised random ------------
@@ -283,6 +273,7 @@ class GameEngine {
     // ----------------- Accessors -----------------
     get(id) {
         const entity = this.state[id]
+        if (typeof id == "string") id = parseInt(id, 10)
         switch (entity.src[0]) {
             case 'l': return new Location(id, entity, this)
             case 'n': return new Npc(id, entity, this)
@@ -314,6 +305,16 @@ class GameEngine {
 
     regionSpawnPoint() {
         return this.get(this.state.region_spawn_point)
+    }
+
+    aliveActors() {
+        let actors = []
+        for (const [id, val] of Object.entries(this.state)) {
+            if (!val.src) continue
+            if (val.src[0] != 'n' && val.src[0] != 'p') continue
+            actors.push(this.get(id))
+        }
+        return actors
     }
 
     // ------------ Event Handling -----------------
