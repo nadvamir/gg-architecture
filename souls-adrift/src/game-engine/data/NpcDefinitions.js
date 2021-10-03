@@ -26,12 +26,11 @@ const NpcDefinitions = {
             2000006: 3
         },
         'trade': {
-            // what's he willing to sell, ids
-            'for_sale': [2000006],
             'buy': 0.8,
             'sell': 1.2,
             // classes of items he's interested in
-            'to_buy': ['weapon', 'helmet', 'gloves', 'boots']
+            'to_buy': ['weapon', 'helmet', 'gloves', 'boots'],
+            'for_sale': ['weapon', 'helmet', 'gloves', 'boots']
         },
         'location': 1,
         'battle': 0

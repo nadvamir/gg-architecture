@@ -171,12 +171,11 @@ class GameEngine {
                     2000006: 3
                 },
                 'trade': {
-                    // what's he willing to sell, ids
-                    'for_sale': [2000006],
                     'buy': 0.8,
                     'sell': 1.2,
                     // classes of items he's interested in
-                    'to_buy': ['weapon', 'helmet', 'gloves', 'boots']
+                    'to_buy': ['weapon', 'helmet', 'gloves', 'boots'],
+                    'for_sale': ['weapon', 'helmet', 'gloves', 'boots']
                 },
                 'location': 1,
                 'spawn_point': 1
@@ -237,7 +236,7 @@ class GameEngine {
             },
             2: {
                 'src': 'l.town.main.street',
-                'actors': {1000004: 1}
+                'actors': { 1000004: 1 }
             },
             3: {
                 'src': 'l.town.near.sunken.boat',
@@ -351,7 +350,7 @@ class GameEngine {
         }))
     }
 
-    enqueueDespawn(actor, count=1) {
+    enqueueDespawn(actor, count = 1) {
         this.setState('despawn_queue', produce(queue => {
             queue.push([actor.id, count, actor.location(), this.gameTime() + DESPAWN_PERIOD])
         }))

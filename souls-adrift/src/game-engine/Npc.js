@@ -29,7 +29,7 @@ class Npc {
 
     forSale() {
         const trade = this.get('trade')
-        return this.inventory().filter(([item, _]) => trade.for_sale.indexOf(item.id) != -1)
+        return this.inventory().filter(([item, _]) => trade.for_sale.indexOf(item.type()) != -1)
     }
 
     willBuy(inventory) {

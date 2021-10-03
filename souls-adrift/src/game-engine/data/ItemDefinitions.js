@@ -33,7 +33,7 @@ const ItemDefinitions = {
     'i.m.coin': {
         'name': 'Coin',
         'value': 1,
-        'type': 'misc'
+        'type': 'money'
     },
     'i.a.boots.leather': {
         'name': 'Leather boots',
