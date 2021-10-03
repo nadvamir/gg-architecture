@@ -21,7 +21,7 @@ class HealthRegen {
 
         this.lastTime = time
 
-        aliveActors.forEach(a => {
+        aliveActors().forEach(a => {
             if (a.hp() < a.maxHp()) {
                 a.alterHealth(1)
             }
