@@ -5,25 +5,26 @@ class HealthRegen {
     constructor(ai, gameEngine) {
         this.ai = ai
         this.gameEngine = gameEngine
-        this.lastTime = 0
     }
 
     run(aliveActors, time) {
-        // first message sets state -> we are up-to-date
-        if (this.lastTime == 0) {
-            this.lastTime = time
+        // potentially introducing new, registering the timer
+        const timer = 'health_regen'
+        const lastTime = this.gameEngine.getAITime(timer)
+        if (!lastTime) {
+            this.gameEngine.updateAITime(timer, time)
             return
         }
 
-        if (time - this.lastTime < REGEN_PERIOD) {
+        if (time - lastTime < REGEN_PERIOD) {
             return
         }
 
-        this.lastTime = time
+        this.gameEngine.updateAITime(timer, time)
 
         aliveActors().forEach(a => {
             if (a.hp() < a.maxHp()) {
-                a.alterHealth(1)
+                a.alterHealth(Math.round((time - lastTime) / REGEN_PERIOD))
             }
         })
     }

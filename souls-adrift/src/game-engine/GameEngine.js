@@ -96,6 +96,7 @@ class GameEngine {
             region_spawn_point: 1,
             last_id: 3000002,
             time: 0,
+            ai: {},
             3000001: {
                 'name': '__Blind_Augur__',
                 'src': 'p.player',
@@ -306,6 +307,10 @@ class GameEngine {
         return this.get(this.state.region_spawn_point)
     }
 
+    getAITime(timer) {
+        return this.state.ai[timer]
+    }
+
     aliveActors() {
         let actors = []
         for (const [id, val] of Object.entries(this.state)) {
@@ -376,6 +381,10 @@ class GameEngine {
         this.enqueueDespawn(corpse)
 
         return corpse
+    }
+
+    updateAITime(timer, time) {
+        this.setState('ai', produce(ai => ai[timer] = time))
     }
 }
 

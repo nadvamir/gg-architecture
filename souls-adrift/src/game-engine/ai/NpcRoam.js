@@ -14,17 +14,19 @@ class NpcRoam {
     }
 
     run(aliveActors, time) {
-        // first message sets state -> we are up-to-date
-        if (this.lastTime == 0) {
-            this.lastTime = time
+        // potentially introducing new, registering the timer
+        const timer = 'npc_roam'
+        const lastTime = this.gameEngine.getAITime(timer)
+        if (!lastTime) {
+            this.gameEngine.updateAITime(timer, time)
             return
         }
 
-        if (time - this.lastTime < ROAM_PERIOD) {
+        if (time - lastTime < ROAM_PERIOD) {
             return
         }
 
-        this.lastTime = time
+        this.gameEngine.updateAITime(timer, time)
 
         aliveActors().forEach(a => {
             if (!Reflection.isNpc(a) || !a.canRoam()) return
