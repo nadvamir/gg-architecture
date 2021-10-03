@@ -11,6 +11,7 @@ import { deepCopy } from '../game-client/util/Util.js';
 import { AI } from './AI.js';
 import { ItemDefinitions } from './data/ItemDefinitions.js';
 import { NpcDefinitions } from './data/NpcDefinitions.js';
+import { Reflection } from './util/Reflection.js';
 
 const DESPAWN_PERIOD = 30 * 60 * 1000 // 30 minutes
 const RESPAWN_PERIOD = 5 * 1000 // 5 minutes
@@ -349,10 +350,11 @@ class GameEngine {
         }))
     }
 
-    enqueueRespawn(actor, locationId) {
+    enqueueRespawn(actor, locationId, count = 1) {
         this.setState('spawn_queue', produce(queue => {
             const respawnPeriod = actor.state.respawn_period || RESPAWN_PERIOD
-            queue.push([actor.state.src, locationId, this.gameTime() + respawnPeriod])
+            const marker = Reflection.isNpc(actor) ? actor.state.src : actor.id
+            queue.push([marker, count, locationId, this.gameTime() + respawnPeriod])
         }))
     }
 
@@ -364,10 +366,14 @@ class GameEngine {
 
     tryRespawn() {
         const current = this.gameTime()
-        const ready = this.state.spawn_queue.filter(([_src, _locId, time]) => time <= current)
-        ready.forEach(([src, locId, _]) => {
-            if (src[0] == 'n') this.createNpc(src, locId)
-            else console.log('Respawning items not yet supported')
+        const ready = this.state.spawn_queue.filter(([_src, _cnt, _locId, time]) => time <= current)
+        ready.forEach(([src, count, locId, _]) => {
+            if (typeof src == 'string' && src[0] == 'n') {
+                this.createNpc(src, locId)
+            }
+            else {
+                this.get(locId).add(this.get(src), count)
+            }
         })
     }
 

@@ -61,6 +61,10 @@ class Location {
             .map(([a, _]) => a)
     }
 
+    numItemsSpawningHere(item) {
+        return this.src.actors[item.id] || 0
+    }
+
     // ------------- Checks ---------------
     isReachableFrom(source, actor) {
         return !!source.moves(actor).find(([l, reachable]) => {

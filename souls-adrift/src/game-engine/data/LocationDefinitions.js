@@ -22,7 +22,7 @@ const LocationDefinitions = {
         'name': 'Near Sunken Boat',
         'desc': 'The boat is still visible on the bottom of the sea.',
         'moves': [1],
-        'actors': {}
+        'actors': { 2000007: 1 }
     },
     'l.town.fourth.wall.library': {
         'id': 4,

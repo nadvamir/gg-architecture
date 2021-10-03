@@ -18,6 +18,12 @@ function processPickUp(args, gameEngine) {
     location.remove(item, count)
     actor.add(item, count)
 
+    // if an item naturally spawns here, enqueue respawn
+    const num = Math.min(count, location.numItemsSpawningHere(item))
+    if (num) {
+        gameEngine.enqueueRespawn(item, location.id, num)
+    }
+
     const countMsg = count > 1 ? count + ' of ' : ''
     gameEngine.recordEvent(actor.name() + ' picked up ' + countMsg + item.name())
 }
