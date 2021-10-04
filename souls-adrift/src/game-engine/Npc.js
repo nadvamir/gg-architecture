@@ -87,7 +87,7 @@ class Npc {
         this.gameEngine.recordEvent(this.name() + ' has died!')
         const location = this.location()
         location.remove(this)
-        location.actorsFighting(this).map(a => a.setBattle(0))
+        location.actorsFighting(this).forEach(a => a.setBattle(0))
         this.gameEngine.createCorpse(this)
         this.gameEngine.remove(this)
         this.gameEngine.enqueueRespawn(this, this.state.spawn_point)
