@@ -25,6 +25,8 @@ function processBuy(args, gameEngine) {
         return
     }
 
+    const eventsVisible = actor.location().id == gameEngine.player().location().id
+
     // do the transaction
     const money = gameEngine.money()
     actor.remove(money, cost)
@@ -34,7 +36,7 @@ function processBuy(args, gameEngine) {
 
     const countMsg = count > 1 ? count + ' of ' : ''
     const costMsg = ' (-' + cost + ' ' + money.name() + ')'
-    gameEngine.recordEvent(actor.name() + ' bought ' + countMsg + item.name() + ' from ' + seller.name() + costMsg)
+    eventsVisible && gameEngine.recordEvent(actor.name() + ' bought ' + countMsg + item.name() + ' from ' + seller.name() + costMsg)
 }
 
 export { processBuy }

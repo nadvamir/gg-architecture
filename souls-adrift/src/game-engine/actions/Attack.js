@@ -6,6 +6,7 @@ function processAttack(args, gameEngine, riposte = false) {
         console.log(attacker.name(), 'and', target.name(), 'are too far apart')
         return
     }
+    const eventsVisible = attacker.location().id == gameEngine.player().location().id
 
     // enter the battle or switch a target
     attacker.setBattle(target)
@@ -19,12 +20,12 @@ function processAttack(args, gameEngine, riposte = false) {
         const maxDmg = attacker.maxDmg() * mult
         const dmg = Math.round(minDmg + (maxDmg - minDmg) * gameEngine.rand() / 100)
 
-        gameEngine.recordEvent(attacker.name() + ' has dealt ' + dmg + ' damage to ' + target.name())
+        eventsVisible && gameEngine.recordEvent(attacker.name() + ' has dealt ' + dmg + ' damage to ' + target.name())
 
         target.alterHealth(-dmg)
     }
     else {
-        gameEngine.recordEvent(attacker.name() + ' has missed')
+        eventsVisible && gameEngine.recordEvent(attacker.name() + ' has missed')
     }
 
     // if we killed the target, gain exp

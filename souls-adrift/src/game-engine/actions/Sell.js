@@ -32,9 +32,11 @@ function processSell(args, gameEngine) {
     actor.remove(item, count)
     buyer.add(item, count)
 
-    const countMsg = count > 1 ? count + ' of ' : ''
-    const costMsg = ' (+' + cost + ' ' + money.name() + ')'
-    gameEngine.recordEvent(actor.name() + ' sold ' + countMsg + item.name() + ' to ' + buyer.name() + costMsg)
+    if (actor.location().id == gameEngine.player().location().id) {
+        const countMsg = count > 1 ? count + ' of ' : ''
+        const costMsg = ' (+' + cost + ' ' + money.name() + ')'
+        gameEngine.recordEvent(actor.name() + ' sold ' + countMsg + item.name() + ' to ' + buyer.name() + costMsg)
+    }
 }
 
 export { processSell }

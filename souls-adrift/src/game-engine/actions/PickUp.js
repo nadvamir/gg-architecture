@@ -24,8 +24,10 @@ function processPickUp(args, gameEngine) {
         gameEngine.enqueueRespawn(item, location.id, num)
     }
 
-    const countMsg = count > 1 ? count + ' of ' : ''
-    gameEngine.recordEvent(actor.name() + ' picked up ' + countMsg + item.name())
+    if (actor.location().id == gameEngine.player().location().id) {
+        const countMsg = count > 1 ? count + ' of ' : ''
+        gameEngine.recordEvent(actor.name() + ' picked up ' + countMsg + item.name())
+    }
 }
 
 export { processPickUp }

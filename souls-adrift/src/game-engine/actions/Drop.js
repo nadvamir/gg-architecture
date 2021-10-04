@@ -9,14 +9,17 @@ function processDrop(args, gameEngine) {
         return
     }
 
+
     // unequip if equipped
     actor.unequip(item)
 
     actor.remove(item, count)
     actor.location().add(item, count)
 
-    const countMsg = count > 1 ? count + ' of ' : ''
-    gameEngine.recordEvent(actor.name() + ' dropped ' + countMsg + item.name())
+    if (actor.location().id == gameEngine.player().location().id) {
+        const countMsg = count > 1 ? count + ' of ' : ''
+        eventsVisible && gameEngine.recordEvent(actor.name() + ' dropped ' + countMsg + item.name())
+    }
 }
 
 export { processDrop }

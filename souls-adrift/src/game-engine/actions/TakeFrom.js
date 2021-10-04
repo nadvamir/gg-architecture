@@ -20,8 +20,10 @@ function processTakeFrom(args, gameEngine) {
     store.remove(item, count)
     actor.add(item, count)
 
-    const countMsg = count > 1 ? count + ' of ' : ''
-    gameEngine.recordEvent(actor.name() + ' took ' + countMsg + item.name() + ' from ' + store.name())
+    if (actor.location().id == gameEngine.player().location().id) {
+        const countMsg = count > 1 ? count + ' of ' : ''
+        gameEngine.recordEvent(actor.name() + ' took ' + countMsg + item.name() + ' from ' + store.name())
+    }
 }
 
 export { processTakeFrom }
