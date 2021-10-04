@@ -1,7 +1,7 @@
 import { processAttack } from "../actions/Attack"
 import { Reflection } from "../util/Reflection"
 
-const ATTACK_PERIOD = 1 * 1000
+const ATTACK_PERIOD = 10 * 1000
 
 // if at least ATTACK PERIOD has passed, NPCs in a fight attack
 class NpcAttack {

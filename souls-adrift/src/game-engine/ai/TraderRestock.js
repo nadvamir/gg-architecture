@@ -1,6 +1,6 @@
 import { Reflection } from "../util/Reflection"
 
-const RESTOCK_PERIOD = 20 * 1000
+const RESTOCK_PERIOD = 20 * 60 * 1000
 
 // if at least RESTOCK PERIOD has passed, reset inventories
 class TraderRestock {

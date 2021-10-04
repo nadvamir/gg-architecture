@@ -1,7 +1,7 @@
 import { processGoTo } from "../actions/GoTo"
 import { Reflection } from "../util/Reflection"
 
-const ROAM_PERIOD = 1 * 1000
+const ROAM_PERIOD = 1 * 60 * 1000
 const ROAM_CHANCE = 50
 
 // if at least ROAM PERIOD has passed, move npcs around
