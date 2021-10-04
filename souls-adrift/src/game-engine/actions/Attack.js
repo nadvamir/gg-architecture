@@ -10,7 +10,8 @@ function processAttack(args, gameEngine, riposte = false) {
 
     // has to be on the same location
     if (attacker.location().id != target.location().id) {
-        console.log(attacker.name(), 'and', target.name(), 'are too far apart')
+        // could be that the victim ran away to a protected location
+        attacker.setBattle(0)
         return
     }
     const eventsVisible = attacker.location().id == gameEngine.player().location().id
