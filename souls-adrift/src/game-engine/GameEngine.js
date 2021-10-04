@@ -44,6 +44,10 @@ class GameEngine {
         this.ai = new AI(this)
     }
 
+    isServer() {
+        return true
+    }
+
     send(action, args) {
         const message = serialise(action, args)
         this.setInteractionState({ sending: true })
@@ -55,6 +59,15 @@ class GameEngine {
     sendToLoc(location, action, args) {
         //TODO: send direct messages to everyone in the graph
         this.send(action, args)
+    }
+
+    sendHeartbeat() {
+        // advancing game timer
+        //TODO: send proper heartbeats from the server
+        // this.send(Action.None, [this.state.uid])
+        console.log('Heartbeat')
+        this.onMessageReceived(0, MessageType.GG_MESSAGE, serialise(Action.None, []), 'hash', new Date().getTime())
+        setTimeout(() => { this.sendHeartbeat() }, 1000)
     }
 
     onMessageReceived(sender, type, message, hash, time) {
@@ -255,6 +268,9 @@ class GameEngine {
                 'actors': {}
             }
         })
+        if (this.isServer()) {
+            this.sendHeartbeat()
+        }
     }
 
     // ------------ Synchronised random ------------

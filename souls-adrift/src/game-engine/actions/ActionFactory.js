@@ -12,22 +12,24 @@ import { processTalk } from './Talk.js'
 import { processOverwriteState } from './OverwriteState.js'
 
 class Action {
-    static Attack = 0
-    static PickUp = 1
-    static Drop = 2
-    static Equip = 3
-    static Unequip = 4
-    static Use = 5
-    static GoTo = 6
-    static Buy = 7
-    static Sell = 8
-    static TakeFrom = 9
+    static None = 0
+    static Attack = 1
+    static PickUp = 2
+    static Drop = 3
+    static Equip = 4
+    static Unequip = 5
+    static Use = 6
+    static GoTo = 7
+    static Buy = 8
+    static Sell = 9
+    static TakeFrom = 10
     static EndOfIntActions = 1000
     static Talk = 1001
     static OverwriteState = 1002
 
     static getProcessor(action) {
         switch (action) {
+            case Action.None: return () => {} // used as a heartbeat
             case Action.Attack: return processAttack
             case Action.PickUp: return processPickUp
             case Action.Drop: return processDrop
