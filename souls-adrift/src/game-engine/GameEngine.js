@@ -402,8 +402,10 @@ class GameEngine {
 
     tryRespawn() {
         const current = this.gameTime()
-        const ready = this.state.spawn_queue.filter(([_src, _cnt, _locId, time]) => time <= current)
-        ready.forEach(([src, count, locId, _]) => {
+        let respawned = []
+        this.state.spawn_queue.forEach(([src, count, locId, time], idx) => {
+            if (time > current) return
+            respawned.push(idx)
             if (typeof src == 'string' && src[0] == 'n') {
                 this.createNpc(src, locId)
             }
@@ -411,6 +413,15 @@ class GameEngine {
                 this.get(locId).add(this.get(src), count)
             }
         })
+
+        if (respawned.length > 0) {
+            this.setState('spawn_queue', produce(queue => {
+                for (const i of respawned) {
+                    queue[i] = queue[queue.length - 1]
+                    queue.length -= 1
+                }
+            }))
+        }
     }
 
     createCorpse(actor) {
