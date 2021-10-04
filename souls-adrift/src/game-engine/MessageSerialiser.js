@@ -4,7 +4,7 @@ function serialise(action, args) {
     if (action == Action.OverwriteState) {
         return action + '|' + JSON.stringify(args)
     }
-    if (action == Action.Talk) {
+    if (action == Action.Talk | action == Action.PickDialogue) {
         args[1].replace('|', '')
     }
     return action + '|' + args.join('|')

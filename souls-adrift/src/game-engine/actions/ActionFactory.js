@@ -10,6 +10,7 @@ import { processSell } from './Sell.js'
 import { processTakeFrom } from './TakeFrom.js'
 import { processTalk } from './Talk.js'
 import { processOverwriteState } from './OverwriteState.js'
+import { processPickDialogue } from './PickDialogue.js'
 
 class Action {
     static None = 0
@@ -26,6 +27,7 @@ class Action {
     static EndOfIntActions = 1000
     static Talk = 1001
     static OverwriteState = 1002
+    static PickDialogue = 1003
 
     static getProcessor(action) {
         switch (action) {
@@ -42,6 +44,7 @@ class Action {
             case Action.TakeFrom: return processTakeFrom
             case Action.Talk: return processTalk
             case Action.OverwriteState: return processOverwriteState
+            case Action.PickDialogue: return processPickDialogue
         }
         console.log(action, ' not found')
     }
