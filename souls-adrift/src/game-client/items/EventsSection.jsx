@@ -7,7 +7,7 @@ function EventsSection(props) {
             <div class={styles['divider']}>Events</div>
             <section class={styles['location-info']}>
                 {[...messages]
-                    .map(([d, m]) => { return (<div>{d.toLocaleTimeString()} — {m}</div>) })}
+                    .map(([d, m]) => { return (<div>{m}</div>) })}
             </section>
         </Show>
     )

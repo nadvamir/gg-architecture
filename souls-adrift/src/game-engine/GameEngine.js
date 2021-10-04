@@ -53,7 +53,6 @@ class GameEngine {
     send(action, args) {
         const message = serialise(action, args)
         this.setInteractionState({ sending: true })
-        this.clearEventList()
         console.log('Sending!')
         this.nextHash = this.gossipGraph.send(MessageType.DIRECT_MESSAGE, message)
     }
@@ -78,6 +77,12 @@ class GameEngine {
             console.log('Received an unauthorised message')
             return
         }
+
+        // Clear the event list to keep it manageable
+        if (sender == this.state.uid) {
+            this.clearEventList()
+        }
+
         this.updateTime(time)
         this.ai.run(time)
         this.handleEvent(action, args)
