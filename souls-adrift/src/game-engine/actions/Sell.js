@@ -1,8 +1,15 @@
+import { Reflection } from "../util/Reflection"
+
 function processSell(args, gameEngine) {
     const actor = gameEngine.get(args[0])
     const item = gameEngine.get(args[1])
     const count = args[2]
     const buyer = gameEngine.get(args[3])
+
+    if (!Reflection.isAlive(actor)) return
+    if (!Reflection.isItem(item)) return
+    if (count < 1) return
+    if (!Reflection.isNpc(buyer)) return
 
     // can only sell to a buyer on the same location
     if (actor.location().id != buyer.location().id) {

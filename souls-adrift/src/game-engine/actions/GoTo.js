@@ -1,5 +1,11 @@
+import { Reflection } from "../util/Reflection"
+
 function processGoTo(args, gameEngine) {
     const [actor, location] = args.map(id => gameEngine.get(id))
+
+    if (!Reflection.isAlive(actor)) return
+    if (!Reflection.isLocation(location)) return
+
     const currentLocation = actor.location()
     if (!location.isReachableFrom(currentLocation, actor)) {
         console.log(actor.id, 'cannot reach', location.id)

@@ -1,7 +1,13 @@
+import { Reflection } from "../util/Reflection"
+
 function processPickUp(args, gameEngine) {
     const actor = gameEngine.get(args[0])
     const item = gameEngine.get(args[1])
     const count = args[2]
+
+    if (!Reflection.isAlive(actor)) return
+    if (!Reflection.isItem(item)) return
+    if (count < 1) return
 
     const location = actor.location()
 

@@ -1,10 +1,15 @@
-import { Npc } from "../Npc"
+import { Reflection } from "../util/Reflection"
 
 function processBuy(args, gameEngine) {
     const actor = gameEngine.get(args[0])
     const item = gameEngine.get(args[1])
     const count = args[2]
     const seller = gameEngine.get(args[3])
+
+    if (!Reflection.isPlayer(actor)) return
+    if (!Reflection.isItem(item)) return
+    if (count < 1) return
+    if (!Reflection.isNpc(seller)) return
 
     // can only buy from a seller on the same location
     if (actor.location().id != seller.location().id) {

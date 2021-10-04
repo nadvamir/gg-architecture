@@ -1,14 +1,19 @@
+import { Reflection } from "../util/Reflection"
+
 function processDrop(args, gameEngine) {
     const actor = gameEngine.get(args[0])
     const item = gameEngine.get(args[1])
     const count = args[2]
+
+    if (!Reflection.isAlive(actor)) return
+    if (!Reflection.isItem(item)) return
+    if (count < 1) return
 
     // verify that the player can drop
     if (!actor.hasItem(item, count)) {
         console.log(actor.name(), 'does not have ', count, ' of ', item.name())
         return
     }
-
 
     // unequip if equipped
     actor.unequip(item)

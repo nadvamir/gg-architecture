@@ -1,5 +1,10 @@
+import { Reflection } from "../util/Reflection"
+
 function processAttack(args, gameEngine, riposte = false) {
     const [attacker, target] = args.map(id => gameEngine.get(id))
+
+    if (!Reflection.isAlive(attacker)) return
+    if (!Reflection.isAlive(target)) return
 
     // has to be on the same location
     if (attacker.location().id != target.location().id) {

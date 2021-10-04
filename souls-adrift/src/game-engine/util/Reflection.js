@@ -7,12 +7,15 @@ class Reflection {
         return !!actor && actor.constructor.name == "Npc"
     }
 
-    static isLocation(actor) {
-        return !!actor && actor.constructor.name == "Location"
+    static isItem(actor) {
+        return !!actor && actor.constructor.name == "Item"
     }
 
     static isLocation(actor) {
         return !!actor && actor.constructor.name == "Location"
+    }
+    static isAlive(actor) {
+        return this.isPlayer(actor) || this.isNpc(actor)
     }
 }
 

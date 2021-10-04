@@ -1,6 +1,10 @@
+import { Reflection } from "../util/Reflection"
+
 function processEquip(args, gameEngine) {
     const [actor, item] = args.map(id => gameEngine.get(id))
 
+    if (!Reflection.isAlive(actor)) return
+    if (!Reflection.isItem(item)) return
     if (!item.isEquippable()) return
     if (!item.canEquip(actor.skills)) return
     if (!actor.hasItem(item, 1)) return
