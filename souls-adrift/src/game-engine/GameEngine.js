@@ -13,7 +13,7 @@ import { ItemDefinitions } from './data/ItemDefinitions.js';
 import { NpcDefinitions } from './data/NpcDefinitions.js';
 import { Reflection } from './util/Reflection.js';
 
-const DESPAWN_PERIOD = 5 * 60 * 1000 // 30 minutes
+const DESPAWN_PERIOD = 30 * 60 * 1000 // 30 minutes
 const RESPAWN_PERIOD = 5 * 60 * 1000 // 5 minutes
 
 class GameEngine {

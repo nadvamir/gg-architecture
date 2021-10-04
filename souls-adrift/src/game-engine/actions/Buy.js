@@ -30,7 +30,6 @@ function processBuy(args, gameEngine) {
         return
     }
 
-    const eventsVisible = actor.location().id == gameEngine.player().location().id
 
     // do the transaction
     const money = gameEngine.money()
@@ -39,9 +38,11 @@ function processBuy(args, gameEngine) {
     seller.remove(item, count)
     actor.add(item, count)
 
-    const countMsg = count > 1 ? count + ' of ' : ''
-    const costMsg = ' (-' + cost + ' ' + money.name() + ')'
-    eventsVisible && gameEngine.recordEvent(actor.name() + ' bought ' + countMsg + item.name() + ' from ' + seller.name() + costMsg)
+    if (actor.location().id == gameEngine.player().location().id) {
+        const countMsg = count > 1 ? count + ' of ' : ''
+        const costMsg = ' (-' + cost + ' ' + money.name() + ')'
+        gameEngine.recordEvent(actor.name() + ' bought ' + countMsg + item.name() + ' from ' + seller.name() + costMsg)
+    }
 }
 
 export { processBuy }

@@ -20,10 +20,11 @@ function processDrop(args, gameEngine) {
 
     actor.remove(item, count)
     actor.location().add(item, count)
+    gameEngine.enqueueDespawn(item, actor.location().id, count)
 
     if (actor.location().id == gameEngine.player().location().id) {
         const countMsg = count > 1 ? count + ' of ' : ''
-        eventsVisible && gameEngine.recordEvent(actor.name() + ' dropped ' + countMsg + item.name())
+        gameEngine.recordEvent(actor.name() + ' dropped ' + countMsg + item.name())
     }
 }
 
