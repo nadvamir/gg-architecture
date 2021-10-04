@@ -29,6 +29,8 @@ class GameEngine {
         this.state = state
         this.setState = setState
 
+        this.entityCache = {}
+
         const [interactionState, setInteractionState] = createStore({
             sending: false
         })
@@ -268,6 +270,12 @@ class GameEngine {
                 'actors': {}
             }
         })
+
+        // generate entity cache
+        for (const id of Object.keys(this.state)) {
+            this.get(id)
+        }
+
         if (this.isServer()) {
             this.sendHeartbeat()
         }
@@ -291,16 +299,25 @@ class GameEngine {
 
     // ----------------- Accessors -----------------
     get(id) {
+        const cachedEntity = this.entityCache[id]
+        if (!!cachedEntity) return cachedEntity
+
         const entity = this.state[id]
-        if (!entity) return
+        if (!entity || !entity.src) return
         if (typeof id == "string") id = parseInt(id, 10)
-        switch (entity.src[0]) {
-            case 'l': return new Location(id, entity, this)
-            case 'n': return new Npc(id, entity, this)
-            case 'i': return new Item(id, entity, this)
-            case 'p': return new Player(id, entity, this)
+        const creator = () => {
+            switch (entity.src[0]) {
+                case 'l': return new Location(id, entity, this)
+                case 'n': return new Npc(id, entity, this)
+                case 'i': return new Item(id, entity, this)
+                case 'p': return new Player(id, entity, this)
+            }
         }
-        console.log('Couldnt find game entity', id)
+
+        const instance = creator()
+        if (!instance) return
+        this.entityCache[id] = instance
+        return instance
     }
 
     moneyId() {
@@ -363,6 +380,7 @@ class GameEngine {
     }
 
     remove(actor) {
+        delete this.entityCache[actor.id]
         this.setState(produce(state => {
             delete state[actor.id]
         }))
