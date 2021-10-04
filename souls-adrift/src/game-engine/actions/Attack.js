@@ -5,6 +5,8 @@ function processAttack(args, gameEngine, riposte = false) {
 
     if (!Reflection.isAlive(attacker)) return
     if (!Reflection.isAlive(target)) return
+    if (attacker.hp() == 0) return
+    if (target.hp() == 0) return
 
     // has to be on the same location
     if (attacker.location().id != target.location().id) {
