@@ -47,6 +47,7 @@ class GameEngine {
     send(action, args) {
         const message = serialise(action, args)
         this.setInteractionState({ sending: true })
+        this.clearEventList()
         console.log('Sending!')
         this.nextHash = this.gossipGraph.send(MessageType.DIRECT_MESSAGE, message)
     }
