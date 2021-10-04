@@ -33,7 +33,25 @@ const NpcDefinitions = {
             'for_sale': ['weapon', 'helmet', 'gloves', 'boots']
         },
         'location': 1,
-        'battle': 0
+        'battle': 0,
+        'dialogue': {
+            '__init__': {t: "Hey, what brings you here?", r: [
+                {l: "no_work", t: "I'm looking for work", c: [["npc_has_item", 2000007, 1]]},
+                {l: "work", t: "I'm looking for work", c: [["npc_has_no_item", 2000007, 1]]},
+                {l: "give_key", t: "I believe you've lost something", c: [["player_has_item", 2000007, 1], ["npc_has_no_item", 2000007, 1]], a: [["give_item", 2000007, 1], ["gain_item", 2000007, 10]]},
+                {l: "__end__", t: "Just passing by"}
+            ]},
+            'work': {t: "I believe I've lost my key somewhere around here, could you find it?", r: [
+                {l: "give_key", t: "This key?", c: [["player_has_item", 2000007, 1], ["npc_has_no_item", 2000007, 1]], a: [["give_item", 2000007, 1], ["gain_item", 2000007, 10]]},
+                {l: "__end__", t: "I'll keep an eye on it."}
+            ]},
+            'no_work': {t: "Sorry, nothing much to do around.", r: [
+                {l: "__end__", t: "Ok."}
+            ]},
+            'give_key': {t: "Thank you so much! Here's 10 coins as a reward.", r: [
+                {l: "__end__", t: "Take care."}
+            ]}
+        }
     },
     'n.x.rat': {
         'name': 'Rat',

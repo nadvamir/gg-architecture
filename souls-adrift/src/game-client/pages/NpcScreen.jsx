@@ -1,8 +1,10 @@
-import { Link, useData } from "solid-app-router";
+import { Link, useData, useNavigate } from "solid-app-router";
+import { createSignal } from "solid-js";
 
 import styles from "../../App.module.css";
 
 import { gameEngine } from "../../game-engine/GameAssembly";
+import { fulfillsConditions } from "../../game-engine/DialogueActions";
 
 import { EventsSection } from "../items/EventsSection.jsx"
 import { StatusBar } from "../items/StatusBar.jsx"
@@ -14,6 +16,54 @@ import {
   SellItemLink
 } from "../items/ItemWidgets.jsx"
 
+function ReplyOption(props) {
+  const reply = props.reply
+  const navigate = useNavigate()
+
+  const pick = () => {
+    if (reply.l == '__end__') {
+      navigate('/location')
+    }
+    else {
+      props.choose(reply.l)
+    }
+  }
+
+  return (
+    <Show when={fulfillsConditions(props.player, props.npc, reply.c)}>
+      <div class={styles['item']}>
+        <a onclick={pick}>{reply.t}</a>
+        <Show when={reply.l == '__end__'}> (end)</Show>
+      </div>
+    </Show>
+  )
+}
+
+function DialogSection(props) {
+  const [dialogueState, setDialogueState] = createSignal('__init__')
+  const npc = props.npc
+  const player = props.player
+
+  const dialogue = () => npc.getDialogue(dialogueState())
+
+  return (
+    <>
+      <div class={styles['divider']}>
+        Said {npc.name()},
+      </div>
+      <div class={styles['location-info']}>{dialogue().t}</div>
+      <div class={styles['divider']}>
+        Dialog
+      </div>
+      <div>
+        {dialogue().r.map(reply => {
+          return (<ReplyOption reply={reply} npc={npc} player={player} choose={setDialogueState} />)
+        })}
+      </div>
+    </>
+  )
+}
+
 function ItemsForSale(props) {
   const npc = props.npc
   const player = props.player
@@ -22,7 +72,7 @@ function ItemsForSale(props) {
     <Show when={items().length > 0}>
       <div class={styles['divider']}>
         Buy (you have £{player.moneyCount()})
-        </div>
+      </div>
       <div>
         {items().map(([item, count]) => {
           return (<div class={styles['item']}>
@@ -45,7 +95,7 @@ function ItemsToSell(props) {
     <Show when={items().length > 0}>
       <div class={styles['divider']}>
         Sell (trader has £{npc.moneyCount()})
-        </div>
+      </div>
       <div>
         {items().map(([item, count]) => {
           return (<div class={styles['item']}>
@@ -72,20 +122,7 @@ function NpcScreenImpl() {
         <h1>{npc.name()}</h1>
       </header>
       <EventsSection messages={state.messages} location={location} />
-      <div class={styles['divider']}>
-        Said {npc.name()},
-      </div>
-      <div class={styles['location-info']}>
-        Hey, what brings you here?
-      </div>
-      <div class={styles['divider']}>
-        Dialog
-      </div>
-      <div>
-        <div class={styles['item']}><Link href="/inspect/:sailor">I'm looking for work</Link></div>
-        <div class={styles['item']}><Link href="/inspect/:sailor">I believe you lost something</Link> (give Amulet)</div>
-        <div class={styles['item']}><Link href="/location">Just passing by</Link> (end)</div>
-      </div>
+      <DialogSection npc={npc} player={player} />
       <ItemsForSale npc={npc} player={player} />
       <ItemsToSell npc={npc} player={player} />
     </div>

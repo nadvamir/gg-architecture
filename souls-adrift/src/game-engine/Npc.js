@@ -56,6 +56,11 @@ class Npc {
         return this.forSale().filter(([i, c]) => i.id == item.id && c >= count).length > 0
     }
 
+    getDialogue(dialogueItem) {
+        const dialogue = this.get('dialogue') || {}
+        return dialogue[dialogueItem] || {'t': 'Hmm...', 'r': []}
+    }
+
     chaseChance() {
         switch (this.category()) {
             // Tame NPCs have a 33% chance of chasing after the attacker
