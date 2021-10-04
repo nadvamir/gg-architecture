@@ -130,7 +130,7 @@ class GameEngine {
                 },
                 'location': 1,
                 // player or npc id
-                'battle': 1000003
+                'battle': 0
             },
             3000002: {
                 'name': 'L33t Hax0r',
@@ -159,7 +159,7 @@ class GameEngine {
                 },
                 'location': 1,
                 // id of person or npc
-                'battle': 1000002
+                'battle': 0
             },
             1000001: {
                 'name': 'Sailor Jerry',
@@ -184,21 +184,21 @@ class GameEngine {
                 'spawn_point': 1
             },
             1000002: {
-                'name': 'Rat',
+                'name': 'Rat 1',
                 'src': 'n.x.rat',
                 'location': 1,
                 'spawn_point': 2,
-                'battle': 3000002
+                'battle': 0
             },
             1000003: {
                 'name': 'Mouse',
                 'src': 'n.a.mouse',
                 'location': 1,
                 'spawn_point': 1,
-                'battle': 3000001
+                'battle': 0
             },
             1000004: {
-                'name': 'Rat',
+                'name': 'Rat 2',
                 'src': 'n.x.rat',
                 'stats': {
                     'hp': 20,
@@ -208,7 +208,7 @@ class GameEngine {
                     'dmg_spread': 3,
                     'base_armor': 0
                 },
-                'location': 1,
+                'location': 2,
                 'spawn_point': 3
             },
             2000001: {
@@ -275,6 +275,7 @@ class GameEngine {
     // ----------------- Accessors -----------------
     get(id) {
         const entity = this.state[id]
+        if (!entity) return
         if (typeof id == "string") id = parseInt(id, 10)
         switch (entity.src[0]) {
             case 'l': return new Location(id, entity, this)

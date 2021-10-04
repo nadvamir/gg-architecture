@@ -1,4 +1,6 @@
 import { HealthRegen } from './ai/HealthRegen'
+import { NpcAttack } from './ai/NpcAttack';
+import { NpcFirstAttack } from './ai/NpcFirstAttack';
 import { NpcRoam } from './ai/NpcRoam';
 import { Respawn } from './ai/Respawn';
 import { TraderRestock } from './ai/TraderRestock';
@@ -19,8 +21,11 @@ class AI {
         // AI actions on alive objects
         this.aliveActorActions = [
             new HealthRegen(this, gameEngine),
-            new NpcRoam(this, gameEngine),
             new TraderRestock(this, gameEngine),
+            new NpcFirstAttack(this, gameEngine),
+            new NpcAttack(this, gameEngine),
+            // npc roam has to be last, because it changes the location
+            new NpcRoam(this, gameEngine)
         ]
 
         // AI actions run without objects

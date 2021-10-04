@@ -1,4 +1,4 @@
-function processAttack(args, gameEngine, riposte) {
+function processAttack(args, gameEngine, riposte = false) {
     const [attacker, target] = args.map(id => gameEngine.get(id))
 
     // has to be on the same location

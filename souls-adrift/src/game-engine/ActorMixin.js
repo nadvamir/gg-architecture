@@ -97,8 +97,10 @@ const ActorMixin = {
         return this.gameEngine.get(battle)
     },
 
-    isBattling(actorId) {
-        return this.get('battle') == actorId
+    isBattling(actorId = 0) {
+        const battle = this.get('battle')
+        if (!actorId) return !!battle
+        return battle == actorId
     },
 
     location() {

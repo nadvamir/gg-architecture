@@ -30,7 +30,7 @@ class NpcRoam {
 
         aliveActors().forEach(a => {
             if (!Reflection.isNpc(a) || !a.canRoam()) return
-            if (a.battleTarget()) return
+            if (!!a.battleTarget()) return
             if (this.gameEngine.rand() > ROAM_CHANCE) return
 
             // select a location within the area

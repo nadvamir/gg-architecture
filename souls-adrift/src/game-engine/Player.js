@@ -72,9 +72,11 @@ class Player {
             }
         }))
 
-        this.gameEngine.recordEvent('Exp +' + expGain)
-        if (levelledUp) {
-            this.gameEngine.recordEvent('You have gained 1 skill point!')
+        if (this.gameEngine.playerId() == this.id) {
+            this.gameEngine.recordEvent('Exp +' + expGain)
+            if (levelledUp) {
+                this.gameEngine.recordEvent('You have gained 1 skill point!')
+            }
         }
     }
 
