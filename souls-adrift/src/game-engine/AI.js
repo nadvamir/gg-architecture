@@ -1,3 +1,4 @@
+import { Despawn } from './ai/Despawn';
 import { HealthRegen } from './ai/HealthRegen'
 import { NpcAttack } from './ai/NpcAttack';
 import { NpcFirstAttack } from './ai/NpcFirstAttack';
@@ -31,6 +32,7 @@ class AI {
         // AI actions run without objects
         this.generalActions = [
             new Respawn(this, gameEngine),
+            new Despawn(this, gameEngine),
         ]
     }
 

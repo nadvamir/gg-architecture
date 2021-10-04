@@ -13,7 +13,7 @@ import { ItemDefinitions } from './data/ItemDefinitions.js';
 import { NpcDefinitions } from './data/NpcDefinitions.js';
 import { Reflection } from './util/Reflection.js';
 
-const DESPAWN_PERIOD = 30 * 60 * 1000 // 30 minutes
+const DESPAWN_PERIOD = 5 * 60 * 1000 // 30 minutes
 const RESPAWN_PERIOD = 5 * 60 * 1000 // 5 minutes
 
 class GameEngine {
@@ -66,7 +66,6 @@ class GameEngine {
         // advancing game timer
         //TODO: send proper heartbeats from the server
         // this.send(Action.None, [this.state.uid])
-        console.log('Heartbeat')
         this.onMessageReceived(0, MessageType.GG_MESSAGE, serialise(Action.None, []), 'hash', new Date().getTime())
         setTimeout(() => { this.sendHeartbeat() }, 1000)
     }
@@ -116,6 +115,7 @@ class GameEngine {
         this.setState({
             uid: 3000001,
             spawn_queue: [],
+            despawn_queue: [],
             region_spawn_point: 1,
             last_id: 3000002,
             time: 0,
@@ -399,9 +399,9 @@ class GameEngine {
         }))
     }
 
-    enqueueDespawn(actor, count = 1) {
+    enqueueDespawn(actor, locationId, count = 1) {
         this.setState('despawn_queue', produce(queue => {
-            queue.push([actor.id, count, actor.location(), this.gameTime() + DESPAWN_PERIOD])
+            queue.push([actor.id, count, locationId, this.gameTime() + DESPAWN_PERIOD])
         }))
     }
 
@@ -429,16 +429,41 @@ class GameEngine {
         }
     }
 
+    tryDespawn() {
+        const current = this.gameTime()
+        let despawned = []
+        this.state.despawn_queue.forEach(([id, count, locId, time], idx) => {
+            if (time > current) return
+            despawned.push(idx)
+            const actor = this.get(id)
+            this.get(locId).remove(actor, count)
+            if (!!actor.state.custom) {
+                this.remove(actor)
+            }
+        })
+
+        if (despawned.length > 0) {
+            this.setState('despawn_queue', produce(queue => {
+                for (const i of despawned) {
+                    queue[i] = queue[queue.length - 1]
+                    queue.length -= 1
+                }
+            }))
+        }
+    }
+
     createCorpse(actor) {
         const location = actor.location()
         const id = this.nextId()
         const corpseSrc = 'i.d.corpse'
 
         this.setState(produce(state => {
-            state[id] = deepCopy(ItemDefinitions[corpseSrc])
-            state[id].src = corpseSrc
-            state[id].name = actor.name() + ' (corpse)'
-            state[id].location = location.id
+            let corpse = deepCopy(ItemDefinitions[corpseSrc])
+            corpse.src = corpseSrc
+            corpse.name = actor.name() + ' (corpse)'
+            corpse.location = location.id
+            corpse.custom = true
+            state[id] = corpse
         }))
 
         const corpse = this.get(id)
@@ -446,7 +471,7 @@ class GameEngine {
         location.add(corpse)
 
         // Corpse should eventually disappear
-        this.enqueueDespawn(corpse)
+        this.enqueueDespawn(corpse, location.id)
 
         return corpse
     }
