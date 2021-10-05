@@ -10,7 +10,7 @@ function LoginScreen() {
     fetch('http://localhost:3001/login')
       .then(response => response.json())
       .then(data => {
-        gossipGraph.init(data.uid, WebSocket)
+        gossipGraph.init(data.uid, WebSocket, SimplePeer)
         navigate("/location")
       })
   }

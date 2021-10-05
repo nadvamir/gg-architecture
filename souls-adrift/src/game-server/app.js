@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const ws = require('ws')
+const wrtc = require('wrtc')
 const Peer = require('simple-peer')
 
 const { gossipGraph, gameEngine } = require('../game-engine/GameAssembly')
@@ -48,7 +49,7 @@ server.on('upgrade', (request, socket, head) => {
     })
 })
 
-gossipGraph.init(0, ws.WebSocket)
+gossipGraph.init(0, ws.WebSocket, Peer, wrtc)
 
 
 
