@@ -2,10 +2,17 @@ import { Link, useNavigate } from "solid-app-router";
 
 import styles from "../../App.module.css";
 
+import { gossipGraph } from "../../game-engine/GameAssembly";
+
 function LoginScreen() {
   const navigate = useNavigate()
   function signIn() {
-    navigate("/location")
+    fetch('http://localhost:3001/login')
+      .then(response => response.json())
+      .then(data => {
+        gossipGraph.init(data.uid, WebSocket)
+        navigate("/location")
+      })
   }
 
   return (

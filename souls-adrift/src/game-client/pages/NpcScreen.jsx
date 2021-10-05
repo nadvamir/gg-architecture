@@ -3,7 +3,7 @@ import { createSignal } from "solid-js";
 
 import styles from "../../App.module.css";
 
-import { gameEngine } from "../../game-engine/GameAssembly";
+import { gameEngine, gossipGraph } from "../../game-engine/GameAssembly";
 import { fulfillsConditions } from "../../game-engine/DialogueActions";
 import { pickDialogue } from "../../game-engine/GameActions";
 
@@ -152,6 +152,9 @@ function NpcScreenImpl() {
 }
 
 function NpcScreen() {
+  const navigate = useNavigate()
+  if (!gossipGraph.id) navigate('/')
+
   const state = gameEngine.getState()
 
   return (

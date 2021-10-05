@@ -1,4 +1,4 @@
-import { Link } from "solid-app-router";
+import { Link, useNavigate } from "solid-app-router";
 
 import styles from "../../App.module.css";
 import { LocationStatusBar } from "../items/StatusBar.jsx"
@@ -7,7 +7,7 @@ import { InfoModalLink } from "../items/InfoModalLink.jsx"
 import { CountSelectorLink } from "../items/CountSelectorLink.jsx"
 import { EventsSection } from "../items/EventsSection.jsx"
 
-import { gameEngine } from "../../game-engine/GameAssembly";
+import { gameEngine, gossipGraph } from "../../game-engine/GameAssembly";
 import { attack, pickUp, goTo, talk } from "../../game-engine/GameActions";
 
 function battling(actor, target) {
@@ -185,6 +185,9 @@ function LocationScreenImpl() {
 }
 
 function LocationScreen() {
+  const navigate = useNavigate()
+  if (!gossipGraph.id) navigate('/')
+
   const state = gameEngine.getState()
 
   return (

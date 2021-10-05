@@ -12,7 +12,8 @@ import {
   ItemCountIndicator
 } from "../items/ItemWidgets.jsx"
 
-import { gameEngine } from "../../game-engine/GameAssembly";
+import { gameEngine, gossipGraph } from "../../game-engine/GameAssembly";
+import { useNavigate } from "solid-app-router";
 
 function EquippedSection(props) {
   const player = props.player
@@ -77,6 +78,9 @@ function CharacterScreenImpl() {
 }
 
 function CharacterScreen() {
+  const navigate = useNavigate()
+  if (!gossipGraph.id) navigate('/')
+
   const state = gameEngine.getState()
 
   return (
