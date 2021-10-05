@@ -17,6 +17,20 @@ import {
   SellItemLink
 } from "../items/ItemWidgets.jsx"
 
+function ActionSummary(props) {
+  let summary = ''
+  if (!props.actions) return summary
+  props.actions.forEach(a => {
+    if (a[0] == 'give_item') {
+      const item = props.gameEngine.get(a[1])
+      const count = a[2]
+      const countMsg = count > 1 ? count + ' of ' : ''
+      summary += ' (give ' + countMsg + item.name() + ')'
+    }
+  })
+  return summary
+}
+
 function ReplyOption(props) {
   const reply = props.reply
 
@@ -25,6 +39,7 @@ function ReplyOption(props) {
       <div class={styles['item']}>
         <a onclick={props.choose}>{reply.t}</a>
         <Show when={reply.l == '__end__'}> (end)</Show>
+        <ActionSummary actions={reply.a} gameEngine={props.player.gameEngine} />
       </div>
     </Show>
   )
