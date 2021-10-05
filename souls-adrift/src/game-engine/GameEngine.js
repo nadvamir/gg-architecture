@@ -436,6 +436,7 @@ class GameEngine {
             if (time > current) return
             despawned.push(idx)
             const actor = this.get(id)
+            if (!actor) return
             this.get(locId).remove(actor, count)
             if (!!actor.state.custom) {
                 this.remove(actor)
