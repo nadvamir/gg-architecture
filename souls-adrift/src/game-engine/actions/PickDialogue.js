@@ -1,3 +1,4 @@
+import { capitalise } from "../../game-client/util/Util"
 import { fulfillsConditions } from "../DialogueActions"
 import { Reflection } from "../util/Reflection"
 
@@ -32,6 +33,17 @@ function gainItem(actor, action, gameEngine, shouldAnnounce) {
     }
 }
 
+function trainSkill(actor, action, gameEngine, shouldAnnounce) {
+    const skill = action[1]
+
+    if (actor.skillPoints() < 1) return
+    actor.train(skill)
+
+    if (shouldAnnounce) {
+        gameEngine.recordEvent(capitalise(skill) + ' +1')
+    }
+}
+
 function runActions(player, npc, actions, gameEngine, shouldAnnounce) {
     for (const action of actions) {
         switch (action[0]) {
@@ -41,6 +53,8 @@ function runActions(player, npc, actions, gameEngine, shouldAnnounce) {
             case 'gain_item':
                 gainItem(player, action, gameEngine, shouldAnnounce)
                 break
+            case 'train_skill':
+                trainSkill(player, action, gameEngine, shouldAnnounce)
         }
     }
 }

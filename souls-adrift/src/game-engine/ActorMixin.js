@@ -38,6 +38,10 @@ const ActorMixin = {
         return this.get('skills')
     },
 
+    skill(skillName) {
+        return this.skills()[skillName] || 0
+    },
+
     level() {
         const stats = this.get('stats')
         return stats.lvl
@@ -209,6 +213,13 @@ const ActorMixin = {
         if (isDead) {
             this.die()
         }
+    },
+
+    train(skill) {
+        this.gameEngine.setState(this.id, produce(actor => {
+            this.ensure(actor, 'skills')
+            actor.skills[skill] += 1
+        }))
     }
 }
 

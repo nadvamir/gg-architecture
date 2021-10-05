@@ -10,6 +10,10 @@ function fulfillsCondition(player, npc, condition) {
         case 'npc_has_item': return hasItem(npc, args)
         case 'player_has_no_item': return !hasItem(player, args)
         case 'npc_has_no_item': return !hasItem(npc, args)
+        case 'player_skill_less': return player.skill(args[0]) < args[1]
+        case 'player_skill_more': return player.skill(args[0]) > args[1]
+        case 'player_has_skillpoints': return player.skillPoints() > 0
+        case 'player_has_no_skillpoints': return player.skillPoints() == 0
     }
 }
 

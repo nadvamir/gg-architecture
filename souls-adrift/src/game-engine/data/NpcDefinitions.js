@@ -39,6 +39,8 @@ const NpcDefinitions = {
                 {l: "no_work", t: "I'm looking for work", c: [["npc_has_item", 2000007, 1]]},
                 {l: "work", t: "I'm looking for work", c: [["npc_has_no_item", 2000007, 1]]},
                 {l: "give_key", t: "I believe you've lost something", c: [["player_has_item", 2000007, 1], ["npc_has_no_item", 2000007, 1]], a: [["give_item", 2000007, 1], ["gain_item", 2000005, 10]]},
+                {l: "no_train_constitution", t: "I want to be as tough as you!", c: [["player_skill_more", "constitution", 2], ["player_skill_less", "constitution", 4], ["player_has_no_skillpoints"], ["player_has_item", 2000005, 10]]},
+                {l: "train_constitution", t: "I want to be as tough as you!", c: [["player_skill_more", "constitution", 2], ["player_skill_less", "constitution", 4], ["player_has_skillpoints"], ["player_has_item", 2000005, 10]], a: [["give_item", 2000005, 10], ["train_skill", "constitution"]]},
                 {l: "__end__", t: "Just passing by"}
             ]},
             'work': {t: "I believe I've lost my key somewhere around here, could you find it?", r: [
@@ -50,7 +52,13 @@ const NpcDefinitions = {
             ]},
             'give_key': {t: "Thank you so much! Here's 10 coins as a reward.", r: [
                 {l: "__end__", t: "Take care."}
-            ]}
+            ]},
+            'no_train_constitution': {t: "You need skillpoints to train skills, haven't you played Diablo?", r: [
+                {l: "__end__", t: "Right."}
+            ]},
+            'train_constitution': {t: "Feeling tougher already?", r: [
+                {l: "__end__", t: "Yes!"}
+            ]},
         }
     },
     'n.x.rat': {

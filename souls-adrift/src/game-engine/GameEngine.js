@@ -264,7 +264,7 @@ class GameEngine {
             },
             3: {
                 'src': 'l.town.near.sunken.boat',
-                'actors': { 2000007: 2 }
+                'actors': { 2000007: 1 }
             },
             4: {
                 'src': 'l.town.fourth.wall.library',
