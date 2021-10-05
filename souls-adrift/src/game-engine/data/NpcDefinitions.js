@@ -38,11 +38,11 @@ const NpcDefinitions = {
             '__init__': {t: "Hey, what brings you here?", r: [
                 {l: "no_work", t: "I'm looking for work", c: [["npc_has_item", 2000007, 1]]},
                 {l: "work", t: "I'm looking for work", c: [["npc_has_no_item", 2000007, 1]]},
-                {l: "give_key", t: "I believe you've lost something", c: [["player_has_item", 2000007, 1], ["npc_has_no_item", 2000007, 1]], a: [["give_item", 2000007, 1], ["gain_item", 2000007, 10]]},
+                {l: "give_key", t: "I believe you've lost something", c: [["player_has_item", 2000007, 1], ["npc_has_no_item", 2000007, 1]], a: [["give_item", 2000007, 1], ["gain_item", 2000005, 10]]},
                 {l: "__end__", t: "Just passing by"}
             ]},
             'work': {t: "I believe I've lost my key somewhere around here, could you find it?", r: [
-                {l: "give_key", t: "This key?", c: [["player_has_item", 2000007, 1], ["npc_has_no_item", 2000007, 1]], a: [["give_item", 2000007, 1], ["gain_item", 2000007, 10]]},
+                {l: "give_key", t: "This key?", c: [["player_has_item", 2000007, 1], ["npc_has_no_item", 2000007, 1]], a: [["give_item", 2000007, 1], ["gain_item", 2000005, 10]]},
                 {l: "__end__", t: "I'll keep an eye on it."}
             ]},
             'no_work': {t: "Sorry, nothing much to do around.", r: [

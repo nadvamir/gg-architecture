@@ -4,7 +4,7 @@ function serialise(action, args) {
     if (action == Action.OverwriteState) {
         return action + '|' + JSON.stringify(args)
     }
-    if (action == Action.Talk | action == Action.PickDialogue) {
+    if (action == Action.Talk) {
         args[1].replace('|', '')
     }
     return action + '|' + args.join('|')
@@ -22,6 +22,9 @@ function deserialise(message) {
     }
     else if (action == Action.OverwriteState) {
         args = [JSON.parse(parts[1])]
+    }
+    else if (action == Action.PickDialogue) {
+        args = [parseInt(parts[1], 10), parseInt(parts[2], 10), parts[3], parts[4]]
     }
     return [action, args]
 }

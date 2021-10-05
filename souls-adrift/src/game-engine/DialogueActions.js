@@ -19,8 +19,8 @@ function fulfillsConditions(player, npc, conditions) {
         if (!fulfillsCondition(player, npc, condition)) {
             return false
         }
-        return true
     }
+    return true
 }
 
 export { fulfillsConditions }

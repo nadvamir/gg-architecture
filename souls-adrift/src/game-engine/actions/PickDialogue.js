@@ -1,8 +1,8 @@
 import { fulfillsConditions } from "../DialogueActions"
 import { Reflection } from "../util/Reflection"
 
-function giveItem(player, npc, action, shouldAnnounce) {
-    const item = player.gameEngine.get(action[1])
+function giveItem(player, npc, action, gameEngine, shouldAnnounce) {
+    const item = gameEngine.get(action[1])
     const count = action[2]
 
     if (!Reflection.isItem(item)) return
@@ -14,12 +14,12 @@ function giveItem(player, npc, action, shouldAnnounce) {
 
     if (shouldAnnounce) {
         const countMsg = count > 1 ? count + ' of ' : ''
-        this.recordEvent(player.name() + ' gave ' + npc.name() + ' ' + countMsg + item.name())
+        gameEngine.recordEvent(player.name() + ' gave ' + npc.name() + ' ' + countMsg + item.name())
     }
 }
 
-function gainItem(actor, action, shouldAnnounce) {
-    const item = player.gameEngine.get(action[1])
+function gainItem(actor, action, gameEngine, shouldAnnounce) {
+    const item = gameEngine.get(action[1])
     const count = action[2]
 
     if (!Reflection.isItem(item)) return
@@ -28,18 +28,18 @@ function gainItem(actor, action, shouldAnnounce) {
     actor.add(item, count)
     if (shouldAnnounce) {
         const countMsg = count > 1 ? count + ' of ' : ''
-        this.recordEvent(player.name() + ' gained ' + countMsg + item.name() + 'from ' + npc.name())
+        gameEngine.recordEvent(actor.name() + ' gained ' + countMsg + item.name())
     }
 }
 
-function runActions(player, npc, actions, shouldAnnounce) {
+function runActions(player, npc, actions, gameEngine, shouldAnnounce) {
     for (const action of actions) {
         switch (action[0]) {
             case 'give_item':
-                giveItem(player, npc, action, shouldAnnounce)
+                giveItem(player, npc, action, gameEngine, shouldAnnounce)
                 break
             case 'gain_item':
-                gainItem(player, action, shouldAnnounce)
+                gainItem(player, action, gameEngine, shouldAnnounce)
                 break
         }
     }
@@ -59,11 +59,11 @@ function processPickDialogue(args, gameEngine) {
     const toReply = fromD.r.find(r => r.l == to)
 
     if (!toReply) return
-    if (!fulfillsConditions(player, npc, r.c)) return
+    if (!fulfillsConditions(player, npc, toReply.c)) return
 
     const shouldAnnounce = player.location().id == gameEngine.player().location().id
 
-    runActions(player, npc, r.a, shouldAnnounce)
+    runActions(player, npc, toReply.a, gameEngine, shouldAnnounce)
 }
 
 export { processPickDialogue }

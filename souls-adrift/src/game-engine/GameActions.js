@@ -60,4 +60,9 @@ function takeFrom(id, count, store) {
     gameEngine.send(Action.TakeFrom, [state.uid, id, count, store])
 }
 
-export { attack, pickUp, drop, equip, unequip, use, goTo, buy, sell, talk, takeFrom }
+function pickDialogue(npcId, from, to) {
+    if (interactionState.sending) return
+    gameEngine.send(Action.PickDialogue, [state.uid, npcId, from, to])
+}
+
+export { attack, pickUp, drop, equip, unequip, use, goTo, buy, sell, talk, takeFrom, pickDialogue }

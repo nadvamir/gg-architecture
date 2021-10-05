@@ -264,7 +264,7 @@ class GameEngine {
             },
             3: {
                 'src': 'l.town.near.sunken.boat',
-                'actors': { 2000007: 1 }
+                'actors': { 2000007: 2 }
             },
             4: {
                 'src': 'l.town.fourth.wall.library',
@@ -368,7 +368,7 @@ class GameEngine {
     authorised(sender, type, action, args) {
         if (sender == this.serverId()) return true
         if (action == Action.OverwriteState) return false
-        return sender == args[0]
+        return !!args && sender == args[0]
     }
 
     handleEvent(action, args) {

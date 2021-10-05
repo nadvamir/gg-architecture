@@ -5,6 +5,7 @@ import styles from "../../App.module.css";
 
 import { gameEngine } from "../../game-engine/GameAssembly";
 import { fulfillsConditions } from "../../game-engine/DialogueActions";
+import { pickDialogue } from "../../game-engine/GameActions";
 
 import { EventsSection } from "../items/EventsSection.jsx"
 import { StatusBar } from "../items/StatusBar.jsx"
@@ -18,21 +19,11 @@ import {
 
 function ReplyOption(props) {
   const reply = props.reply
-  const navigate = useNavigate()
-
-  const pick = () => {
-    if (reply.l == '__end__') {
-      navigate('/location')
-    }
-    else {
-      props.choose(reply.l)
-    }
-  }
 
   return (
     <Show when={fulfillsConditions(props.player, props.npc, reply.c)}>
       <div class={styles['item']}>
-        <a onclick={pick}>{reply.t}</a>
+        <a onclick={props.choose}>{reply.t}</a>
         <Show when={reply.l == '__end__'}> (end)</Show>
       </div>
     </Show>
@@ -40,11 +31,27 @@ function ReplyOption(props) {
 }
 
 function DialogSection(props) {
+  const navigate = useNavigate()
   const [dialogueState, setDialogueState] = createSignal('__init__')
+
   const npc = props.npc
   const player = props.player
 
   const dialogue = () => npc.getDialogue(dialogueState())
+
+  const pick = (reply) => {
+    return () => {
+      if (reply.l == '__end__') {
+        navigate('/location')
+      }
+      else {
+        if (!!reply.a) {
+          pickDialogue(npc.id, dialogueState(), reply.l)
+        }
+        setDialogueState(reply.l)
+      }
+    }
+  }
 
   return (
     <>
@@ -57,7 +64,7 @@ function DialogSection(props) {
       </div>
       <div>
         {dialogue().r.map(reply => {
-          return (<ReplyOption reply={reply} npc={npc} player={player} choose={setDialogueState} />)
+          return (<ReplyOption reply={reply} npc={npc} player={player} choose={pick(reply)} />)
         })}
       </div>
     </>
