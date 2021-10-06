@@ -44,6 +44,22 @@ wsServer.on('connection', socket => {
                 break
         }
     })
+
+    socket.on('close', () => {
+        console.log('A client has disconnected')
+        for (const [p, s] of Object.entries(peers)) {
+            if (s == socket) {
+                console.log('Removing the socket')
+                delete peers[p]
+                console.log('New peers: ', peers)
+                break
+            }
+        }
+    })
+})
+
+wsServer.on('close', socket => {
+
 })
 
 server.on('upgrade', (request, socket, head) => {

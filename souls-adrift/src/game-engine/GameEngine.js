@@ -151,8 +151,6 @@ class GameEngine {
 
         const entity = this.state[id]
         if (!entity || !entity.src) {
-            console.log(id, 'was not found')
-            console.log(JSON.stringify(this.state))
             return
         }
         if (typeof id == "string") id = parseInt(id, 10)
@@ -167,7 +165,6 @@ class GameEngine {
 
         const instance = creator()
         if (!instance) {
-            console.log(id, 'could not be created')
             return
         }
         this.entityCache[id] = instance

@@ -3,7 +3,7 @@ import { Action } from "../game-engine/actions/ActionFactory"
 import { MessageType } from "./MessageType"
 
 class GossipGraph {
-    constructor() { 
+    constructor() {
         this.listeners = []
         this.lastHash = 0
 
@@ -24,7 +24,6 @@ class GossipGraph {
         })
         ws.addEventListener('message', (event) => {
             const payload = JSON.parse(event.data || event.toString())
-            console.log('Client received: ', payload)
             switch (payload.action) {
                 case 'game_state':
                     this.initGameState(payload.state)
@@ -69,45 +68,41 @@ class GossipGraph {
         return this.id
     }
 
-    newPeer(config) {
+    newPeer(config, pid) {
         if (this.wrtc) {
             config.wrtc = this.wrtc
         }
-        return new this.PeerClass(config)
+        let peer = new this.PeerClass(config)
+        peer.on('signal', data => {
+            // send an answer
+            this.ws.send(JSON.stringify({ action: 'signal', uid: this.id, peer: pid, sdp: data }))
+        })
+        peer.on('connect', () => {
+            console.log(pid, 'connected!')
+            this.activePeers[pid] = peer
+        })
+        peer.on('data', data => {
+            console.log('Direct data received', data.toString())
+        })
+        peer.on('close', () => {
+            console.log('Removing WebRTC')
+            delete this.peers[pid]
+            delete this.activePeers[pid]
+        })
+        return peer
     }
 
     initiateConnection(peers) {
-        peers.forEach(p => {
-            const peer = this.newPeer({initiator: true})
-            this.peers[p] = peer
-            peer.on('signal', data => {
-                this.ws.send(JSON.stringify({ action: 'signal', uid: this.id, peer: p, sdp: data }))
-            })
-            peer.on('connect', () => {
-                console.log(p, 'connected!')
-                this.activePeers[p] = peer
-            })
-            peer.on('data', data => {
-                console.log('Direct data received', data)
-            })
+        peers.forEach(pid => {
+            const peer = this.newPeer({ initiator: true }, pid)
+            this.peers[pid] = peer
         })
     }
 
     handleSignal(pid, sdp) {
         if (!(pid in this.peers)) {
             // this is an offer
-            const peer = this.newPeer({})
-            peer.on('signal', data => {
-                // send an answer
-                this.ws.send(JSON.stringify({ action: 'signal', uid: this.id, peer: pid, sdp: data }))
-            })
-            peer.on('connect', () => {
-                console.log(pid, 'connected!')
-                this.activePeers[pid] = peer
-            })
-            peer.on('data', data => {
-                console.log('Direct data received', data.toString())
-            })
+            const peer = this.newPeer({}, pid)
             this.peers[pid] = peer
         }
         // else == an answer; signal in both cases
