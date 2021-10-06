@@ -6,8 +6,19 @@ const wrtc = require('wrtc')
 const Peer = require('simple-peer')
 
 const { gossipGraph, gameEngine } = require('../game-engine/GameAssembly');
-const { deepCopy } = require('../game-client/util/Util');
 
+// load the game state if exists
+const gameStatePath = './state.json'
+let initialState;
+if (fs.existsSync(gameStatePath)) {
+    initialState = require(gameStatePath)
+}
+else {
+    // load an initial game map
+    initialState = require('../game-engine/data/InitialGameState.json')
+}
+
+// -------- app --------
 const app = express()
 const port = 3001
 
@@ -33,7 +44,7 @@ wsServer.on('connection', socket => {
         console.log('Server received: ', message.length, message.toString())
         switch (payload.action) {
             case 'register': 
-                socket.send(JSON.stringify({action: 'game_state', state: gameEngine.getState()}))
+                socket.send(JSON.stringify({action: 'game_state', state: gameEngine.isLoaded() ? gameEngine.getState() : initialState}))
                 socket.send(JSON.stringify({action: 'list_of_peers', peers: Object.keys(peers)}))
                 peers[payload.uid] = socket
                 break
@@ -67,18 +78,6 @@ server.on('upgrade', (request, socket, head) => {
         wsServer.emit('connection', socket, request)
     })
 })
-
-// load the game state if exists
-const gameStatePath = './state.json'
-let state;
-if (fs.existsSync(gameStatePath)) {
-    state = require(gameStatePath)
-}
-else {
-    // load an initial game map
-    state = require('../game-engine/data/InitialGameState.json')
-}
-gameEngine.loadGameState(state)
 
 // setup a periodic game store
 //TODO

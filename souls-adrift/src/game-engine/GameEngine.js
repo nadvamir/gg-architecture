@@ -106,7 +106,14 @@ class GameEngine {
         return this.interactionState
     }
 
+    isLoaded() {
+        return this.state.loaded
+    }
+
     loadGameState(state) {
+        if (this.state.loaded) return
+
+        state.loaded = true
         this.setState(state)
 
         // generate entity cache
