@@ -104,7 +104,6 @@ class GossipGraph {
             this.activePeers[pid] = peer
         })
         peer.on('data', data => {
-            console.log('Direct data received', data.toString())
             this.handleIncomingMessage(data.toString())
         })
         peer.on('close', () => {

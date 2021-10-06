@@ -8,15 +8,25 @@ const Peer = require('simple-peer')
 const { gossipGraph, gameEngine } = require('../game-engine/GameAssembly');
 
 // load the game state if exists
-const gameStatePath = './state.json'
-let initialState;
-if (fs.existsSync(gameStatePath)) {
-    initialState = require(gameStatePath)
+const GAME_STATE_PATH = './state.json'
+let initialState = {};
+if (fs.existsSync(GAME_STATE_PATH)) {
+    initialState = JSON.parse(fs.readFileSync(GAME_STATE_PATH))
 }
 else {
     // load an initial game map
     initialState = require('../game-engine/data/InitialGameState.json')
 }
+
+// setup a periodic game store
+setInterval(() => {
+    if (!gameEngine.isLoaded()) return;
+    fs.writeFile(GAME_STATE_PATH, JSON.stringify(gameEngine.getState(), null, 2), 'utf8', (err) => {
+        if (err) {
+            console.log('Failed to back up game state: ', err)
+        }
+    })
+}, 1000)
 
 // -------- app --------
 const app = express()
@@ -43,14 +53,14 @@ wsServer.on('connection', socket => {
         const payload = JSON.parse(message.toString())
         console.log('Server received: ', message.length, message.toString())
         switch (payload.action) {
-            case 'register': 
-                socket.send(JSON.stringify({action: 'game_state', state: gameEngine.isLoaded() ? gameEngine.getState() : initialState}))
-                socket.send(JSON.stringify({action: 'list_of_peers', peers: Object.keys(peers)}))
+            case 'register':
+                socket.send(JSON.stringify({ action: 'game_state', state: gameEngine.isLoaded() ? gameEngine.getState() : initialState }))
+                socket.send(JSON.stringify({ action: 'list_of_peers', peers: Object.keys(peers) }))
                 peers[payload.uid] = socket
                 break
             case 'signal':
                 if (payload.peer in peers) {
-                    peers[payload.peer].send(JSON.stringify({action: 'signal', uid: payload.uid, sdp: payload.sdp}))
+                    peers[payload.peer].send(JSON.stringify({ action: 'signal', uid: payload.uid, sdp: payload.sdp }))
                 }
                 break
         }
@@ -78,9 +88,6 @@ server.on('upgrade', (request, socket, head) => {
         wsServer.emit('connection', socket, request)
     })
 })
-
-// setup a periodic game store
-//TODO
 
 // Kick-off server's game engine
 gossipGraph.init(0, ws.WebSocket, Peer, wrtc)
