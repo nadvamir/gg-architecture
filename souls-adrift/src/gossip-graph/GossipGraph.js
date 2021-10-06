@@ -1,4 +1,6 @@
 import murmurhash from "murmurhash"
+import { Action } from "../game-engine/actions/ActionFactory"
+import { MessageType } from "./MessageType"
 
 class GossipGraph {
     constructor() { 
@@ -24,6 +26,9 @@ class GossipGraph {
             const payload = JSON.parse(event.data || event.toString())
             console.log('Client received: ', payload)
             switch (payload.action) {
+                case 'game_state':
+                    this.initGameState(payload.state)
+                    break
                 case 'list_of_peers':
                     this.initiateConnection(payload.peers)
                     break;
@@ -49,6 +54,15 @@ class GossipGraph {
             this.activePeers[0].send(message)
         }
         return this.lastHash
+    }
+
+    //TODO: sort out serialisation
+    initGameState(state) {
+        state.uid = this.id
+        const message = Action.OverwriteState + '|' + JSON.stringify(state)
+        for (let listener of this.listeners) {
+            listener(0, MessageType.DIRECT_MESSAGE, message, this.lastHash, new Date().getTime())
+        }
     }
 
     get selfId() {

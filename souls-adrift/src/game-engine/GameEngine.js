@@ -40,8 +40,6 @@ class GameEngine {
         // Used to serialise UI commands
         this.nextHash = null
 
-        setTimeout(_ => this.loadGameState(), 300)
-
         // AI that will control automated actions
         this.ai = new AI(this)
     }
@@ -83,7 +81,9 @@ class GameEngine {
         }
 
         this.updateTime(time)
-        this.ai.run(time)
+        if (action != Action.OverwriteState) {
+            this.ai.run(time)
+        }
         this.handleEvent(action, args)
         if (hash == this.nextHash) {
             console.log('Received')
@@ -111,170 +111,8 @@ class GameEngine {
         return this.interactionState
     }
 
-    loadGameState() {
-        this.setState({
-            uid: 3000001,
-            spawn_queue: [],
-            despawn_queue: [],
-            region_spawn_point: 1,
-            last_id: 3000002,
-            time: 0,
-            ai: {},
-            3000001: {
-                'name': '__Blind_Augur__',
-                'src': 'p.player',
-                'stats': {
-                    'hp': 10,
-                    'lvl': 1,
-                    'exp': 85,
-                    'skill_points': 1
-                },
-                'skills': {
-                    'strength': 3,
-                    'constitution': 3,
-                    'dexterity': 2,
-                    'sabre': 0
-                },
-                // list of equipped ids
-                'equipment': [2000001, 2000002],
-                // id -> count
-                'inventory': {
-                    2000001: 1,
-                    2000002: 1,
-                    2000003: 1,
-                    2000004: 2,
-                    2000005: 25
-                },
-                'quest': {
-                    1: 1,
-                    2: 4
-                },
-                'location': 1,
-                // player or npc id
-                'battle': 0
-            },
-            3000002: {
-                'name': 'L33t Hax0r',
-                'src': 'p.player',
-                'stats': {
-                    'hp': 18,
-                    'lvl': 1,
-                    'exp': 20,
-                    'skill_points': 0
-                },
-                'skills': {
-                    'strength': 3,
-                    'constitution': 2,
-                    'dexterity': 3,
-                    'sabre': 0
-                },
-                // list of equipped ids
-                'equipment': [2000002, 2000006],
-                // id -> count
-                'inventory': {
-                    2000002: 1,
-                    2000006: 1
-                },
-                'quest': {
-                    1: 2
-                },
-                'location': 1,
-                // id of person or npc
-                'battle': 0
-            },
-            1000001: {
-                'name': 'Sailor Jerry',
-                'src': 'n.t.sailor.jerry',
-                // list of equipped ids
-                'equipment': [2000001, 2000002],
-                // id -> count
-                'inventory': {
-                    2000001: 1,
-                    2000002: 1,
-                    2000005: 100,
-                    2000006: 3
-                },
-                'trade': {
-                    'buy': 0.8,
-                    'sell': 1.2,
-                    // classes of items he's interested in
-                    'to_buy': ['weapon', 'helmet', 'gloves', 'boots'],
-                    'for_sale': ['weapon', 'helmet', 'gloves', 'boots']
-                },
-                'location': 1,
-                'spawn_point': 1
-            },
-            1000002: {
-                'name': 'Rat 1',
-                'src': 'n.x.rat',
-                'location': 1,
-                'spawn_point': 2,
-                'battle': 0
-            },
-            1000003: {
-                'name': 'Mouse',
-                'src': 'n.a.mouse',
-                'location': 1,
-                'spawn_point': 1,
-                'battle': 0
-            },
-            1000004: {
-                'name': 'Rat 2',
-                'src': 'n.x.rat',
-                'stats': {
-                    'hp': 20,
-                    'lvl': 1,
-                    'exp_worth': 10,
-                    'base_dmg': 2,
-                    'dmg_spread': 3,
-                    'base_armor': 0
-                },
-                'location': 2,
-                'spawn_point': 3
-            },
-            2000001: {
-                'src': 'i.w.sabre.officer',
-                'value': 25
-            },
-            2000002: {
-                'src': 'i.a.gloves.leather'
-            },
-            2000003: {
-                'src': 'i.w.shank.rusty'
-            },
-            2000004: {
-                'src': 'i.c.potion.health.10'
-            },
-            2000005: {
-                'src': 'i.m.coin'
-            },
-            2000006: {
-                'src': 'i.a.boots.leather'
-            },
-            2000007: {
-                'src': 'i.m.key.rusty'
-            },
-            1: {
-                'src': 'l.town.forlorn.quay',
-                'actors': { 3000001: 1, 3000002: 1, 2000003: 1, 1000001: 1, 1000002: 1, 1000003: 1, 2000005: 5 }
-            },
-            2: {
-                'src': 'l.town.main.street',
-                'actors': { 1000004: 1 }
-            },
-            3: {
-                'src': 'l.town.near.sunken.boat',
-                'actors': { 2000007: 1 }
-            },
-            4: {
-                'src': 'l.town.fourth.wall.library',
-                'actors': {}
-            },
-            5: {
-                'src': 'l.town.old.house',
-                'actors': {}
-            }
-        })
+    loadGameState(state) {
+        this.setState(state)
 
         // generate entity cache
         for (const id of Object.keys(this.state)) {
@@ -308,7 +146,11 @@ class GameEngine {
         if (!!cachedEntity) return cachedEntity
 
         const entity = this.state[id]
-        if (!entity || !entity.src) return
+        if (!entity || !entity.src) {
+            console.log(id, 'was not found')
+            console.log(JSON.stringify(this.state))
+            return
+        }
         if (typeof id == "string") id = parseInt(id, 10)
         const creator = () => {
             switch (entity.src[0]) {
@@ -320,7 +162,10 @@ class GameEngine {
         }
 
         const instance = creator()
-        if (!instance) return
+        if (!instance) {
+            console.log(id, 'could not be created')
+            return
+        }
         this.entityCache[id] = instance
         return instance
     }

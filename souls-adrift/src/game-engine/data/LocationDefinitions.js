@@ -37,6 +37,13 @@ const LocationDefinitions = {
         'desc': 'The ceiling is about to fall.',
         'moves': [1],
         'actors': {}
+    },
+    'l.void': {
+        'id': 6,
+        'name': 'Void',
+        'desc': 'How would you describe it?',
+        'moves': [],
+        'actors': {}
     }
 }
 

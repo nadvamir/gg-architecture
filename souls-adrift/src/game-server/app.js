@@ -1,10 +1,12 @@
 const express = require('express')
 const cors = require('cors')
+const fs = require("fs");
 const ws = require('ws')
 const wrtc = require('wrtc')
 const Peer = require('simple-peer')
 
-const { gossipGraph, gameEngine } = require('../game-engine/GameAssembly')
+const { gossipGraph, gameEngine } = require('../game-engine/GameAssembly');
+const { deepCopy } = require('../game-client/util/Util');
 
 const app = express()
 const port = 3001
@@ -31,6 +33,7 @@ wsServer.on('connection', socket => {
         console.log('Server received: ', message.length, message.toString())
         switch (payload.action) {
             case 'register': 
+                socket.send(JSON.stringify({action: 'game_state', state: gameEngine.getState()}))
                 socket.send(JSON.stringify({action: 'list_of_peers', peers: Object.keys(peers)}))
                 peers[payload.uid] = socket
                 break
@@ -49,29 +52,20 @@ server.on('upgrade', (request, socket, head) => {
     })
 })
 
+// load the game state if exists
+const gameStatePath = './state.json'
+let state;
+if (fs.existsSync(gameStatePath)) {
+    state = require(gameStatePath)
+}
+else {
+    // load an initial game map
+    state = require('../game-engine/data/InitialGameState.json')
+}
+gameEngine.loadGameState(state)
+
+// setup a periodic game store
+//TODO
+
+// Kick-off server's game engine
 gossipGraph.init(0, ws.WebSocket, Peer, wrtc)
-
-
-
-// var peer1 = new Peer({ initiator: true })
-// var peer2 = new Peer()
-
-// peer1.on('signal', data => {
-//   // when peer1 has signaling data, give it to peer2 somehow
-//   peer2.signal(data)
-// })
-
-// peer2.on('signal', data => {
-//   // when peer2 has signaling data, give it to peer1 somehow
-//   peer1.signal(data)
-// })
-
-// peer1.on('connect', () => {
-//   // wait for 'connect' event before using the data channel
-//   peer1.send('hey peer2, how is it going?')
-// })
-
-// peer2.on('data', data => {
-//   // got a data channel message
-//   console.log('got a message from peer1: ' + data)
-// })
