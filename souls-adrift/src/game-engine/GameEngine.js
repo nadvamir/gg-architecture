@@ -143,7 +143,11 @@ class GameEngine {
     // ----------------- Accessors -----------------
     get(id) {
         const cachedEntity = this.entityCache[id]
-        if (!!cachedEntity) return cachedEntity
+        if (!!cachedEntity) {
+            // update state
+            cachedEntity.state = this.state[id] || cachedEntity.state
+            return cachedEntity
+        }
 
         const entity = this.state[id]
         if (!entity || !entity.src) {
