@@ -46,14 +46,15 @@ class GossipGraph {
     }
 
     send(type, action, args, peers) {
-        const message = serialise(action, args)
+        let message = serialise(action, args)
         this.lastHash = murmurhash.v3(message + this.lastHash)
-        // const [action, args] = deserialise(message)
-        for (let listener of this.listeners) {
-            setTimeout(_ => listener(this.id, type, action, args, this.lastHash, new Date().getTime()), Math.random() * 1000)
-        }
-        if (0 in this.activePeers) {
+        message = type + '~' + this.id + '~' + this.lastHash + '~' + message
+        //TODO: GG instead of client-server
+        if (0 in this.activePeers) { // not a server
             this.activePeers[0].send(message)
+        }
+        else {
+            this.handleIncomingMessage(message)
         }
         return this.lastHash
     }
@@ -63,6 +64,21 @@ class GossipGraph {
         state.uid = this.id
         for (let listener of this.listeners) {
             listener(0, MessageType.DIRECT_MESSAGE, Action.OverwriteState, [state], this.lastHash, new Date().getTime())
+        }
+    }
+
+    handleIncomingMessage(data) {
+        //TODO: proper gossip graph
+        if (this.isServer()) {
+            // forward to others
+            for (const peer of Object.values(this.activePeers)) {
+                peer.send(data)
+            }
+        }
+        const [type, senderId, lastHash, message] = data.split('~')
+        const [action, args] = deserialise(message)
+        for (let listener of this.listeners) {
+            setTimeout(_ => listener(senderId, type, action, args, lastHash, new Date().getTime()), Math.random() * 1000)
         }
     }
 
@@ -89,6 +105,7 @@ class GossipGraph {
         })
         peer.on('data', data => {
             console.log('Direct data received', data.toString())
+            this.handleIncomingMessage(data.toString())
         })
         peer.on('close', () => {
             console.log('Removing WebRTC')

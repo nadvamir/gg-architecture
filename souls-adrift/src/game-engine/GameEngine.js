@@ -44,7 +44,6 @@ class GameEngine {
     }
 
     isServer() {
-        return true
         return this.state.uid == this.serverId()
     }
 
