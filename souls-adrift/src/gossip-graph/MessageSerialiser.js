@@ -1,4 +1,4 @@
-import { Action } from './actions/ActionFactory.js'
+import { Action } from '../game-engine/actions/ActionFactory.js'
 
 function serialise(action, args) {
     if (action == Action.OverwriteState) {

@@ -1,6 +1,7 @@
 import murmurhash from "murmurhash"
 import { Action } from "../game-engine/actions/ActionFactory"
 import { MessageType } from "./MessageType"
+import { serialise, deserialise } from './MessageSerialiser.js'
 
 class GossipGraph {
     constructor() {
@@ -44,10 +45,12 @@ class GossipGraph {
         this.listeners.push(onMessageReceived)
     }
 
-    send(type, message) {
+    send(type, action, args, peers) {
+        const message = serialise(action, args)
         this.lastHash = murmurhash.v3(message + this.lastHash)
+        // const [action, args] = deserialise(message)
         for (let listener of this.listeners) {
-            setTimeout(_ => listener(this.id, type, message, this.lastHash, new Date().getTime()), Math.random() * 1000)
+            setTimeout(_ => listener(this.id, type, action, args, this.lastHash, new Date().getTime()), Math.random() * 1000)
         }
         if (0 in this.activePeers) {
             this.activePeers[0].send(message)
@@ -58,14 +61,17 @@ class GossipGraph {
     //TODO: sort out serialisation
     initGameState(state) {
         state.uid = this.id
-        const message = Action.OverwriteState + '|' + JSON.stringify(state)
         for (let listener of this.listeners) {
-            listener(0, MessageType.DIRECT_MESSAGE, message, this.lastHash, new Date().getTime())
+            listener(0, MessageType.DIRECT_MESSAGE, Action.OverwriteState, [state], this.lastHash, new Date().getTime())
         }
     }
 
     get selfId() {
         return this.id
+    }
+
+    isServer() {
+        return this.id == 0
     }
 
     newPeer(config, pid) {

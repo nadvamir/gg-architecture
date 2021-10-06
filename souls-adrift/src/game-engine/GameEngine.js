@@ -1,7 +1,6 @@
 import { createStore, produce } from 'solid-js/store';
 
 import { MessageType } from '../gossip-graph/MessageType.js'
-import { serialise, deserialise } from './MessageSerialiser.js'
 import { Player } from './Player.js'
 import { Npc } from './Npc.js'
 import { Item } from './Item.js'
@@ -46,13 +45,13 @@ class GameEngine {
 
     isServer() {
         return true
+        return this.state.uid == this.serverId()
     }
 
     send(action, args) {
-        const message = serialise(action, args)
         this.setInteractionState({ sending: true })
         console.log('Sending!')
-        this.nextHash = this.gossipGraph.send(MessageType.DIRECT_MESSAGE, message)
+        this.nextHash = this.gossipGraph.send(MessageType.GG_MESSAGE, action, args)
     }
 
     sendToLoc(location, action, args) {
@@ -61,15 +60,11 @@ class GameEngine {
     }
 
     sendHeartbeat() {
-        // advancing game timer
-        //TODO: send proper heartbeats from the server
-        // this.send(Action.None, [this.state.uid])
-        this.onMessageReceived(0, MessageType.GG_MESSAGE, serialise(Action.None, []), 'hash', new Date().getTime())
-        setTimeout(() => { this.sendHeartbeat() }, 1000)
+        // advancing game timer from the server
+        this.send(Action.None, [this.state.uid])
     }
 
-    onMessageReceived(sender, type, message, hash, time) {
-        const [action, args] = deserialise(message)
+    onMessageReceived(sender, type, action, args, hash, time) {
         if (!this.authorised(sender, type, action, args)) {
             console.log('Received an unauthorised message')
             return
@@ -120,7 +115,7 @@ class GameEngine {
         }
 
         if (this.isServer()) {
-            this.sendHeartbeat()
+            setInterval(() => this.sendHeartbeat(), 1000)
         }
     }
 
