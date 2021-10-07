@@ -86,7 +86,6 @@ const wsServer = new ws.Server({ noServer: true })
 wsServer.on('connection', socket => {
     socket.on('message', message => {
         const payload = JSON.parse(message.toString())
-        console.log('Server received: ', message.length, message.toString())
         switch (payload.action) {
             case 'register':
                 let state = deepCopy(gameEngine.isLoaded() ? gameEngine.getState() : initialState)

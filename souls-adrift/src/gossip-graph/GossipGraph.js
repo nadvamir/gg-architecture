@@ -95,12 +95,15 @@ class GossipGraph {
     }
 
     newPeer(config, pid) {
+        config.trickle = false
+        config.config = {iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]}
         if (this.wrtc) {
             config.wrtc = this.wrtc
         }
         let peer = new this.PeerClass(config)
         peer.on('signal', data => {
             // send an answer
+            console.log(this.id, ' signalling to ', pid)
             this.ws.send(JSON.stringify({ action: 'signal', uid: this.id, peer: pid, sdp: data }))
         })
         peer.on('connect', () => {
@@ -109,6 +112,9 @@ class GossipGraph {
         })
         peer.on('data', data => {
             this.handleIncomingMessage(data.toString())
+        })
+        peer.on('error', (err) => {
+            console.log('ERROR for id', this.id, 'message=', err)
         })
         peer.on('close', () => {
             console.log('Removing WebRTC')
