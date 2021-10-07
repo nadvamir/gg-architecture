@@ -4,8 +4,11 @@ const fs = require("fs");
 const ws = require('ws')
 const wrtc = require('wrtc')
 const Peer = require('simple-peer')
+const validator = require("email-validator");
+const sanitize = require("sanitize")
 
 const { gossipGraph, gameEngine } = require('../game-engine/GameAssembly');
+const { deepCopy } = require('../game-client/util/Util');
 
 // load the game state if exists
 const GAME_STATE_PATH = './state.json'
@@ -33,6 +36,8 @@ const app = express()
 const port = 3001
 
 app.use(cors())
+app.use(express.json())
+app.use(sanitize.middleware)
 
 app.get('/', (req, res) => {
     res.send('Hello World!' + gameEngine.state.last_id)
@@ -40,6 +45,28 @@ app.get('/', (req, res) => {
 
 app.get('/login', (req, res) => {
     res.send({ uid: 3000001 })
+})
+
+app.post('/register', (req, res) => {
+    const p = req.body
+    if (!validator.validate(p.email)) {
+        res.send({ success: false, error: 'Please enter a valid email'})
+        return
+    }
+    if (gameEngine.emailExists(p.email)) {
+        res.send({ success: false, error: 'This email is already taken'})
+        return
+    }
+    if (gameEngine.usernameExists(p.username)) {
+        res.send({ success: false, error: 'This username is already taken'})
+        return
+    }
+    if (p.username.length < 1) {
+        res.send({ success: false, error: 'This username is too short'})
+        return
+    }
+    gameEngine.createPlayer(p.email, p.password, p.username)
+    res.send({ success: true })
 })
 
 const server = app.listen(port, () => {
@@ -54,6 +81,14 @@ wsServer.on('connection', socket => {
         console.log('Server received: ', message.length, message.toString())
         switch (payload.action) {
             case 'register':
+                let state = deepCopy(gameEngine.isLoaded() ? gameEngine.getState() : initialState)
+                // FIXME: great security, actually authorise the connection in the future
+                if (payload.uid != 0) {
+                    // remove passwords
+                    for (let [_, e] of Object.entries(state)) {
+                        if (!!e.password) delete e['password']
+                    }
+                }
                 socket.send(JSON.stringify({ action: 'game_state', state: gameEngine.isLoaded() ? gameEngine.getState() : initialState }))
                 socket.send(JSON.stringify({ action: 'list_of_peers', peers: Object.keys(peers) }))
                 peers[payload.uid] = socket
@@ -72,15 +107,10 @@ wsServer.on('connection', socket => {
             if (s == socket) {
                 console.log('Removing the socket')
                 delete peers[p]
-                console.log('New peers: ', peers)
                 break
             }
         }
     })
-})
-
-wsServer.on('close', socket => {
-
 })
 
 server.on('upgrade', (request, socket, head) => {

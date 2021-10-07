@@ -49,6 +49,10 @@ section {
   overflow-y: auto;
 }
 
+.error {
+  color: #aa0000;
+}
+
 /* ---------- Login page --------- */
 .large-form {
   margin: 2em 0;

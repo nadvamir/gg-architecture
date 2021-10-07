@@ -77,6 +77,10 @@ class GossipGraph {
         }
         const [type, senderId, lastHash, message] = data.split('~')
         const [action, args] = deserialise(message)
+        //FIXME: don't hack in UID in state overwrites
+        if (action == Action.OverwriteState) {
+            args[0].uid = this.id
+        }
         for (let listener of this.listeners) {
             setTimeout(_ => listener(senderId, type, action, args, lastHash, new Date().getTime()), Math.random() * 1000)
         }

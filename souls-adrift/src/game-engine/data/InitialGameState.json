@@ -13,6 +13,8 @@
     },
     "3000001": {
         "name": "__Blind_Augur__",
+        "email": "a@a.ua",
+        "password": "ypeBEsobvcr6wjGzmiPcTaeG7/gUfE5yuYB3ha/uSLs=",
         "src": "p.player",
         "stats": {
             "hp": 10,
@@ -43,6 +45,8 @@
     },
     "3000002": {
         "name": "L33t Hax0r",
+        "email": "b@a.ua",
+        "password": "ypeBEsobvcr6wjGzmiPcTaeG7/gUfE5yuYB3ha/uSLs=",
         "src": "p.player",
         "stats": {
             "hp": 18,

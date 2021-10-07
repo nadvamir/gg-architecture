@@ -15,9 +15,12 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "crypto-js": "^4.1.1",
+    "email-validator": "^2.0.4",
     "esm": "^3.2.25",
     "express": "^4.17.1",
     "murmurhash": "^2.0.0",
+    "sanitize": "^2.1.0",
     "simple-peer": "^9.11.0",
     "solid-app-router": "^0.1.5",
     "solid-js": "^1.0.7",

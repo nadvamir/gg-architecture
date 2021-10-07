@@ -11,6 +11,8 @@ import { AI } from './AI.js';
 import { ItemDefinitions } from './data/ItemDefinitions.js';
 import { NpcDefinitions } from './data/NpcDefinitions.js';
 import { Reflection } from './util/Reflection.js';
+import { PlayerDefinitions } from './data/PlayerDefinitions.js';
+import { gossipGraph } from './GameAssembly.js';
 
 const DESPAWN_PERIOD = 30 * 60 * 1000 // 30 minutes
 const RESPAWN_PERIOD = 5 * 60 * 1000 // 5 minutes
@@ -334,7 +336,7 @@ class GameEngine {
 
     createNpc(src, locId) {
         const location = this.get(locId)
-        const id = this.nextId() 
+        const id = this.nextId()
 
         this.setState(produce(state => {
             state[id] = deepCopy(NpcDefinitions[src])
@@ -351,8 +353,33 @@ class GameEngine {
         this.setState('ai', produce(ai => ai[timer] = time))
     }
 
-    createPlayer(desc) {
+    createPlayer(email, password, username) {
+        const location = this.regionSpawnPoint()
+        const id = this.nextId()
+        const src = 'p.player'
 
+        this.setState(produce(state => {
+            let p = deepCopy(PlayerDefinitions[src])
+            p.name = username
+            p.email = email
+            p.password = password
+            p.src = src
+            p.location = location.id
+            state[id] = p
+        }))
+
+        const player = this.get(id)
+        location.add(player)
+
+        // create player can only be called by the server during the registration
+        // so use overwrite-state message to disseminate
+        // changes to player, location and next id:
+        let stateDiff = {
+            [player.id]: this.state[player.id],
+            [location.id]: this.state[location.id],
+            last_id: this.state.last_id,
+        }
+        gossipGraph.send(MessageType.GG_MESSAGE, Action.OverwriteState, [stateDiff])
     }
 }
 
