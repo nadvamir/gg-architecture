@@ -47,7 +47,7 @@ class Location {
             const id = parseInt(sid, 10)
             actorList.push([this.gameEngine.get(id), actors[id]])
             if (!actorList[actorList.length-1][0]) {
-                console.log(this.id, ' has a dead actor entry in ', JSON.stringify(actors))
+                console.log(this.id, ' has a dead actor entry in ', JSON.stringify(actors), ':', id)
             }
         }
         return actorList.sort((l, r) => { return l[0].id - r[0].id })

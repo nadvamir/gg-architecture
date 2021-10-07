@@ -4,7 +4,6 @@ import sha256 from 'crypto-js/sha256';
 import Base64 from 'crypto-js/enc-base64';
 
 import styles from "../../App.module.css";
-import { gossipGraph } from "../../game-engine/GameAssembly";
 
 function RegisterScreen() {
   const [error, setError] = createSignal('')
@@ -13,14 +12,6 @@ function RegisterScreen() {
   let emailRef;
 
   const navigate = useNavigate()
-  function signIn() {
-    fetch('http://localhost:3001/login')
-      .then(response => response.json())
-      .then(data => {
-        gossipGraph.init(data.uid, WebSocket, SimplePeer)
-        navigate("/location")
-      })
-  }
 
   const register = () => {
     fetch('http://localhost:3001/register', {
@@ -35,7 +26,7 @@ function RegisterScreen() {
     .then(response => response.json())
     .then(data => {
       if (data.success) {
-        signIn()
+        navigate("/")
       }
       else {
         setError(data.error)

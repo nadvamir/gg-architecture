@@ -43,8 +43,16 @@ app.get('/', (req, res) => {
     res.send('Hello World!' + gameEngine.state.last_id)
 })
 
-app.get('/login', (req, res) => {
-    res.send({ uid: 3000001 })
+app.post('/login', (req, res) => {
+    //FIXME: the entire login flow
+    const pid = gameEngine.authorisePlayer(req.body.email, req.body.password)
+    console.log(req.body.email, "'"+ req.body.password + "'")
+    if (!!pid) {
+        res.send({ uid: pid })
+    }
+    else {
+        res.send({ error: 'Email and password do not match' })
+    }
 })
 
 app.post('/register', (req, res) => {

@@ -220,6 +220,11 @@ class GameEngine {
         return Object.values(this.state).find(e => e.email == email) !== undefined
     }
 
+    authorisePlayer(email, password) {
+        const p = Object.entries(this.state).find(([id, e]) => e.email == email && e.password == password)
+        return p && p[0]
+    }
+
     // ------------ Event Handling -----------------
     // check the author had a right to submit this event
     authorised(sender, type, action, args) {
@@ -379,7 +384,7 @@ class GameEngine {
             [location.id]: this.state[location.id],
             last_id: this.state.last_id,
         }
-        gossipGraph.send(MessageType.GG_MESSAGE, Action.OverwriteState, [stateDiff])
+        gossipGraph.send(MessageType.GG_MESSAGE, Action.OverwriteState, stateDiff)
     }
 }
 
