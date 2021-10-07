@@ -17,7 +17,6 @@ function lazy(dataFunc) {
 class AI {
     constructor(gameEngine) {
         this.gameEngine = gameEngine
-        this.lastTime = 0
 
         // AI actions on alive objects
         this.aliveActorActions = [

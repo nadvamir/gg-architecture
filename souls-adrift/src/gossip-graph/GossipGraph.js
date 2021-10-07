@@ -7,6 +7,7 @@ class GossipGraph {
     constructor() {
         this.listeners = []
         this.lastHash = 0
+        this.messageId = 0
 
         this.connections = {}
         this.peers = {}
@@ -45,16 +46,32 @@ class GossipGraph {
         this.listeners.push(onMessageReceived)
     }
 
+    formMessage(type, actions) {
+        return {
+            type: type,
+            actions: actions,
+            sender: this.id,
+            lastHash: this.lastHash,
+            messageId: this.messageId++,
+            time: new Date().getTime()
+        }
+    }
+
     send(type, action, args, peers) {
-        let message = serialise(action, args)
-        this.lastHash = murmurhash.v3(message + this.lastHash)
-        message = type + '~' + this.id + '~' + this.lastHash + '~' + message
+        const payload = {
+            action: action,
+            args: args,
+            origSender: this.id
+        }
+        this.lastHash = murmurhash.v3(JSON.stringify(payload) + this.lastHash)
+        payload.origLastHash = this.lastHash
+        const message = JSON.stringify(this.formMessage(type, [payload]))
         //TODO: GG instead of client-server
         if (0 in this.activePeers) { // not a server
             this.activePeers[0].send(message)
         }
         else {
-            this.handleIncomingMessage(message)
+            this.handleIncomingMessage(message, true)
         }
         return this.lastHash
     }
@@ -63,26 +80,44 @@ class GossipGraph {
     initGameState(state) {
         state.uid = this.id
         for (let listener of this.listeners) {
-            listener(0, MessageType.DIRECT_MESSAGE, Action.OverwriteState, [state], this.lastHash, new Date().getTime())
+            listener(0, MessageType.DIRECT_MESSAGE, Action.OverwriteState, [state], this.lastHash, state.time)
         }
     }
 
-    handleIncomingMessage(data) {
+    decodeIncoming(data, fromServerSend) {
+        data = JSON.parse(data)
+        if (!fromServerSend && this.isServer() && data.type != MessageType.DIRECT_MESSAGE) {
+            // rewrite the message as if coming from the server
+            data = this.formMessage(data.type, data.actions)
+        }
+        return data
+    }
+
+    handleIncomingMessage(data, fromServerSend = false) {
+        const message = this.decodeIncoming(data, fromServerSend)
+        const { type, actions, sender, lastHash, time, messageId } = message
+
         //TODO: proper gossip graph
         if (this.isServer()) {
-            // forward to others
+            data = (fromServerSend) ? data : JSON.stringify(message)
             for (const peer of Object.values(this.activePeers)) {
                 peer.send(data)
             }
         }
-        const [type, senderId, lastHash, message] = data.split('~')
-        const [action, args] = deserialise(message)
-        //FIXME: don't hack in UID in state overwrites
-        if (action == Action.OverwriteState) {
-            args[0].uid = this.id
+
+        if (sender != 0) {
+            // do the gossip graph instead of registering events
+            return
         }
+
         for (let listener of this.listeners) {
-            setTimeout(_ => listener(senderId, type, action, args, lastHash, new Date().getTime()), Math.random() * 1000)
+            for (const { action, args, origSender, origLastHash } of actions) {
+                //FIXME: don't hack in UID in state overwrites
+                if (action == Action.OverwriteState) {
+                    args[0].uid = this.id
+                }
+                listener(origSender, type, action, args, origLastHash, time, messageId)
+            }
         }
     }
 
@@ -97,6 +132,7 @@ class GossipGraph {
     newPeer(config, pid) {
         config.trickle = false
         // config.config = {iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]}
+        config.config = { iceServers: [] }
         if (this.wrtc) {
             config.wrtc = this.wrtc
         }

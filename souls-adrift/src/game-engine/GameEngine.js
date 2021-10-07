@@ -69,7 +69,7 @@ class GameEngine {
         this.send(Action.None, [this.state.uid])
     }
 
-    onMessageReceived(sender, type, action, args, hash, time) {
+    onMessageReceived(sender, type, action, args, hash, time, messageId) {
         if (!this.authorised(sender, type, action, args)) {
             console.log('Received an unauthorised message')
             return
@@ -77,16 +77,15 @@ class GameEngine {
 
         // Overwrite-state and messaging events happen outside the game loop
         if (action != Action.OverwriteState && action != Action.Talk) {
-            // reseed the hash, update the state
-            this.setState({"last_event": hash})
-            this.randomGen = mulberry32(hash)
+            // reseed the hash, update the time
+            this.updateTime(time)
+            this.updateRand(time)
 
             // Clear the event list to keep it manageable
             if (sender == this.state.uid) {
                 this.clearEventList()
             }
 
-            this.updateTime(time)
             this.ai.run(time)
         }
 
@@ -129,7 +128,7 @@ class GameEngine {
         this.setState(state)
 
         // reseed the random
-        this.randomGen = mulberry32(this.state.last_event || 0)
+        this.updateRand(this.state.time)
 
         // generate entity cache
         for (const id of Object.keys(this.state)) {
@@ -144,6 +143,10 @@ class GameEngine {
     // ------------ Synchronised random ------------
     rand() {
         return Math.round(this.randomGen() * 100)
+    }
+
+    updateRand(time) {
+        this.randomGen = mulberry32(time)
     }
 
     gameTime() {
@@ -397,7 +400,7 @@ class GameEngine {
             [location.id]: this.state[location.id],
             last_id: this.state.last_id,
         }
-        gossipGraph.send(MessageType.GG_MESSAGE, Action.OverwriteState, stateDiff)
+        gossipGraph.send(MessageType.GG_MESSAGE, Action.OverwriteState, [stateDiff])
     }
 }
 
