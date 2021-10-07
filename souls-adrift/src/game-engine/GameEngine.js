@@ -34,7 +34,8 @@ class GameEngine {
         this.entityCache = {}
 
         const [interactionState, setInteractionState] = createStore({
-            sending: false
+            sending: false,
+            server_connected: false
         })
         this.interactionState = interactionState
         this.setInteractionState = setInteractionState
@@ -73,6 +74,10 @@ class GameEngine {
         if (!this.authorised(sender, type, action, args)) {
             console.log('Received an unauthorised message')
             return
+        }
+
+        if (!this.interactionState.server_connected && sender == 0 && action != Action.OverwriteState) {
+            this.setInteractionState({server_connected: true})
         }
 
         // Overwrite-state and messaging events happen outside the game loop
@@ -118,7 +123,7 @@ class GameEngine {
     }
 
     isLoaded() {
-        return this.state.loaded
+        return this.state.loaded && this.interactionState.server_connected
     }
 
     loadGameState(state) {

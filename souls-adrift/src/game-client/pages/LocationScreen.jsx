@@ -188,12 +188,10 @@ function LocationScreen() {
   const navigate = useNavigate()
   if (!gossipGraph.id) navigate('/')
 
-  const state = gameEngine.getState()
-
   return (
     <div id={styles['location-screen']} class={[styles['main-screen'], styles['page']].join(' ')}>
-      <Show when={!state.uid} fallback={<LocationScreenImpl />}>
-        <div class={state.uid ? styles['hidden'] : styles['game-loading']}>
+      <Show when={!gameEngine.isLoaded()} fallback={<LocationScreenImpl />}>
+        <div class={styles['game-loading']}>
           <h1>Loading...</h1>
         </div>
       </Show>
