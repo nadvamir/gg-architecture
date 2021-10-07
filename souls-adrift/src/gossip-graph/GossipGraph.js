@@ -2,6 +2,7 @@ import murmurhash from "murmurhash"
 import { Action } from "../game-engine/actions/ActionFactory"
 import { MessageType } from "./MessageType"
 import { serialise, deserialise } from './MessageSerialiser.js'
+import { deepCopy } from "../game-client/util/Util"
 
 class GossipGraph {
     constructor() {
@@ -12,6 +13,11 @@ class GossipGraph {
         this.connections = {}
         this.peers = {}
         this.activePeers = {}
+        this.numActivePeers = 0
+
+        this.lastMessages = {}
+        this.numLastMessages = 0
+        this.actionHistory = []
     }
 
     init(id, WSClass, PeerClass, wrtc) {
@@ -65,10 +71,10 @@ class GossipGraph {
         }
         this.lastHash = murmurhash.v3(JSON.stringify(payload) + this.lastHash)
         payload.origLastHash = this.lastHash
-        const message = JSON.stringify(this.formMessage(type, [payload]))
+        const message = this.formMessage(type, [payload])
         //TODO: GG instead of client-server
         if (0 in this.activePeers) { // not a server
-            this.activePeers[0].send(message)
+            this.activePeers[0].send(JSON.stringify(message))
         }
         else {
             this.handleIncomingMessage(message, true)
@@ -85,7 +91,6 @@ class GossipGraph {
     }
 
     decodeIncoming(data, fromServerSend) {
-        data = JSON.parse(data)
         if (!fromServerSend && this.isServer() && data.type != MessageType.DIRECT_MESSAGE) {
             // rewrite the message as if coming from the server
             data = this.formMessage(data.type, data.actions)
@@ -99,10 +104,7 @@ class GossipGraph {
 
         //TODO: proper gossip graph
         if (this.isServer()) {
-            data = (fromServerSend) ? data : JSON.stringify(message)
-            for (const peer of Object.values(this.activePeers)) {
-                peer.send(data)
-            }
+            this.broadcastMessage(message)
         }
 
         if (sender != 0) {
@@ -121,6 +123,40 @@ class GossipGraph {
         }
     }
 
+    broadcastMessage(message) {
+        this.actionHistory.push(message)
+        const justLatest = JSON.stringify(message)
+        for (const [pid, peer] of Object.entries(this.activePeers)) {
+            const lastSeen = this.lastMessages[pid]
+            if (lastSeen == message.messageId - 1) {
+                peer.send(justLatest)
+            }
+            else {
+                const msgCopy = deepCopy(message)
+                msgCopy.actions = this.actionHistory
+                    .filter(msg => msg.messageId > lastSeen)
+                    .map(msg => msg.actions[0]) //TODO: flatmap
+                peer.send(JSON.stringify(msgCopy))
+            }
+            this.lastMessages[pid] = message.messageId
+        }
+        // trim action history
+        if (this.numLastMessages == this.numActivePeers) {
+            this.actionHistory.length = 0
+        }
+        else {
+            const minMsgId = Math.min(Object.values(this.lastMessages))
+            this.actionHistory = this.actionHistory.filter(m => m.messageId > minMsgId)
+        }
+    }
+
+    markLastMessage(pid, messageId) {
+        if (pid != 0) {
+            this.lastMessages[pid] = messageId
+            this.numLastMessages += 1
+        }
+    }
+
     get selfId() {
         return this.id
     }
@@ -131,7 +167,7 @@ class GossipGraph {
 
     newPeer(config, pid) {
         config.trickle = false
-        // config.config = {iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]}
+        // config.config = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] }
         config.config = { iceServers: [] }
         if (this.wrtc) {
             config.wrtc = this.wrtc
@@ -145,9 +181,10 @@ class GossipGraph {
         peer.on('connect', () => {
             console.log(pid, 'connected!')
             this.activePeers[pid] = peer
+            this.numActivePeers += 1
         })
         peer.on('data', data => {
-            this.handleIncomingMessage(data.toString())
+            this.handleIncomingMessage(JSON.parse(data.toString()))
         })
         peer.on('error', (err) => {
             console.log('ERROR for id', this.id, 'message=', err)
@@ -156,6 +193,9 @@ class GossipGraph {
             console.log('Removing WebRTC')
             delete this.peers[pid]
             delete this.activePeers[pid]
+            delete this.lastMessages[pid]
+            this.numActivePeers -= 1
+            this.numLastMessages -= 1
         })
         return peer
     }

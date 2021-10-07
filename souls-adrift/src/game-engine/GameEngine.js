@@ -95,6 +95,7 @@ class GameEngine {
         }
 
         this.handleEvent(action, args)
+        this.updateLastMessage(messageId)
 
         if (hash == this.nextHash) {
             // console.log('Received')
@@ -159,9 +160,11 @@ class GameEngine {
     }
 
     updateTime(time) {
-        this.setState(produce(state => {
-            state.time = time
-        }))
+        this.setState({time: time})
+    }
+
+    updateLastMessage(messageId) {
+        this.setState({last_message: messageId})
     }
 
     // ----------------- Accessors -----------------

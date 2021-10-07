@@ -95,8 +95,9 @@ wsServer.on('connection', socket => {
                         if (!!e.password) delete e['password']
                     }
                 }
-                socket.send(JSON.stringify({ action: 'game_state', state: gameEngine.isLoaded() ? gameEngine.getState() : initialState }))
+                socket.send(JSON.stringify({ action: 'game_state', state: state }))
                 socket.send(JSON.stringify({ action: 'list_of_peers', peers: Object.keys(peers) }))
+                gossipGraph.markLastMessage(payload.uid, state.last_message)
                 peers[payload.uid] = socket
                 break
             case 'signal':
