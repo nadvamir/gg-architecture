@@ -49,7 +49,7 @@ class GameEngine {
 
     send(action, args) {
         this.setInteractionState({ sending: true })
-        console.log('Sending!')
+        // console.log('Sending!')
         this.nextHash = this.gossipGraph.send(MessageType.GG_MESSAGE, action, args)
     }
 
@@ -80,7 +80,7 @@ class GameEngine {
         }
         this.handleEvent(action, args)
         if (hash == this.nextHash) {
-            console.log('Received')
+            // console.log('Received')
             this.setInteractionState({ sending: false })
         }
     }
@@ -210,6 +210,14 @@ class GameEngine {
         return actors
     }
 
+    usernameExists(username) {
+        return Object.values(this.state).find(e => e.name == username) !== undefined
+    }
+
+    emailExists(email) {
+        return Object.values(this.state).find(e => e.email == email) !== undefined
+    }
+
     // ------------ Event Handling -----------------
     // check the author had a right to submit this event
     authorised(sender, type, action, args) {
@@ -268,9 +276,9 @@ class GameEngine {
 
         if (respawned.length > 0) {
             this.setState('spawn_queue', produce(queue => {
-                for (const i of respawned) {
+                for (const i of respawned.reverse()) {
                     queue[i] = queue[queue.length - 1]
-                    queue.length -= 1
+                    queue.pop()
                 }
             }))
         }
@@ -292,9 +300,9 @@ class GameEngine {
 
         if (despawned.length > 0) {
             this.setState('despawn_queue', produce(queue => {
-                for (const i of despawned) {
+                for (const i of despawned.reverse()) {
                     queue[i] = queue[queue.length - 1]
-                    queue.length -= 1
+                    queue.pop()
                 }
             }))
         }
@@ -341,6 +349,10 @@ class GameEngine {
 
     updateAITime(timer, time) {
         this.setState('ai', produce(ai => ai[timer] = time))
+    }
+
+    createPlayer(desc) {
+
     }
 }
 
