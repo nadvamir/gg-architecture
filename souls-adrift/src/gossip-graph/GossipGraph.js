@@ -96,7 +96,7 @@ class GossipGraph {
 
     newPeer(config, pid) {
         config.trickle = false
-        config.config = {iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]}
+        // config.config = {iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]}
         if (this.wrtc) {
             config.wrtc = this.wrtc
         }

@@ -13,6 +13,7 @@ import { NpcDefinitions } from './data/NpcDefinitions.js';
 import { Reflection } from './util/Reflection.js';
 import { PlayerDefinitions } from './data/PlayerDefinitions.js';
 import { gossipGraph } from './GameAssembly.js';
+import { mulberry32 } from './util/Random.js';
 
 const DESPAWN_PERIOD = 30 * 60 * 1000 // 30 minutes
 const RESPAWN_PERIOD = 5 * 60 * 1000 // 5 minutes
@@ -43,6 +44,9 @@ class GameEngine {
 
         // AI that will control automated actions
         this.ai = new AI(this)
+
+        // We need a random number generator
+        this.randomGen = mulberry32(0)
     }
 
     isServer() {
@@ -71,16 +75,23 @@ class GameEngine {
             return
         }
 
-        // Clear the event list to keep it manageable
-        if (sender == this.state.uid) {
-            this.clearEventList()
-        }
+        // Overwrite-state and messaging events happen outside the game loop
+        if (action != Action.OverwriteState && action != Action.Talk) {
+            // reseed the hash, update the state
+            this.setState({"last_event": hash})
+            this.randomGen = mulberry32(hash)
 
-        this.updateTime(time)
-        if (action != Action.OverwriteState) {
+            // Clear the event list to keep it manageable
+            if (sender == this.state.uid) {
+                this.clearEventList()
+            }
+
+            this.updateTime(time)
             this.ai.run(time)
         }
+
         this.handleEvent(action, args)
+
         if (hash == this.nextHash) {
             // console.log('Received')
             this.setInteractionState({ sending: false })
@@ -117,6 +128,9 @@ class GameEngine {
         state.loaded = true
         this.setState(state)
 
+        // reseed the random
+        this.randomGen = mulberry32(this.state.last_event || 0)
+
         // generate entity cache
         for (const id of Object.keys(this.state)) {
             this.get(id)
@@ -129,8 +143,7 @@ class GameEngine {
 
     // ------------ Synchronised random ------------
     rand() {
-        //TODO: create a custom calculator seeded by event hash
-        return Math.round(Math.random() * 100)
+        return Math.round(this.randomGen() * 100)
     }
 
     gameTime() {

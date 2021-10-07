@@ -46,7 +46,6 @@ app.get('/', (req, res) => {
 app.post('/login', (req, res) => {
     //FIXME: the entire login flow
     const pid = gameEngine.authorisePlayer(req.body.email, req.body.password)
-    console.log(req.body.email, "'"+ req.body.password + "'")
     if (!!pid) {
         res.send({ uid: pid })
     }
