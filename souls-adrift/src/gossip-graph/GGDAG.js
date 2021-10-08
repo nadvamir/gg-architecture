@@ -45,7 +45,7 @@ class GGDAG {
         })
         // create an event recording gossip received
         for (const h of finalEventCandidates.values()) {
-            this.recordEvent(this.lastEvent[this.id][0], h, {})
+            this.recordEvent(h, {})
         }
         return {ban: []}
     }
@@ -53,13 +53,13 @@ class GGDAG {
     // used to form a message to a peer
     getUnseenEvents(peer) {
         const seen = new Set(this.eventsSeenFrom(this.lastEvent[peer][0]))
-        console.log(seen)
         return Object.values(this.gg).filter(e => !seen.has(e.th))
     }
 
     // used to drive the internal game engine
-    getEventsWhichHappenedAfter(eventId) {
-        return []
+    getEventsWhichHappenedAfter(eventHash) {
+        const happenedBefore = new Set(this.eventsSeenFrom(eventHash))
+        return this.eventsSeenFrom(this.lastEvent[0][0], happenedBefore).map(e => this.gg[e])
     }
 
     compact() {
@@ -74,13 +74,14 @@ class GGDAG {
         return Object.keys(this.gg).length
     }
 
-    eventsSeenFrom(node) {
+    eventsSeenFrom(node, rejectSet = null) {
         let result = []
         let q = [node]
         while (q.length != 0) {
             let hash = q.shift()
             let event = this.gg[hash]
             if (!event) continue
+            if (rejectSet && rejectSet.has(hash)) continue
             result.push(hash)
             q.push(event.sp)
             if (event.op) q.push(event.op)

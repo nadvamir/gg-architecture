@@ -22,7 +22,8 @@ function generateSampleGraph(gg) {
         {eid: 201, s: 2, t: 9999, th: 201, sp: 200, op: null, p: {action: 2, args: [10]}}, // 2A self event
     ])
     // ->
-    // {eid: 102, s: 2, t: 10000, th: 102, sp: 101, op: 201, p: {}}, // 2A -> 1B
+    // {eid: 102, s: 2, t: 10000, th: ?, sp: 101, op: 201, p: {}}, // 2A -> 1B
+    const hash102 = gg.lastEvent[1][0]
 
     // 3 -> 1
     gg.acceptGossip([
@@ -30,15 +31,15 @@ function generateSampleGraph(gg) {
         {eid: 301, s: 3, t: 10001, th: 301, sp: 101, op: 201, p: {}}, // 2A -> 3C
     ])
     // ->
-    // {eid: 103, s: 3, t: 10003, th: 103, sp: 102, op: 301, p: {}}, // 3C -> 1E
+    // {eid: 103, s: 3, t: 10003, th: ?, sp: 102, op: 301, p: {}}, // 3C -> 1E
 
     // 2 -> 1
     gg.acceptGossip([
-        {eid: 8, s: 1, t: 10002, th: 8, sp: 7, op: 102, p: {}}, // 1B -> 0D
-        {eid: 202, s: 0, t: 10004, th: 202, sp: 201, op: 8, p: {}} // 0D -> 2F
+        {eid: 8, s: 0, t: 10002, th: 8, sp: 7, op: hash102, p: {}}, // 1B -> 0D
+        {eid: 202, s: 2, t: 10004, th: 202, sp: 201, op: 8, p: {}} // 0D -> 2F
     ])
     // ->
-    // {eid: 104, s: 2, t: 10005, th: 104, sp: 103, op: 202, p: {}} // 2F -> 1G
+    // {eid: 104, s: 2, t: 10005, th: ?, sp: 103, op: 202, p: {}} // 2F -> 1G
 }
 
 // create a gossip graph for the core example
@@ -63,6 +64,10 @@ test('should produce new events', async (t) => {
     gg.addEvent({action: 2, args: [10]})
 
     t.equal(gg.size(), 1)
+    const [event] = [...Object.values(gg.gg)]
+    t.equal(event.eid, 102)
+    t.equal(event.sp, 101)
+    t.equal(event.op, null)
 })
 
 test('should accept gossip', async (t) => {
@@ -83,13 +88,14 @@ test('should produce all events that a peer does not know about', async (t) => {
     t.ok(setEqual(new Set(unseenEventIds), new Set([102, 103, 8, 202, 104])))
 })
 
-test('should produce all events that happened after a given event id', async (t) => {
+test('should produce all events that happened after a given event hash', async (t) => {
     const gg = createGG()
     generateSampleGraph(gg)
 
     const events = gg.getEventsWhichHappenedAfter(7)
 
     const eventsWhichHappened = events.map(e => e.eid)
+    console.log(events)
     t.ok(setEqual(new Set(eventsWhichHappened), new Set([201, 102, 8])))
 })
 
