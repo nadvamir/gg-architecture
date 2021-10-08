@@ -28,7 +28,7 @@ function generateArena(state) {
 
     // now insert 30 rats
     for (let i = 0; i < N; ++i) {
-        const ratId = 110000 + i
+        const ratId = 1100000 + i
         const rat = {
             "name": "Rat",
             "src": "n.x.rat",
@@ -36,7 +36,37 @@ function generateArena(state) {
             "spawn_point": id(i, 1)
         }
         state[ratId] = rat
-        state[id(i, 1)].actors = {[ratId]: 1}
+        state[id(i, 1)].actors = { [ratId]: 1 }
+    }
+
+    // now insert 100 players
+    for (let i = 0; i < 100; ++i) {
+        const playerId = 1200000  + i
+        const player = {
+            "name": "Tester " + i,
+            "email": i + "@a.ua",
+            "password": "ypeBEsobvcr6wjGzmiPcTaeG7/gUfE5yuYB3ha/uSLs=",
+            "src": "p.player",
+            "stats": {
+                "hp": 20,
+                "lvl": 1,
+                "exp": 20,
+                "skill_points": 0
+            },
+            "skills": {
+                "strength": 3,
+                "constitution": 2,
+                "dexterity": 3,
+                "sabre": 0
+            },
+            "equipment": [],
+            "inventory": {},
+            "quest": {},
+            "location": id(Math.round(Math.random() * N), Math.round(Math.random() * N)),
+            "battle": 0
+        }
+        state[playerId] = player
+        state[player.location].actors[playerId] = 1
     }
 }
 
