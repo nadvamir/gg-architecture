@@ -46,6 +46,7 @@ function createGG() {
     const id = 1
     const lastEvents = {
         0: [7, 7],
+        1: [101, 101],
         2: [200, 200],
         3: [300, 300]
     }

@@ -1,7 +1,6 @@
 import murmurhash from "murmurhash"
 import { Action } from "../game-engine/actions/ActionFactory"
 import { MessageType } from "./MessageType"
-import { serialise, deserialise } from './MessageSerialiser.js'
 import { deepCopy } from "../game-client/util/Util"
 import { Metrics } from "./Metrics"
 
