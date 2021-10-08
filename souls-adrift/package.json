@@ -5,6 +5,7 @@
   "scripts": {
     "start": "vite",
     "dev": "vite",
+    "test": "node -r esm ./test/GossipGraph.js",
     "build": "vite build",
     "serve": "vite preview"
   },
@@ -24,6 +25,7 @@
     "simple-peer": "^9.11.0",
     "solid-app-router": "^0.1.5",
     "solid-js": "^1.0.7",
+    "tape": "^5.3.1",
     "wrtc": "^0.4.7",
     "ws": "^8.2.3"
   }
