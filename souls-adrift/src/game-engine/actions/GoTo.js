@@ -8,7 +8,7 @@ function processGoTo(args, gameEngine) {
 
     const currentLocation = actor.location()
     if (!location.isReachableFrom(currentLocation, actor)) {
-        console.log(actor.id, 'cannot reach', location.id)
+        console.log(gameEngine.playerId(), ':', actor.id, 'cannot reach', location.id, 'from', currentLocation.id)
         return
     }
 
