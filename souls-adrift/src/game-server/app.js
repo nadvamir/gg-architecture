@@ -19,6 +19,8 @@ if (fs.existsSync(GAME_STATE_PATH)) {
 else {
     // load an initial game map
     initialState = require('../game-engine/data/InitialGameState.json')
+    const generator = require('./arenaGenerator.js')
+    generator.generateArena(initialState)
 }
 
 // setup a periodic game store
