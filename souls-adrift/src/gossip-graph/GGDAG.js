@@ -38,6 +38,10 @@ class GGDAG {
             if (finalEventCandidates.has(e.sp)) finalEventCandidates.delete(e.sp)
             if (finalEventCandidates.has(e.op)) finalEventCandidates.delete(e.op)
             finalEventCandidates.add(e.th)
+            // update last events for a given sender
+            if (this.lastEvent[e.s][1] < e.eid) {
+                this.lastEvent[e.s] = [e.th, e.eid]
+            }
         })
         // create an event recording gossip received
         for (const h of finalEventCandidates.values()) {
@@ -48,7 +52,9 @@ class GGDAG {
 
     // used to form a message to a peer
     getUnseenEvents(peer) {
-        return []
+        const seen = new Set(this.eventsSeenFrom(this.lastEvent[peer][0]))
+        console.log(seen)
+        return Object.values(this.gg).filter(e => !seen.has(e.th))
     }
 
     // used to drive the internal game engine
@@ -66,6 +72,20 @@ class GGDAG {
 
     size() {
         return Object.keys(this.gg).length
+    }
+
+    eventsSeenFrom(node) {
+        let result = []
+        let q = [node]
+        while (q.length != 0) {
+            let hash = q.shift()
+            let event = this.gg[hash]
+            if (!event) continue
+            result.push(hash)
+            q.push(event.sp)
+            if (event.op) q.push(event.op)
+        }
+        return result
     }
 }
 
