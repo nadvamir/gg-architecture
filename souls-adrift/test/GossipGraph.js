@@ -116,7 +116,7 @@ test('should delete the events that have been seen by every peer', async (t) => 
 
     gg.compact()
 
-    t.equal(gg.size(), 1)
+    t.equal(gg.size(), 6)
 })
 
 test('should know the last event for each peer', async (t) => {

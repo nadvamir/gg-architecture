@@ -1,4 +1,5 @@
 import murmurhash from "murmurhash"
+import BitSet from "bitset"
 
 class GGDAG {
     constructor(id, lastEvent) {
@@ -63,7 +64,33 @@ class GGDAG {
     }
 
     compact() {
+        // create a mapping from the source to bitset idx
+        const mapping = Object.fromEntries(Object.keys(this.lastEvent).map((id, idx) => [id, idx]))
 
+        // our target -- all bits flipped
+        const target = new BitSet()
+        target.flip(0, mapping.length)
+
+        const numSeers = {}
+
+        const self = this
+        function dfs(node, visitedSet, lastId) {
+            const event = self.gg[node]
+            if (event.s != lastId) visitedSet = visitedSet.or(mapping[event.s])
+
+            if (!(node in numSeers)) numSeers[node] = visitedSet
+            else numSeers[node] = numSeers[node].or(visitedSet)
+
+            if (numSeers[node].equals(target)) {
+                delete self.gg[node]
+            }
+
+            if (event.sp in self.gg) dfs(event.sp, visitedSet, event.s)
+            if (event.op in self.gg) dfs(event.op, visitedSet, event.s)
+        }
+
+        // can start from a final node in any of the peers really
+        dfs(this.lastEvent[0][0], new BitSet(), -1)
     }
 
     peerSummary() {
