@@ -67,7 +67,7 @@ class GGDAG {
     }
 
     peerSummary() {
-        return {}
+        return this.lastEvent
     }
 
     size() {
