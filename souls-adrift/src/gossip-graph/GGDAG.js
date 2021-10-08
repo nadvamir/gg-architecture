@@ -24,6 +24,14 @@ class GGDAG {
         return []
     }
 
+    compact() {
+
+    }
+
+    peerSummary() {
+        return {}
+    }
+
     size() {
         return this.events.length
     }
