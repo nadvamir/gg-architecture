@@ -33,6 +33,16 @@ setInterval(() => {
     })
 }, 1000)
 
+// periodically log metrics
+setInterval(() => {
+    if (!gameEngine.isLoaded()) return;
+    fs.writeFile('./metrics/server.json', JSON.stringify(gossipGraph.getMetrics(), null, 2), 'utf8', (err) => {
+        if (err) {
+            console.log('Failed to dump metrics: ', err)
+        }
+    })
+}, 1000)
+
 // -------- app --------
 const app = express()
 const port = 3001

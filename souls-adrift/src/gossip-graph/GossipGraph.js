@@ -3,6 +3,7 @@ import { Action } from "../game-engine/actions/ActionFactory"
 import { MessageType } from "./MessageType"
 import { serialise, deserialise } from './MessageSerialiser.js'
 import { deepCopy } from "../game-client/util/Util"
+import { Metrics } from "./Metrics"
 
 class GossipGraph {
     constructor() {
@@ -18,6 +19,8 @@ class GossipGraph {
         this.lastMessages = {}
         this.numLastMessages = 0
         this.actionHistory = []
+
+        this.metrics = new Metrics()
     }
 
     init(id, WSClass, PeerClass, wrtc) {
@@ -67,19 +70,26 @@ class GossipGraph {
         const payload = {
             action: action,
             args: args,
-            origSender: this.id
+            origSender: this.id,
+            origTime: new Date().getTime()
         }
         this.lastHash = murmurhash.v3(JSON.stringify(payload) + this.lastHash)
+        this.timeSent = new Date().getTime()
         payload.origLastHash = this.lastHash
         const message = this.formMessage(type, [payload])
         //TODO: GG instead of client-server
         if (0 in this.activePeers) { // not a server
-            this.activePeers[0].send(JSON.stringify(message))
+            this.sendToPeer(this.activePeers[0], JSON.stringify(message))
         }
         else {
             this.handleIncomingMessage(message, true)
         }
         return this.lastHash
+    }
+
+    sendToPeer(peer, msg) {
+        this.metrics.recordTrafficOut(msg.length)
+        peer.send(msg)
     }
 
     //TODO: sort out serialisation
@@ -113,10 +123,13 @@ class GossipGraph {
         }
 
         for (let listener of this.listeners) {
-            for (const { action, args, origSender, origLastHash } of actions) {
+            for (const { action, args, origSender, origLastHash, origTime } of actions) {
                 //FIXME: don't hack in UID in state overwrites
                 if (action == Action.OverwriteState) {
                     args[0].uid = this.id
+                }
+                if (origLastHash == this.lastHash) {
+                    this.metrics.recordLatency(new Date().getTime() - origTime)
                 }
                 listener(origSender, type, action, args, origLastHash, time, messageId)
             }
@@ -129,14 +142,14 @@ class GossipGraph {
         for (const [pid, peer] of Object.entries(this.activePeers)) {
             const lastSeen = this.lastMessages[pid]
             if (lastSeen == message.messageId - 1) {
-                peer.send(justLatest)
+                this.sendToPeer(peer, justLatest)
             }
             else {
                 const msgCopy = deepCopy(message)
                 msgCopy.actions = this.actionHistory
                     .filter(msg => msg.messageId > lastSeen)
                     .map(msg => msg.actions[0]) //TODO: flatmap
-                peer.send(JSON.stringify(msgCopy))
+                this.sendToPeer(peer, JSON.stringify(msgCopy))
             }
             this.lastMessages[pid] = message.messageId
         }
@@ -159,6 +172,10 @@ class GossipGraph {
 
     get selfId() {
         return this.id
+    }
+
+    getMetrics() {
+        return this.metrics.getMetrics()
     }
 
     isServer() {
@@ -184,7 +201,9 @@ class GossipGraph {
             this.numActivePeers += 1
         })
         peer.on('data', data => {
-            this.handleIncomingMessage(JSON.parse(data.toString()))
+            const msg = data.toString()
+            this.metrics.recordTrafficIn(msg.length)
+            this.handleIncomingMessage(JSON.parse(msg))
         })
         peer.on('error', (err) => {
             console.log('ERROR for id', this.id, 'message=', err)
