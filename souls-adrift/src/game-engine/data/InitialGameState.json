@@ -28,9 +28,10 @@
             "dexterity": 2,
             "sabre": 0
         },
-        "equipment": [2000001, 2000002],
+        "equipment": [
+            2000002
+        ],
         "inventory": {
-            "2000001": 1,
             "2000002": 1,
             "2000003": 1,
             "2000004": 2,
@@ -60,7 +61,10 @@
             "dexterity": 3,
             "sabre": 0
         },
-        "equipment": [2000002, 2000006],
+        "equipment": [
+            2000002,
+            2000006
+        ],
         "inventory": {
             "2000002": 1,
             "2000006": 1
@@ -74,7 +78,10 @@
     "1000001": {
         "name": "Sailor Jerry",
         "src": "n.t.sailor.jerry",
-        "equipment": [2000001, 2000002],
+        "equipment": [
+            2000001,
+            2000002
+        ],
         "inventory": {
             "2000001": 1,
             "2000002": 1,
@@ -84,39 +91,39 @@
         "trade": {
             "buy": 0.8,
             "sell": 1.2,
-            "to_buy": ["weapon", "helmet", "gloves", "boots"],
-            "for_sale": ["weapon", "helmet", "gloves", "boots"]
+            "to_buy": [
+                "weapon",
+                "helmet",
+                "gloves",
+                "boots"
+            ],
+            "for_sale": [
+                "weapon",
+                "helmet",
+                "gloves",
+                "boots"
+            ]
         },
         "location": 1,
         "spawn_point": 1
     },
     "1000002": {
-        "name": "Rat 1",
+        "name": "Rat",
         "src": "n.x.rat",
-        "location": 1,
-        "spawn_point": 2,
-        "battle": 0
+        "location": 9,
+        "spawn_point": 9
     },
     "1000003": {
         "name": "Mouse",
         "src": "n.a.mouse",
-        "location": 1,
-        "spawn_point": 1,
-        "battle": 0
+        "location": 8,
+        "spawn_point": 8
     },
     "1000004": {
-        "name": "Rat 2",
+        "name": "Rat",
         "src": "n.x.rat",
-        "stats": {
-            "hp": 20,
-            "lvl": 1,
-            "exp_worth": 10,
-            "base_dmg": 2,
-            "dmg_spread": 3,
-            "base_armor": 0
-        },
-        "location": 2,
-        "spawn_point": 3
+        "location": 10,
+        "spawn_point": 10
     },
     "2000001": {
         "src": "i.w.sabre.officer",
@@ -141,27 +148,61 @@
         "src": "i.m.key.rusty"
     },
     "1": {
-        "src": "l.town.forlorn.quay",
-        "actors": { "3000001": 1, "3000002": 1, "2000003": 1, "1000001": 1, "1000002" : 1, "1000003": 1, "2000005": 5 }
+        "src": "l.safe_town.forlorn_quay",
+        "actors": {
+            "3000001": 1,
+            "3000002": 1,
+            "2000003": 1,
+            "1000001": 1,
+            "2000005": 5
+        }
     },
     "2": {
-        "src": "l.town.main.street",
-        "actors": { "1000004": 1 }
+        "src": "l.safe_town.main_street",
+        "actors": {}
     },
     "3": {
-        "src": "l.town.near.sunken.boat",
-        "actors": { "2000007": 1 }
+        "src": "l.safe_town.near_sunken_boat",
+        "actors": {
+            "2000007": 1
+        }
     },
     "4": {
-        "src": "l.town.fourth.wall.library",
+        "src": "l.safe_town.fourth_wall_library",
         "actors": {}
     },
     "5": {
-        "src": "l.town.old.house",
-        "actors": {}
+        "src": "l.safe_town.old_house",
+        "actors": {
+            "2000001": 1
+        }
     },
     "6": {
         "src": "l.void",
-        "actors": {"0": 1}
+        "actors": {
+            "0": 1
+        }
+    },
+    "7": {
+        "src": "l.safe_town.dead_poet_tavern",
+        "actors": {}
+    },
+    "8": {
+        "src": "l.dpt_cellar_near.cellar",
+        "actors": {
+            "1000003": 1
+        }
+    },
+    "9": {
+        "src": "l.dpt_cellar_far.cellar_further",
+        "actors": {
+            "1000002": 1
+        }
+    },
+    "10": {
+        "src": "l.dpt_cellar_far.hole_in_the_wall",
+        "actors": {
+            "1000004": 1
+        }
     }
 }
