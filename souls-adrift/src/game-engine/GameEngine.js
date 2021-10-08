@@ -148,7 +148,7 @@ class GameEngine {
 
     // ------------ Synchronised random ------------
     rand() {
-        return Math.round(this.randomGen() * 100)
+        return Math.ceil(this.randomGen() * 100)
     }
 
     updateRand(time) {

@@ -62,7 +62,7 @@ function generateArena(state) {
             "equipment": [],
             "inventory": {},
             "quest": {},
-            "location": id(Math.round(Math.random() * N), Math.round(Math.random() * N)),
+            "location": id(Math.floor(Math.random() * N), Math.floor(Math.random() * N)),
             "battle": 0
         }
         state[playerId] = player
