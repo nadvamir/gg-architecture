@@ -82,14 +82,14 @@ test('should accept gossip', async (t) => {
     t.equal(gg.size(), 7)
 })
 
-test('should ignore gossip that does not join to the existing graph', async (t) => {
-    const gg = createGG()
-    generateSampleGraph(gg)
+// test('should ignore gossip that does not join to the existing graph', async (t) => {
+//     const gg = createGG()
+//     generateSampleGraph(gg)
 
-    gg.acceptGossip([{eid: 400, s: 0, t: 10002, th: 400, sp: 399, op: 1000, p: {}}])
+//     gg.acceptGossip([{eid: 400, s: 0, t: 10002, th: 400, sp: 399, op: 1000, p: {}}])
 
-    t.equal(gg.size(), 7)
-})
+//     t.equal(gg.size(), 7)
+// })
 
 test('should ignore gossip that was already in the graph', async (t) => {
     const gg = createGG()
@@ -133,13 +133,21 @@ test('should ban peers who are cheating by forking the history', async (t) => {
     // t.looseEqual(result.bans, [3])
 })
 
-test('should delete the events that have been seen by every peer', async (t) => {
+test('should delete the events that have happend and been seen by every peer', async (t) => {
     const gg = createGG()
     generateSampleGraph(gg)
 
+    // 3C doesn't know about anything from 0, so don't compact
     gg.compact()
+    t.equal(gg.size(), 7)
 
-    t.equal(gg.size(), 6)
+    // now everything down from D goes
+    gg.acceptGossip([
+        {eid: 302, s: 3, t: 10010, th: 302, sp: 301, op: 8, p: {}}, // 0D -> 3H
+    ])
+    t.equal(gg.size(), 9)
+    gg.compact()
+    t.equal(gg.size(), 7)
 })
 
 test('should know the last event for each peer', async (t) => {

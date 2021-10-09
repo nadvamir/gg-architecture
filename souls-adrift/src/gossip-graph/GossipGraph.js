@@ -90,7 +90,7 @@ class GossipGraph {
         // record the game server block
         if (!this.isServer()) this.gg.recordEvent(lastEventHash, {})
         setInterval(() => this.gossip(), 100) // 10x per second
-        setInterval(() => this.gg.compact(), 100000)
+        setInterval(() => this.gg.compact(), 1000)
     }
 
     decodeIncoming(data, fromServerSend) {

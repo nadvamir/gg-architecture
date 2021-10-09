@@ -95,39 +95,61 @@ class GGDAG {
     }
 
     compact() {
-        // create a mapping from the source to bitset idx
-        const mapping = Object.fromEntries(Object.keys(this.lastEvent).map((id, idx) => [id, idx]))
-
-        // our target -- all bits flipped
-        const target = new BitSet()
-        target.flip(0, mapping.length)
-
-        const numSeers = {}
-
         const self = this
-        let seen = new Set()
-        function dfs(node, visitedSet, lastId) {
-            if (seen.has(node)) return
-            seen.add(node)
-            const event = self.gg[node]
-            if (event.s != lastId) visitedSet = visitedSet.or(mapping[event.s])
+        function findMostRecent(h) {
+            if (!(h in self.gg)) return {th: 0, eid: 0}
+            const evt = self.gg[h]
+            if (evt.s == 0) return evt
+            return findMostRecent(evt.op)
+        }
 
-            if (!(node in numSeers)) numSeers[node] = visitedSet
-            else numSeers[node] = numSeers[node].or(visitedSet)
-
-            if (numSeers[node].equals(target)) {
-                delete self.gg[node]
+        let mostRecent = this.lastEvent[0]
+        for (const [h, eid] of Object.values(this.lastEvent)) {
+            const first = findMostRecent(h)
+            if (first.eid < mostRecent[1]) {
+                mostRecent = [first.th, first.eid]
             }
-
-            if (event.sp in self.gg) dfs(event.sp, visitedSet, event.s)
-            if (event.op in self.gg) dfs(event.op, visitedSet, event.s)
         }
 
-        // can start from a final node in any of the peers really
-        const lastHappened = this.lastEvent[0][0]
-        if (this.gg[lastHappened]) {
-            dfs(lastHappened, new BitSet(), -1)
-        }
+        if (mostRecent[0] == 0) return
+        const toDelete = this.eventsSeenFrom(mostRecent[0])
+        if (toDelete.length == 0) return
+        toDelete.shift() // keep the server event for simplicity
+        toDelete.forEach(e => delete this.gg[e])
+
+        // create a mapping from the source to bitset idx
+        // const mapping = Object.fromEntries(Object.keys(this.lastEvent).map((id, idx) => [id, idx]))
+
+        // // our target -- all bits flipped
+        // const target = new BitSet()
+        // target.flip(0, mapping.length)
+
+        // const numSeers = {}
+
+        // const self = this
+        // let seen = new Set()
+        // function dfs(node, visitedSet, lastId) {
+        //     if (seen.has(node)) return
+        //     seen.add(node)
+        //     const event = self.gg[node]
+        //     if (event.s != lastId) visitedSet = visitedSet.or(mapping[event.s])
+
+        //     if (!(node in numSeers)) numSeers[node] = visitedSet
+        //     else numSeers[node] = numSeers[node].or(visitedSet)
+
+        //     if (numSeers[node].equals(target)) {
+        //         delete self.gg[node]
+        //     }
+
+        //     if (event.sp in self.gg) dfs(event.sp, visitedSet, event.s)
+        //     if (event.op in self.gg) dfs(event.op, visitedSet, event.s)
+        // }
+
+        // // can start from a final node in any of the peers really
+        // const lastHappened = this.lastEvent[0][0]
+        // if (this.gg[lastHappened]) {
+        //     dfs(lastHappened, new BitSet(), -1)
+        // }
     }
 
     peerSummary() {
