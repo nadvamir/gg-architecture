@@ -43,7 +43,7 @@ function CharacterScreenImpl() {
     <div class={styles['content']}>
       <header>
         <StatusBar />
-        <h1>[{player.level()}] __Blind_Augur__</h1>
+        <h1>[{player.level()}] {player.name()}</h1>
         <div>Chapter 1: Soul Stranded</div>
         <div class={styles['location-info']}>
           <p>I was told that no ships will visit the harbour until spring. I can't leave, and I'm running out of money.</p>
