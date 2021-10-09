@@ -81,15 +81,18 @@ class Player {
     }
 
     die() {
-        if (this.gameEngine.playerId() == this.id) {
-            this.gameEngine.recordEvent('You have died!')
-            this.gameEngine.recordEvent('Your surroundings have changed.')
-        }
-        else {
-            this.gameEngine.recordEvent(this.name() + ' has died!')
+        const location = this.location()
+
+        if (this.gameEngine.player().location().id == location.id) {
+            if (this.gameEngine.playerId() == this.id) {
+                this.gameEngine.recordEvent('You have died!')
+                this.gameEngine.recordEvent('Your surroundings have changed.')
+            }
+            else {
+                this.gameEngine.recordEvent(this.name() + ' has died!')
+            }
         }
 
-        const location = this.location()
         location.remove(this)
         location.actorsFighting(this).forEach(a => a.setBattle(0))
         this.setBattle(0)

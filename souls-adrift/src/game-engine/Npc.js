@@ -84,8 +84,10 @@ class Npc {
 
     // --------- Modifiers -----------
     die() {
-        this.gameEngine.recordEvent(this.name() + ' has died!')
         const location = this.location()
+        if (this.gameEngine.player().location().id == location.id) {
+            this.gameEngine.recordEvent(this.name() + ' has died!')
+        }
         location.remove(this)
         location.actorsFighting(this).forEach(a => a.setBattle(0))
         this.gameEngine.createCorpse(this)
