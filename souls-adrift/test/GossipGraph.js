@@ -91,6 +91,17 @@ test('should ignore gossip that does not join to the existing graph', async (t) 
     t.equal(gg.size(), 7)
 })
 
+test('should ignore gossip that was already in the graph', async (t) => {
+    const gg = createGG()
+    generateSampleGraph(gg)
+
+    gg.acceptGossip([
+        {eid: 202, s: 2, t: 10004, th: 202, sp: 201, op: 8, p: {}} // 0D -> 2F
+    ])
+
+    t.equal(gg.size(), 7)
+})
+
 test('should produce all events that a peer does not know about', async (t) => {
     const gg = createGG()
     generateSampleGraph(gg)
@@ -142,6 +153,19 @@ test('should know the last event for each peer', async (t) => {
         receivedEventIds[k] = v[1]
     }
     t.ok(dictEquals(receivedEventIds, { 0: 8, 1: 104, 2: 202, 3: 301 }))
+})
+
+test('should know the last event for each peer as of a point in time', async (t) => {
+    const gg = createGG()
+    generateSampleGraph(gg)
+
+    const lastEvents = gg.peerSummaryAsOf(8)
+
+    const receivedEventIds = {}
+    for (const [k, v] of Object.entries(lastEvents)) {
+        receivedEventIds[k] = v[1]
+    }
+    t.ok(dictEquals(receivedEventIds, { 0: 8, 1: 102, 2: 201 }))
 })
 
 test('should return event by its hash', async (t) => {

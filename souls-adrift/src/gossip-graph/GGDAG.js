@@ -8,13 +8,14 @@ class GGDAG {
         this.gg = {}
         this.lastEvent = lastEvent
         this.origLastEvent = deepCopy(lastEvent)
+        // console.log('Initial setup: ', this.origLastEvent)
     }
 
     getEvent(hash) {
         return this.gg[hash]
     }
 
-    recordEvent(op, payload) {
+    recordEvent(op, payload, events) {
         const [sp, eid] = this.lastEvent[this.id]
         let event = {
             eid: eid + 1,
@@ -40,50 +41,50 @@ class GGDAG {
 
     // incoming data from other peers
     acceptGossip(events) {
+        if (events.length == 0) return
+
         // verify that the gossip does not create a forest
-        const newNodes = new Set(events.map(e => e.th))
-        const lastNodes = new Set(Object.values(this.origLastEvent).map(l => l[0]))
-        const joins = (h) => h in this.gg || newNodes.has(h) || lastNodes.has(h)
-        for (const e of events) {
-            // if (!!e.sp && !joins(e.sp)) {
-            //     console.log(e, 'does not join because of sp to', this.gg)
-            //     console.log('orig last', this.origLastEvent)
-            //     console.log('new', newNodes, newNodes.has(e.sp))
-            //     console.log('events', events)
-            //     return {ban: []}
-            // }
-            if (!!e.op && !joins(e.op)) {
-                console.log(e, 'does not join because of op to', this.gg)
-                return {ban: []}
-            }
-        }
+        // const newNodes = new Set(events.map(e => e.th))
+        // const lastNodes = new Set(Object.values(this.origLastEvent).map(l => l[0]))
+        // const joins = (h) => h in this.gg || newNodes.has(h) || lastNodes.has(h)
+        // for (const e of events) {
+        //     if (!!e.op && !joins(e.op)) {
+        //         // console.log(e, 'does not join because of op to', this.gg)
+        //         if (!this.printed) {
+        //             console.log(e, 'does not join because of op to', this.gg)
+        //             console.log('orig last', this.origLastEvent)
+        //             console.log('new', newNodes, newNodes.has(e.sp))
+        //             console.log('events', events)
+        //             this.printed = true
+        //         }
+        //         return { ban: [] }
+        //     }
+        // }
 
         // join to the graph
-        const finalEventCandidates = new Set()
+        let lastAdded = null
         events.forEach(e => {
             if (e.th in this.gg) return // we already know about this event
             // store in the graph
             this.gg[e.th] = e
-            // attempt to discover which event is the final one for the record purposes
-            if (finalEventCandidates.has(e.sp)) finalEventCandidates.delete(e.sp)
-            if (finalEventCandidates.has(e.op)) finalEventCandidates.delete(e.op)
-            finalEventCandidates.add(e.th)
+            lastAdded = e.th
             // update last events for a given sender
-            if (this.lastEvent[e.s][1] < e.eid) {
+            if (!this.lastEvent[e.s] || this.lastEvent[e.s][1] < e.eid) {
                 this.lastEvent[e.s] = [e.th, e.eid]
             }
         })
         // create an event recording gossip received
-        for (const h of finalEventCandidates.values()) {
-            this.recordEvent(h, {})
+        if (lastAdded) {
+            this.recordEvent(lastAdded, {}, events)
         }
-        return {ban: []}
+        return { ban: [] }
     }
 
     // used to form a message to a peer
     getUnseenEvents(peer) {
-        const seen = new Set(this.eventsSeenFrom(this.lastEvent[peer][0]))
-        return Object.values(this.gg).filter(e => !seen.has(e.th))
+        const lastForPeer = this.lastEvent[peer]
+        const seen = new Set(lastForPeer && this.eventsSeenFrom(lastForPeer[0]) || [])
+        return this.eventsSeenFrom(this.lastEvent[this.id][0], seen).map(e => this.gg[e]).reverse()
     }
 
     // used to drive the internal game engine
@@ -104,7 +105,10 @@ class GGDAG {
         const numSeers = {}
 
         const self = this
+        let seen = new Set()
         function dfs(node, visitedSet, lastId) {
+            if (seen.has(node)) return
+            seen.add(node)
             const event = self.gg[node]
             if (event.s != lastId) visitedSet = visitedSet.or(mapping[event.s])
 
@@ -130,6 +134,17 @@ class GGDAG {
         return this.lastEvent
     }
 
+    peerSummaryAsOf(hash) {
+        const lastEvents = {}
+        function visit(hash) {
+            const event = this.gg[hash]
+            if (!event) return
+            if (!(event.s in lastEvents)) lastEvents[event.s] = [hash, event.eid]
+            visit(event.op)
+        }
+        return lastEvents
+    }
+
     size() {
         return Object.keys(this.gg).length
     }
@@ -137,11 +152,14 @@ class GGDAG {
     eventsSeenFrom(node, rejectSet = null) {
         let result = []
         let q = [node]
+        let seen = new Set([])
         while (q.length != 0) {
             let hash = q.shift()
             let event = this.gg[hash]
             if (!event) continue
             if (rejectSet && rejectSet.has(hash)) continue
+            if (seen.has(hash)) continue
+            seen.add(hash)
             result.push(hash)
             q.push(event.sp)
             if (event.op) q.push(event.op)

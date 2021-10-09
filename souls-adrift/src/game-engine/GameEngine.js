@@ -70,7 +70,7 @@ class GameEngine {
         this.send(Action.None, [this.state.uid])
     }
 
-    onMessageReceived(sender, type, action, args, hash, time, messageId) {
+    onMessageReceived(sender, type, action, args, hash, time, serverEvt) {
         if (!this.authorised(sender, type, action, args)) {
             console.log('Received an unauthorised message')
             return
@@ -95,7 +95,7 @@ class GameEngine {
         }
 
         this.handleEvent(action, args)
-        this.updateLastMessage(hash, messageId)
+        this.updateLastMessage(serverEvt[0], serverEvt[1])
 
         if (hash == this.nextHash) {
             // console.log('Received')
@@ -142,7 +142,7 @@ class GameEngine {
         }
 
         if (this.isServer()) {
-            setInterval(() => this.sendHeartbeat(), 1000)
+            setInterval(() => this.sendHeartbeat(), 10000)
         }
     }
 

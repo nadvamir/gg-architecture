@@ -69,19 +69,19 @@ app.post('/login', (req, res) => {
 app.post('/register', (req, res) => {
     const p = req.body
     if (!validator.validate(p.email)) {
-        res.send({ success: false, error: 'Please enter a valid email'})
+        res.send({ success: false, error: 'Please enter a valid email' })
         return
     }
     if (gameEngine.emailExists(p.email)) {
-        res.send({ success: false, error: 'This email is already taken'})
+        res.send({ success: false, error: 'This email is already taken' })
         return
     }
     if (gameEngine.usernameExists(p.username)) {
-        res.send({ success: false, error: 'This username is already taken'})
+        res.send({ success: false, error: 'This username is already taken' })
         return
     }
     if (p.username.length < 1) {
-        res.send({ success: false, error: 'This username is too short'})
+        res.send({ success: false, error: 'This username is too short' })
         return
     }
     gameEngine.createPlayer(p.email, p.password, p.username)
@@ -101,14 +101,19 @@ wsServer.on('connection', socket => {
             case 'register':
                 const state = deepCopy(gameEngine.isLoaded() ? gameEngine.getState() : initialState)
                 // get the state of all peers connected to the server
-                const ggPeerSummary = gossipGraph.gg?.peerSummary() || {}
+                const ggPeerSummary = gossipGraph.gg?.peerSummaryAsOf(state.last_event_hash) || {}
+                if (!(0 in ggPeerSummary)) {
+                    ggPeerSummary[0] = [state.last_event_hash, state.last_event_id]
+                }
                 if (!(payload.uid in ggPeerSummary)) {
-                    if (payload.uid == 0) {
-                        ggPeerSummary[0] = [state.last_event_hash, state.last_event_id]
-                    }
-                    else {
-                        ggPeerSummary[payload.uid] = [payload.uid, 0]
-                    }
+                    ggPeerSummary[payload.uid] = [payload.uid, 0]
+                }
+                if (payload.uid != 0 && ggPeerSummary[0][0] != state.last_event_hash) {
+                    console.log('BAD!')
+                    console.log(ggPeerSummary)
+                    console.log(state.last_event_hash)
+                    console.log(gossipGraph.gg.gg)
+                    throw new Error('BAD BAD')
                 }
 
                 // FIXME: great security, actually authorise the connection in the future
