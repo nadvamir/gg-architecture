@@ -3,6 +3,7 @@ import { Action } from "../game-engine/actions/ActionFactory"
 import { MessageType } from "./MessageType"
 import { deepCopy } from "../game-client/util/Util"
 import { Metrics } from "./Metrics"
+import { GGDAG } from "./GGDAG"
 
 class GossipGraph {
     constructor() {
@@ -14,12 +15,10 @@ class GossipGraph {
         this.peers = {}
         this.activePeers = {}
         this.numActivePeers = 0
-
-        this.lastMessages = {}
-        this.numLastMessages = 0
-        this.actionHistory = []
+        this.initialPeerList = new Set()
 
         this.metrics = new Metrics()
+        this.gg = null
     }
 
     init(id, WSClass, PeerClass, wrtc) {
@@ -37,6 +36,7 @@ class GossipGraph {
             switch (payload.action) {
                 case 'game_state':
                     this.initGameState(payload.state)
+                    this.setupGG(payload.peers, payload.state.last_event_hash)
                     break
                 case 'list_of_peers':
                     this.initiateConnection(payload.peers)
@@ -54,34 +54,18 @@ class GossipGraph {
         this.listeners.push(onMessageReceived)
     }
 
-    formMessage(type, actions) {
-        return {
-            type: type,
-            actions: actions,
-            sender: this.id,
-            lastHash: this.lastHash,
-            messageId: this.messageId++,
-            time: new Date().getTime()
-        }
-    }
-
     send(type, action, args, peers) {
-        const payload = {
-            action: action,
-            args: args,
-            origSender: this.id,
-            origTime: new Date().getTime()
-        }
-        this.lastHash = murmurhash.v3(JSON.stringify(payload) + this.lastHash)
-        this.timeSent = new Date().getTime()
-        payload.origLastHash = this.lastHash
-        const message = this.formMessage(type, [payload])
-        //TODO: GG instead of client-server
-        if (0 in this.activePeers) { // not a server
-            this.sendToPeer(this.activePeers[0], JSON.stringify(message))
-        }
-        else {
-            this.handleIncomingMessage(message, true)
+        //TODO: support direct messages
+        const payload = { action: action, args: args }
+        // record the message in the graph:
+        this.lastHash = this.gg.addEvent(payload)[0]
+        // No need to actually send -- GG communicates the updates in the background
+        // but if it's a server process, need to handle the message
+        if (this.isServer()) {
+            const evt = this.gg.getEvent(this.lastHash)
+            for (const listener of this.listeners) {
+                listener(0, MessageType.GG_MESSAGE, action, args, this.lastHash, evt.t)
+            }
         }
         return this.lastHash
     }
@@ -95,78 +79,64 @@ class GossipGraph {
     initGameState(state) {
         state.uid = this.id
         for (let listener of this.listeners) {
-            listener(0, MessageType.DIRECT_MESSAGE, Action.OverwriteState, [state], this.lastHash, state.time)
+            listener(0, MessageType.SERVER_MESSAGE, Action.OverwriteState, [state], this.lastHash, state.time)
         }
     }
 
+    setupGG(peers, lastEventHash) {
+        this.gg = new GGDAG(this.id, peers)
+        // record the game server block
+        this.gg.recordEvent(lastEventHash, {})
+        setInterval(() => this.gossip(), 1000) // 10x per second
+        setInterval(() => this.gg.compact(), 1000000)
+    }
+
     decodeIncoming(data, fromServerSend) {
-        if (!fromServerSend && this.isServer() && data.type != MessageType.DIRECT_MESSAGE) {
+        if (!fromServerSend && this.isServer() && data.type == MessageType.GG_MESSAGE) {
             // rewrite the message as if coming from the server
             data = this.formMessage(data.type, data.actions)
         }
         return data
     }
 
-    handleIncomingMessage(data, fromServerSend = false) {
-        const message = this.decodeIncoming(data, fromServerSend)
-        const { type, actions, sender, lastHash, time, messageId } = message
-
-        //TODO: proper gossip graph
-        if (this.isServer()) {
-            this.broadcastMessage(message)
+    handleIncomingMessage(data) {
+        console.log('Incoming: ', data.length, 'gg size:', this.gg.size())
+        if (data.length > 1) {
+            console.log(data)
+            console.log(this.gg.gg)
         }
-
-        if (sender != 0) {
-            // do the gossip graph instead of registering events
-            return
-        }
-
-        for (let listener of this.listeners) {
-            for (const { action, args, origSender, origLastHash, origTime } of actions) {
-                //FIXME: don't hack in UID in state overwrites
-                if (action == Action.OverwriteState) {
-                    args[0].uid = this.id
-                }
-                if (origLastHash == this.lastHash) {
-                    this.metrics.recordLatency(new Date().getTime() - origTime)
-                }
-                listener(origSender, type, action, args, origLastHash, time, messageId)
+        const happenedLast = this.gg.peerSummary()[0][0]
+        // store the messages in the gossip-graph
+        this.gg.acceptGossip(data)
+        // process events that happened
+        const events = this.gg.getEventsWhichHappenedAfter(happenedLast)
+        console.log(events.length, 'happend after', happenedLast, 'gg size:', this.gg.size())
+        for (const e of events) {
+            if (e.p.action === undefined) continue
+            if (e.th == this.lastHash) {
+                this.metrics.recordLatency(new Date().getTime() - e.t)
             }
+            for (let listener of this.listeners) {
+                listener(e.s, MessageType.GG_MESSAGE, e.p.action, e.p.args, e.th, e.t, e.eid)
+            }
+        }
+        if (events.length > 0) {
+            this.lastEvent = events[events.length-1].th
         }
     }
 
-    broadcastMessage(message) {
-        this.actionHistory.push(message)
-        const justLatest = JSON.stringify(message)
-        for (const [pid, peer] of Object.entries(this.activePeers)) {
-            const lastSeen = this.lastMessages[pid]
-            if (lastSeen == message.messageId - 1) {
-                this.sendToPeer(peer, justLatest)
-            }
-            else {
-                const msgCopy = deepCopy(message)
-                msgCopy.actions = this.actionHistory
-                    .filter(msg => msg.messageId > lastSeen)
-                    .map(msg => msg.actions[0]) //TODO: flatmap
-                this.sendToPeer(peer, JSON.stringify(msgCopy))
-            }
-            this.lastMessages[pid] = message.messageId
-        }
-        // trim action history
-        if (this.numLastMessages == this.numActivePeers) {
-            this.actionHistory.length = 0
-        }
-        else {
-            const minMsgId = Math.min(Object.values(this.lastMessages))
-            this.actionHistory = this.actionHistory.filter(m => m.messageId > minMsgId)
-        }
+    gossip() {
+        // choose a random peer
+        const peers = Object.keys(this.activePeers)
+        if (peers.length == 0) return
+        const pid = peers[Math.floor(peers.length * Math.random())]
+        const message = JSON.stringify(this.gg.getUnseenEvents(pid))
+        console.log('gossip ', this.id, ' -> ', pid)
+        this.sendToPeer(this.activePeers[pid], message)
     }
 
-    markLastMessage(pid, messageId) {
-        if (pid != 0) {
-            this.lastMessages[pid] = messageId
-            this.numLastMessages += 1
-        }
+    markLastMessage(pid, lastMsg) {
+        this.gg.lastEvent[pid] = lastMsg
     }
 
     get selfId() {
@@ -196,10 +166,18 @@ class GossipGraph {
         })
         peer.on('connect', () => {
             console.log(pid, 'connected!')
-            this.activePeers[pid] = peer
-            this.numActivePeers += 1
+            // Only communicate with peers where it's us who must establish the connection
+            if (this.initialPeerList.has(pid)) {
+                this.activePeers[pid] = peer
+                this.numActivePeers += 1
+            }
         })
         peer.on('data', data => {
+            if (!(pid in this.activePeers)) {
+                // peers reaching out, can start communicating with them
+                this.activePeers[pid] = peer
+                this.numActivePeers += 1
+            }
             const msg = data.toString()
             this.metrics.recordTrafficIn(msg.length)
             this.handleIncomingMessage(JSON.parse(msg))
@@ -211,14 +189,13 @@ class GossipGraph {
             console.log('Removing WebRTC')
             delete this.peers[pid]
             delete this.activePeers[pid]
-            delete this.lastMessages[pid]
             this.numActivePeers -= 1
-            this.numLastMessages -= 1
         })
         return peer
     }
 
     initiateConnection(peers) {
+        this.initialPeerList = new Set(peers)
         peers.forEach(pid => {
             const peer = this.newPeer({ initiator: true }, pid)
             this.peers[pid] = peer

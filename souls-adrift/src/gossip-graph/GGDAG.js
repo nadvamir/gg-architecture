@@ -1,11 +1,17 @@
 import murmurhash from "murmurhash"
 import BitSet from "bitset"
+import { deepCopy } from "../game-client/util/Util"
 
 class GGDAG {
     constructor(id, lastEvent) {
         this.id = id
         this.gg = {}
         this.lastEvent = lastEvent
+        this.origLastEvent = deepCopy(lastEvent)
+    }
+
+    getEvent(hash) {
+        return this.gg[hash]
     }
 
     recordEvent(op, payload) {
@@ -19,17 +25,40 @@ class GGDAG {
             p: payload
         }
         event.th = murmurhash.v3(JSON.stringify(event))
+
         this.gg[event.th] = event
-        this.lastEvent[this.id] = [event.th, event.eid]
+
+        const last = [event.th, event.eid]
+        this.lastEvent[this.id] = last
+        return last
     }
 
     // creating a unique event of your own
     addEvent(payload) {
-        this.recordEvent(null, {})
+        return this.recordEvent(null, payload)
     }
 
     // incoming data from other peers
     acceptGossip(events) {
+        // verify that the gossip does not create a forest
+        const newNodes = new Set(events.map(e => e.th))
+        const lastNodes = new Set(Object.values(this.origLastEvent).map(l => l[0]))
+        const joins = (h) => h in this.gg || newNodes.has(h) || lastNodes.has(h)
+        for (const e of events) {
+            // if (!!e.sp && !joins(e.sp)) {
+            //     console.log(e, 'does not join because of sp to', this.gg)
+            //     console.log('orig last', this.origLastEvent)
+            //     console.log('new', newNodes, newNodes.has(e.sp))
+            //     console.log('events', events)
+            //     return {ban: []}
+            // }
+            if (!!e.op && !joins(e.op)) {
+                console.log(e, 'does not join because of op to', this.gg)
+                return {ban: []}
+            }
+        }
+
+        // join to the graph
         const finalEventCandidates = new Set()
         events.forEach(e => {
             if (e.th in this.gg) return // we already know about this event
@@ -59,8 +88,9 @@ class GGDAG {
 
     // used to drive the internal game engine
     getEventsWhichHappenedAfter(eventHash) {
+        if (eventHash == this.lastEvent[0][0]) return [] // commonly nothing happened
         const happenedBefore = new Set(this.eventsSeenFrom(eventHash))
-        return this.eventsSeenFrom(this.lastEvent[0][0], happenedBefore).map(e => this.gg[e])
+        return this.eventsSeenFrom(this.lastEvent[0][0], happenedBefore).map(e => this.gg[e]).reverse()
     }
 
     compact() {
@@ -90,7 +120,10 @@ class GGDAG {
         }
 
         // can start from a final node in any of the peers really
-        dfs(this.lastEvent[0][0], new BitSet(), -1)
+        const lastHappened = this.lastEvent[0][0]
+        if (this.gg[lastHappened]) {
+            dfs(lastHappened, new BitSet(), -1)
+        }
     }
 
     peerSummary() {

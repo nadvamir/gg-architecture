@@ -82,6 +82,15 @@ test('should accept gossip', async (t) => {
     t.equal(gg.size(), 7)
 })
 
+test('should ignore gossip that does not join to the existing graph', async (t) => {
+    const gg = createGG()
+    generateSampleGraph(gg)
+
+    gg.acceptGossip([{eid: 400, s: 0, t: 10002, th: 400, sp: 399, op: 1000, p: {}}])
+
+    t.equal(gg.size(), 7)
+})
+
 test('should produce all events that a peer does not know about', async (t) => {
     const gg = createGG()
     generateSampleGraph(gg)
@@ -99,7 +108,10 @@ test('should produce all events that happened after a given event hash', async (
     const events = gg.getEventsWhichHappenedAfter(7)
 
     const eventsWhichHappened = events.map(e => e.eid)
-    t.ok(setEqual(new Set(eventsWhichHappened), new Set([201, 102, 8])))
+    // the events are returned in the order they happened
+    t.equal(eventsWhichHappened[0], 201)
+    t.equal(eventsWhichHappened[1], 102)
+    t.equal(eventsWhichHappened[2], 8)
 })
 
 test('should ban peers who are cheating by forking the history', async (t) => {
@@ -130,5 +142,13 @@ test('should know the last event for each peer', async (t) => {
         receivedEventIds[k] = v[1]
     }
     t.ok(dictEquals(receivedEventIds, { 0: 8, 1: 104, 2: 202, 3: 301 }))
+})
 
+test('should return event by its hash', async (t) => {
+    const gg = createGG()
+    generateSampleGraph(gg)
+
+    const evt = gg.getEvent(301)
+
+    t.equal(evt.t, 10001)
 })

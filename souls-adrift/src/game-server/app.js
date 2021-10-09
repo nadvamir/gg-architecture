@@ -99,17 +99,31 @@ wsServer.on('connection', socket => {
         const payload = JSON.parse(message.toString())
         switch (payload.action) {
             case 'register':
-                let state = deepCopy(gameEngine.isLoaded() ? gameEngine.getState() : initialState)
+                const state = deepCopy(gameEngine.isLoaded() ? gameEngine.getState() : initialState)
+                // get the state of all peers connected to the server
+                const ggPeerSummary = gossipGraph.gg?.peerSummary() || {}
+                if (!(payload.uid in ggPeerSummary)) {
+                    if (payload.uid == 0) {
+                        ggPeerSummary[0] = [state.last_event_hash, state.last_event_id]
+                    }
+                    else {
+                        ggPeerSummary[payload.uid] = [payload.uid, 0]
+                    }
+                }
+
                 // FIXME: great security, actually authorise the connection in the future
                 if (payload.uid != 0) {
                     // remove passwords
                     for (let [_, e] of Object.entries(state)) {
                         if (!!e.password) delete e['password']
                     }
+                    // include the new node into the graph such that 
+                    // the server doesn't delete events until the peer is properly established
+                    gossipGraph.markLastMessage(payload.uid, ggPeerSummary[payload.uid])
                 }
-                socket.send(JSON.stringify({ action: 'game_state', state: state }))
+
+                socket.send(JSON.stringify({ action: 'game_state', state: state, peers: ggPeerSummary }))
                 socket.send(JSON.stringify({ action: 'list_of_peers', peers: Object.keys(peers) }))
-                gossipGraph.markLastMessage(payload.uid, state.last_message)
                 peers[payload.uid] = socket
                 break
             case 'signal':

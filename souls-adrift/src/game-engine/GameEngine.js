@@ -95,7 +95,7 @@ class GameEngine {
         }
 
         this.handleEvent(action, args)
-        this.updateLastMessage(messageId)
+        this.updateLastMessage(hash, messageId)
 
         if (hash == this.nextHash) {
             // console.log('Received')
@@ -163,8 +163,8 @@ class GameEngine {
         this.setState({time: time})
     }
 
-    updateLastMessage(messageId) {
-        this.setState({last_message: messageId})
+    updateLastMessage(hash, messageId) {
+        this.setState({last_event_hash: hash, last_event_id: messageId})
     }
 
     // ----------------- Accessors -----------------
@@ -254,6 +254,8 @@ class GameEngine {
     authorised(sender, type, action, args) {
         if (sender == this.serverId()) return true
         if (action == Action.OverwriteState) return false
+        if (type == MessageType.DIRECT_MESSAGE) return action == Action.Talk
+        if (type == MessageType.SERVER_MESSAGE) return false
         return !!args && sender == args[0]
     }
 

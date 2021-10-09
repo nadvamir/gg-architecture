@@ -4,6 +4,8 @@
     "despawn_queue": [],
     "region_spawn_point": 1,
     "last_id": 3000002,
+    "last_event_hash": 0,
+    "last_event_id": 0,
     "time": 0,
     "ai": {},
     "0": {
