@@ -18,6 +18,8 @@ import { mulberry32 } from './util/Random.js';
 const DESPAWN_PERIOD = 30 * 60 * 1000 // 30 minutes
 const RESPAWN_PERIOD = 5 * 60 * 1000 // 5 minutes
 
+const DISABLE_GAME = false
+
 class GameEngine {
     constructor(gossipGraph) {
         this.gossipGraph = gossipGraph
@@ -91,10 +93,12 @@ class GameEngine {
                 this.clearEventList()
             }
 
-            this.ai.run(time)
+            !DISABLE_GAME && this.ai.run(time)
         }
 
-        this.handleEvent(action, args)
+        if (!DISABLE_GAME || action == Action.OverwriteState) {
+            this.handleEvent(action, args)
+        }
         this.updateLastMessage(serverEvt[0], serverEvt[1])
 
         if (hash == this.nextHash) {
