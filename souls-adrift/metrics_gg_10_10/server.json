@@ -9288,10 +9288,10 @@
       2468
     ]
   ],
-  "avg_latency": null,
+  "avg_latency": 0,
   "avg_traffic_in": 2866.016666666667,
   "avg_traffic_out": 4046.5361284567352,
-  "max_latency": null,
+  "max_latency": 0,
   "max_traffic_in": 9603,
   "max_traffic_out": 147105,
   "traffic_in_rate": 28.991637724651852,

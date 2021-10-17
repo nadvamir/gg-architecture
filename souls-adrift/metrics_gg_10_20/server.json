@@ -5180,10 +5180,10 @@
       129444
     ]
   ],
-  "avg_latency": null,
+  "avg_latency": 0,
   "avg_traffic_in": 1191.0514372163389,
   "avg_traffic_out": 28591.548183254345,
-  "max_latency": null,
+  "max_latency": 0,
   "max_traffic_in": 6590,
   "max_traffic_out": 129444,
   "traffic_in_rate": 6.690390400598263,
