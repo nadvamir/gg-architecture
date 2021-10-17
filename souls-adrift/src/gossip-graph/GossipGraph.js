@@ -84,6 +84,7 @@ class GossipGraph {
         for (let listener of this.listeners) {
             listener(0, MessageType.SERVER_MESSAGE, Action.OverwriteState, [state], this.lastHash, state.time, [this.lastHash, 0])
         }
+        this.initiated = true
     }
 
     setupGG(peers, lastEventHash) {
@@ -108,6 +109,13 @@ class GossipGraph {
         //     console.log(data)
         //     console.log(this.gg.gg)
         // }
+        // if not a server, drop a message with no events
+        if (this.initiated && this.hadServerResponse && !this.isServer()) {
+            let hasInterestingPayload = data.find((evt) => evt.p.action !== undefined) !== undefined
+            hasInterestingPayload = hasInterestingPayload || data.length > 0 && data[data.length-1].s == 0
+            if (!hasInterestingPayload) return
+        }
+
         const happenedLast = this.gg.peerSummary()[0][0]
         // store the messages in the gossip-graph
         this.gg.acceptGossip(data)
