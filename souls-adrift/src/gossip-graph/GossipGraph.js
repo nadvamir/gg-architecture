@@ -67,6 +67,9 @@ class GossipGraph {
                 listener(0, MessageType.GG_MESSAGE, action, args, this.lastHash, evt.t, [evt.th, evt.eid])
             }
         }
+        else {
+            this.hasEvent = true
+        }
         return this.lastHash
     }
 
@@ -130,7 +133,7 @@ class GossipGraph {
         // choose a random peer
         const peers = Object.keys(this.activePeers)
         if (peers.length == 0) return
-        const pid = (this.hadServerResponse || this.isServer()) ? peers[Math.floor(peers.length * Math.random())] : peers[0]
+        const pid = ((!this.hasEvent && this.hadServerResponse) || this.isServer()) ? peers[Math.floor(peers.length * Math.random())] : peers[0]
         const message = JSON.stringify(this.gg.getUnseenEvents(pid))
         // if (!this.printed && pid == "3000002") {
         //     this.printed = true
@@ -145,6 +148,7 @@ class GossipGraph {
         // }
         // console.log('gossip ', this.id, ' -> ', pid)
         this.sendToPeer(this.activePeers[pid], message)
+        this.hasEvent = false
     }
 
     markLastMessage(pid, lastMsg) {
