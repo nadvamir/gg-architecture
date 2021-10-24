@@ -116,6 +116,9 @@ class GossipGraph {
             if (!hasInterestingPayload) return
         }
 
+        // keep track of the last peer that has sent you data
+        this.lastPeer = data[data.length-1].s
+
         const happenedLast = this.gg.peerSummary()[0][0]
         // store the messages in the gossip-graph
         this.gg.acceptGossip(data)
@@ -141,7 +144,18 @@ class GossipGraph {
         // choose a random peer
         const peers = Object.keys(this.activePeers)
         if (peers.length == 0) return
-        const pid = ((!this.hasEvent && this.hadServerResponse) || this.isServer()) ? peers[Math.floor(peers.length * Math.random())] : peers[0]
+
+        let pid = peers[0]
+        if ((!this.hasEvent && this.hadServerResponse) || this.isServer()) {
+            if (!!this.lastPeer) {
+                pid = this.lastPeer
+                this.lastPeer = undefined
+            }
+            else {
+                pid = peers[Math.floor(peers.length * Math.random())]
+            }
+        }
+
         const message = JSON.stringify(this.gg.getUnseenEvents(pid))
         // if (!this.printed && pid == "3000002") {
         //     this.printed = true
